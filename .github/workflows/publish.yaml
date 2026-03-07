@@ -1,0 +1,39 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+      - "**"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Lint
+        run: deno lint
+
+      - name: Type check
+        run: deno check src/mod.ts
+
+      - name: Test
+        run: deno test tests/
+
+      - name: Publish stable
+        if: github.ref == 'refs/heads/main'
+        run: deno publish
+
+      - name: Publish beta
+        if: github.ref != 'refs/heads/main'
+        run: |
+          VERSION=$(deno eval "const c = JSON.parse(Deno.readTextFileSync('deno.json')); console.log(c.version)")
+          deno publish --set-version "${VERSION}-beta.${{ github.run_number }}"
