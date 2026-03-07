@@ -16,4 +16,4 @@ export const PasswordResetSchema: z.ZodType<PasswordReset> = z.strictObject({
   email: z.string().email(),
   expiresAt: z.any(),
   created_at: z.number(),
-});
+}).meta({ title: "Password Reset", collection: "password-resets" });

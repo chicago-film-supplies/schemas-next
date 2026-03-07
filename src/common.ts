@@ -148,4 +148,6 @@ export const Address: z.ZodType<AddressType | null> = z.strictObject({
   mapbox_id: z.string().default("").optional(),
   address_coordinates: Coordinates.optional(),
   user_coordinates: Coordinates.optional(),
-}).nullable();
+}).nullable().meta({
+  initial: {"city":"","address_coordinates":null,"user_coordinates":null,"country_name":"","full":"","name":"","postcode":"","region":"","street":"","street2":"","mapbox_id":""},
+});

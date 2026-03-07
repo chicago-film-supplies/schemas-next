@@ -24,4 +24,4 @@ export const HolidayDatesSchema: z.ZodType<HolidayDates> = z.strictObject({
   type: z.enum(["fixed", "variable"]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-});
+}).meta({ title: "Holiday Dates", collection: "holiday-dates" });

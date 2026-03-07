@@ -43,6 +43,10 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   query_by_organizations: z.array(z.string()).default([]),
   updated_by: z.string().optional(),
   ...TimestampFields,
+}).meta({
+  title: "Contact",
+  collection: "contacts",
+  initial: {"uid":null,"name":"","emails":[],"phones":[],"organizations":[],"query_by_organizations":[]},
 });
 
 /**

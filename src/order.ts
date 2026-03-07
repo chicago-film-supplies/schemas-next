@@ -103,6 +103,8 @@ export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.strictO
   address: Address.optional(),
   instructions: z.string().nullable().optional(),
   contact: DestinationContact.nullable().optional(),
+}).meta({
+  initial: {"uid":null,"address":null,"instructions":null,"contact":null},
 });
 
 /**
@@ -210,6 +212,8 @@ export const OrderItem: z.ZodType<OrderItemType> = z.strictObject({
   uid_collection: z.string().optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
+}).meta({
+  initial: {"description":"","name":"","order_number":0,"price":{"base":0,"chargeable_days":null,"discount_amount":0,"discount_percent":0,"formula":"five_day_week","subtotal":0,"tax_amount":0,"tax_profile":"tax_none","total":0},"quantity":0,"type":"rental","stock_method":"bulk","uid":"","uid_order":"","uid_component_of":null,"inclusion_type":null,"zero_priced":null},
 });
 
 /**
@@ -312,14 +316,25 @@ const OrderDocLineItem = z.strictObject({
   crms_id: z.number().nullable().optional(),
 });
 
+export interface OrderDocDestinationItemType {
+  uid: string;
+  type: "destination";
+  name: string;
+  uid_delivery: string | null;
+  uid_collection: string | null;
+  description: string;
+}
+
 /** Destination divider in items array. */
-const OrderDocDestinationItem = z.strictObject({
+export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z.strictObject({
   uid: z.uuid(),
   type: z.literal("destination"),
   name: z.string().max(200).default(""),
   uid_delivery: z.string().nullable().default(null),
   uid_collection: z.string().nullable().default(null),
   description: z.string().default(""),
+}).meta({
+  initial: {"name":"","uid_delivery":null,"uid_collection":null,"description":""},
 });
 
 /** Group divider in items array. */
@@ -423,4 +438,8 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
   ...TimestampFields,
+}).meta({
+  title: "Order",
+  collection: "orders",
+  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null},
 }) as z.ZodType<Order>;

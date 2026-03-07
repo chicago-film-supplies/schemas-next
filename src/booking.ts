@@ -160,4 +160,4 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   uid_destination_delivery: z.string().optional(),
   uid_destination_collection: z.string().optional(),
   ...TimestampFields,
-});
+}).meta({ title: "Booking", collection: "products/{product_id}/bookings" });

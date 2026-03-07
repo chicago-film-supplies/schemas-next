@@ -23,4 +23,29 @@ export const TagSchema: z.ZodType<Tag> = z.strictObject({
   query_by_products: z.array(z.string()).default([]).optional(),
   updated_by: z.string().optional(),
   ...TimestampFields,
+}).meta({ title: "Tag", collection: "tags" });
+
+export interface CreateTagInputType {
+  uid?: string;
+  name: string;
+}
+export const CreateTagInput: z.ZodType<CreateTagInputType> = z.object({
+  uid: z.string().optional(),
+  name: z.string().min(1).max(100),
+});
+
+export interface UpdateTagInputType {
+  uid: string;
+  name: string;
+}
+export const UpdateTagInput: z.ZodType<UpdateTagInputType> = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100),
+});
+
+export interface DeleteTagInputType {
+  uid: string;
+}
+export const DeleteTagInput: z.ZodType<DeleteTagInputType> = z.object({
+  uid: z.string(),
 });

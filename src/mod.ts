@@ -60,6 +60,7 @@ export {
   DocDestinationEndpoint,
   DocDestinationContact,
   OrderItem,
+  OrderDocDestinationItem,
   ItemPrice,
   type Order,
   type CreateOrderInputType,
@@ -124,7 +125,13 @@ export {
 
 export {
   TagSchema,
+  CreateTagInput,
+  UpdateTagInput,
+  DeleteTagInput,
   type Tag,
+  type CreateTagInputType,
+  type UpdateTagInputType,
+  type DeleteTagInputType,
 } from "./tag.ts";
 
 export {
@@ -168,12 +175,20 @@ export {
 
 export {
   TrackingCategorySchema,
+  CreateTrackingCategoryInput,
+  UpdateTrackingCategoryInput,
   type TrackingCategory,
+  type CreateTrackingCategoryInputType,
+  type UpdateTrackingCategoryInputType,
 } from "./tracking-category.ts";
 
 export {
   ProductSchema,
+  CreateProductInput,
+  UpdateProductInput,
   type Product,
+  type CreateProductInputType,
+  type UpdateProductInputType,
   type ProductAlternate,
   type ProductComponent,
   type ProductPrice,
@@ -240,3 +255,62 @@ export {
   type PublicStockSummary,
   type PublicStockSummaryStore,
 } from "./public-stock-summary.ts";
+
+// ── Schema record keyed by collection name ─────────────────────────
+
+import type { z } from "zod";
+
+import { BookingSchema } from "./booking.ts";
+import { CacheGeocodesSchema } from "./cache-geocodes.ts";
+import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
+import { ContactSchema } from "./contact.ts";
+import { DestinationSchema } from "./destination.ts";
+import { EmailVerificationSchema } from "./email-verification.ts";
+import { HolidayDatesSchema } from "./holiday-dates.ts";
+import { InventoryLedgerSchema } from "./inventory-ledger.ts";
+import { InvoiceSchema } from "./invoice.ts";
+import { LocationSchema } from "./location.ts";
+import { LocationTypeSchema } from "./location-type.ts";
+import { OrderSchema } from "./order.ts";
+import { OrganizationSchema } from "./organization.ts";
+import { OutOfServiceRecordSchema } from "./out-of-service-record.ts";
+import { PasswordResetSchema } from "./password-reset.ts";
+import { ProductSchema } from "./product.ts";
+import { PublicStockSummarySchema } from "./public-stock-summary.ts";
+import { SessionSchema } from "./session.ts";
+import { StockSummarySchema } from "./stock-summary.ts";
+import { StoreSchema } from "./store.ts";
+import { TagSchema } from "./tag.ts";
+import { TrackingCategorySchema } from "./tracking-category.ts";
+import { TransactionSchema } from "./transaction.ts";
+import { UserSchema } from "./user.ts";
+import { WebshopProductSchema } from "./webshop-product.ts";
+
+/** All document schemas keyed by singular and plural collection names. */
+export const schemas: Record<string, z.ZodType> = {
+  "booking": BookingSchema, "bookings": BookingSchema,
+  "cache-geocodes": CacheGeocodesSchema,
+  "chart-of-accounts": ChartOfAccountsSchema,
+  "contact": ContactSchema, "contacts": ContactSchema,
+  "destination": DestinationSchema, "destinations": DestinationSchema,
+  "email-verification": EmailVerificationSchema, "email-verifications": EmailVerificationSchema,
+  "holiday-dates": HolidayDatesSchema,
+  "inventory-ledger": InventoryLedgerSchema, "inventory-ledgers": InventoryLedgerSchema,
+  "invoice": InvoiceSchema, "invoices": InvoiceSchema,
+  "location": LocationSchema, "locations": LocationSchema,
+  "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,
+  "order": OrderSchema, "orders": OrderSchema,
+  "organization": OrganizationSchema, "organizations": OrganizationSchema,
+  "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,
+  "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
+  "product": ProductSchema, "products": ProductSchema,
+  "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
+  "session": SessionSchema, "sessions": SessionSchema,
+  "stock-summary": StockSummarySchema, "stock-summaries": StockSummarySchema,
+  "store": StoreSchema, "stores": StoreSchema,
+  "tag": TagSchema, "tags": TagSchema,
+  "tracking-category": TrackingCategorySchema, "tracking-categories": TrackingCategorySchema,
+  "transaction": TransactionSchema, "transactions": TransactionSchema,
+  "user": UserSchema, "users": UserSchema,
+  "webshop-product": WebshopProductSchema, "webshop-products": WebshopProductSchema,
+};

@@ -38,4 +38,4 @@ export const CacheGeocodesSchema: z.ZodType<CacheGeocodes> = z.strictObject({
   }),
   created_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-});
+}).meta({ title: "Cache Geocodes", collection: "cache-geocodes" });

@@ -44,4 +44,4 @@ export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({
   active: z.boolean().default(true),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-});
+}).meta({ title: "Location Type", collection: "location-types" });

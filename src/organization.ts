@@ -63,6 +63,10 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   last_order: z.any().optional(),
   updated_by: z.string().optional(),
   ...TimestampFields,
+}).meta({
+  title: "Organization",
+  collection: "organizations",
+  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[]},
 });
 
 /**
