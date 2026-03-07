@@ -2,26 +2,23 @@
  * Order input schemas — Firestore collection: orders
  */
 import { z } from "zod";
-import { Address, type AddressType } from "./common.ts";
+import {
+  Address,
+  type AddressType,
+  StockMethodEnum,
+  type StockMethodType,
+  TaxProfileEnum,
+  type TaxProfileType,
+} from "./common.ts";
 
-/** Allowed order statuses. */
-const OrderStatus = z.enum([
-  "draft",
-  "quoted",
-  "reserved",
-  "active",
-  "complete",
-  "canceled",
-]);
+const ORDER_STATUSES = [
+  "draft", "quoted", "reserved", "active", "complete", "canceled",
+] as const;
+type OrderStatusType = typeof ORDER_STATUSES[number];
+const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-/** Allowed tax profiles for an order. */
-const TaxProfile = z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]);
-
-/** Allowed item types. */
-const ItemType = z.enum(["destination", "group", "rental", "sale", "service"]);
-
-/** Allowed stock methods. */
-const StockMethod = z.enum(["bulk", "serialized", "none"]);
+const ITEM_TYPES = ["destination", "group", "rental", "sale", "service"] as const;
+type ItemTypeType = typeof ITEM_TYPES[number];
 
 /**
  * Order dates — all six date boundaries as ISO strings.
@@ -121,12 +118,12 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
  */
 export interface OrderItemType {
   uid: string;
-  type?: "destination" | "group" | "rental" | "sale" | "service";
+  type?: ItemTypeType;
   name?: string;
   description?: string;
   quantity?: number;
   price?: ItemPriceType;
-  stock_method?: "bulk" | "serialized" | "none";
+  stock_method?: StockMethodType;
   uid_component_of?: string | null;
   inclusion_type?: string | null;
   zero_priced?: boolean | null;
@@ -138,12 +135,12 @@ export interface OrderItemType {
 
 export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
-  type: ItemType.optional(),
+  type: z.enum(ITEM_TYPES).optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.int().optional(),
   price: ItemPrice.optional(),
-  stock_method: StockMethod.optional(),
+  stock_method: StockMethodEnum.optional(),
   uid_component_of: z.string().nullable().optional(),
   inclusion_type: z.string().nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
@@ -159,9 +156,9 @@ export const OrderItem: z.ZodType<OrderItemType> = z.object({
 export interface CreateOrderInputType {
   uid: string;
   organization: { uid: string };
-  status: "draft" | "quoted" | "reserved" | "active" | "complete" | "canceled";
+  status: OrderStatusType;
   dates: OrderDatesType;
-  tax_profile: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  tax_profile: TaxProfileType;
   destinations: DestinationType[];
   items?: OrderItemType[];
   subject?: string;
@@ -176,7 +173,7 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   organization: z.object({ uid: z.string() }),
   status: OrderStatus,
   dates: OrderDates,
-  tax_profile: TaxProfile,
+  tax_profile: TaxProfileEnum,
   destinations: z.array(Destination).min(1, "At least one destination is required"),
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
@@ -192,9 +189,9 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
 export interface UpdateOrderInputType {
   uid?: string;
   organization?: { uid: string };
-  status?: "draft" | "quoted" | "reserved" | "active" | "complete" | "canceled";
+  status?: OrderStatusType;
   dates?: OrderDatesType;
-  tax_profile?: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  tax_profile?: TaxProfileType;
   destinations?: DestinationType[];
   items?: OrderItemType[];
   subject?: string;
@@ -209,7 +206,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   organization: z.object({ uid: z.string() }).optional(),
   status: OrderStatus.optional(),
   dates: OrderDates.optional(),
-  tax_profile: TaxProfile.optional(),
+  tax_profile: TaxProfileEnum.optional(),
   destinations: z.array(Destination).min(1, "At least one destination is required").optional(),
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
