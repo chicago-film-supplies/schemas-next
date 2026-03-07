@@ -7,7 +7,8 @@
     "./contact": "./src/contact.ts",
     "./organization": "./src/organization.ts",
     "./user": "./src/user.ts",
-    "./session": "./src/session.ts"
+    "./session": "./src/session.ts",
+    "./order": "./src/order.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",

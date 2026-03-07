@@ -39,6 +39,25 @@ export {
 } from "./session.ts";
 
 export {
+  CreateOrderInput,
+  UpdateOrderInput,
+  OrderDates,
+  Destination,
+  DestinationEndpoint,
+  DestinationContact,
+  OrderItem,
+  ItemPrice,
+  type CreateOrderInputType,
+  type UpdateOrderInputType,
+  type OrderDatesType,
+  type DestinationType,
+  type DestinationEndpointType,
+  type DestinationContactType,
+  type OrderItemType,
+  type ItemPriceType,
+} from "./order.ts";
+
+export {
   Address,
   Coordinates,
   Email,
