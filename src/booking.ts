@@ -10,7 +10,6 @@ import {
   FirestoreTimestamp,
   NoteEntry,
   type NoteEntryType,
-  TimestampFields,
 } from "./common.ts";
 
 const BOOKING_STATUSES = [
@@ -44,51 +43,51 @@ export interface Booking {
   uid: string;
   uid_order: string;
   uid_product: string;
-  name?: string;
-  number?: number;
+  name: string;
+  number: number;
   type: ComponentTypeType;
   status: BookingStatusType;
   quantity: number;
-  shortage?: number;
-  subject?: string;
-  unit_price?: number;
-  total_price?: number;
-  crms_id?: number;
-  crms_product_id?: number;
+  shortage: number;
+  subject: string;
+  unit_price: number;
+  total_price: number;
+  crms_id?: number | null;
+  crms_product_id?: number | null;
   breakdown: {
-    damaged?: number;
-    lost?: number;
-    out?: number;
-    prepped?: number;
-    quoted?: number;
-    reserved?: number;
-    returned?: number;
+    damaged: number;
+    lost: number;
+    out: number;
+    prepped: number;
+    quoted: number;
+    reserved: number;
+    returned: number;
   };
   dates: {
-    start?: string;
-    start_fs?: unknown;
-    end?: string | null;
-    end_fs?: unknown;
-    charge_start?: string;
-    charge_start_fs?: unknown;
-    charge_end?: string | null;
-    charge_end_fs?: unknown;
+    start: string;
+    start_fs: unknown;
+    end: string | null;
+    end_fs: unknown;
+    charge_start: string;
+    charge_start_fs: unknown;
+    charge_end: string | null;
+    charge_end_fs: unknown;
   };
-  destinations?: {
-    delivery?: BookingDestinationRef | null;
-    collection?: BookingDestinationRef | null;
+  destinations: {
+    delivery: BookingDestinationRef | null;
+    collection: BookingDestinationRef | null;
   };
   organization: {
     uid: string | null;
     name: string;
-    crms_id?: number | null;
+    crms_id: number | null;
   };
-  stores?: BookingStore[];
-  query_by_uid_store?: string[];
-  uid_destination_delivery?: string;
-  uid_destination_collection?: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  stores: BookingStore[];
+  query_by_uid_store: string[];
+  uid_destination_delivery: string;
+  uid_destination_collection: string;
+  created_at: unknown;
+  updated_at: unknown;
 }
 
 const BookingDestinationRefSchema: z.ZodType<BookingDestinationRef> = z.strictObject({
@@ -116,48 +115,50 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   uid: z.string(),
   uid_order: z.string(),
   uid_product: z.string(),
-  name: z.string().optional(),
-  number: z.number().optional(),
+  name: z.string(),
+  number: z.number(),
   type: ComponentTypeEnum,
   status: BookingStatus,
   quantity: z.number(),
-  shortage: z.number().optional(),
-  subject: z.string().optional(),
-  unit_price: z.number().optional(),
-  total_price: z.number().optional(),
-  crms_id: z.number().optional(),
-  crms_product_id: z.number().optional(),
+  shortage: z.number(),
+  subject: z.string(),
+  unit_price: z.number(),
+  total_price: z.number(),
+  // crms_id and crms_product_id are written back post-transaction by CRMS sync
+  crms_id: z.number().nullable().optional(),
+  crms_product_id: z.number().nullable().optional(),
   breakdown: z.strictObject({
-    damaged: z.number().optional(),
-    lost: z.number().optional(),
-    out: z.number().optional(),
-    prepped: z.number().optional(),
-    quoted: z.number().optional(),
-    reserved: z.number().optional(),
-    returned: z.number().optional(),
+    damaged: z.number(),
+    lost: z.number(),
+    out: z.number(),
+    prepped: z.number(),
+    quoted: z.number(),
+    reserved: z.number(),
+    returned: z.number(),
   }),
   dates: z.strictObject({
-    start: z.string().optional(),
+    start: z.string(),
     start_fs: FirestoreTimestamp,
-    end: z.string().nullable().optional(),
+    end: z.string().nullable(),
     end_fs: FirestoreTimestamp,
-    charge_start: z.string().optional(),
+    charge_start: z.string(),
     charge_start_fs: FirestoreTimestamp,
-    charge_end: z.string().nullable().optional(),
+    charge_end: z.string().nullable(),
     charge_end_fs: FirestoreTimestamp,
   }),
   destinations: z.strictObject({
-    delivery: BookingDestinationRefSchema.nullable().optional(),
-    collection: BookingDestinationRefSchema.nullable().optional(),
-  }).optional(),
+    delivery: BookingDestinationRefSchema.nullable(),
+    collection: BookingDestinationRefSchema.nullable(),
+  }),
   organization: z.strictObject({
     uid: z.string().nullable(),
     name: z.string(),
-    crms_id: z.number().nullable().optional(),
+    crms_id: z.number().nullable(),
   }),
-  stores: z.array(BookingStoreSchema).default([]).optional(),
-  query_by_uid_store: z.array(z.string()).default([]).optional(),
-  uid_destination_delivery: z.string().optional(),
-  uid_destination_collection: z.string().optional(),
-  ...TimestampFields,
-}).meta({ title: "Booking", collection: "products/{product_id}/bookings" });
+  stores: z.array(BookingStoreSchema).default([]),
+  query_by_uid_store: z.array(z.string()).default([]),
+  uid_destination_delivery: z.string(),
+  uid_destination_collection: z.string(),
+  created_at: FirestoreTimestamp,
+  updated_at: FirestoreTimestamp,
+}).meta({ title: "Booking", collection: "bookings" });

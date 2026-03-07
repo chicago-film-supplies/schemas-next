@@ -13,33 +13,33 @@ export interface PublicStockSummaryStore {
 }
 
 export interface PublicStockSummary {
-  uid?: string;
+  uid: string;
   uid_product: string;
   summary_type: SummaryTypeType;
   type: ProductTypeType;
   dates: {
     start: string;
-    start_fs?: unknown;
-    end?: string | null;
-    end_fs?: unknown;
+    start_fs: unknown;
+    end: string | null;
+    end_fs: unknown;
   };
   quantity_available: number;
   store_breakdown: PublicStockSummaryStore[];
   query_by_uid_store: string[];
-  created_at?: unknown;
-  updated_at?: unknown;
-  expiresAt?: unknown;
+  created_at: unknown;
+  updated_at: unknown;
+  expiresAt: unknown;
 }
 
 export const PublicStockSummarySchema: z.ZodType<PublicStockSummary> = z.strictObject({
-  uid: z.string().optional(),
+  uid: z.string(),
   uid_product: z.string(),
   summary_type: z.enum(SUMMARY_TYPES),
   type: ProductTypeEnum,
   dates: z.strictObject({
     start: z.string(),
     start_fs: FirestoreTimestamp,
-    end: z.string().nullable().optional(),
+    end: z.string().nullable(),
     end_fs: FirestoreTimestamp,
   }),
   quantity_available: z.number(),
@@ -51,4 +51,4 @@ export const PublicStockSummarySchema: z.ZodType<PublicStockSummary> = z.strictO
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "Public Stock Summary", collection: "products/{product_id}/public-stock-summaries" });
+}).meta({ title: "Public Stock Summary", collection: "public-stock-summaries" });
