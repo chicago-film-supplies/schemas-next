@@ -8,12 +8,13 @@
     "./organization": "./src/organization.ts",
     "./user": "./src/user.ts",
     "./session": "./src/session.ts",
-    "./order": "./src/order.ts"
+    "./order": "./src/order.ts",
+    "./typesense": "./src/typesense/mod.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",
     "lint": "deno lint",
-    "check": "deno check src/mod.ts"
+    "check": "deno check src/mod.ts src/typesense/mod.ts"
   },
   "imports": {
     "zod": "jsr:@zod/zod@^4",
