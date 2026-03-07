@@ -1,0 +1,24 @@
+{
+  "name": "@chicago-film-supplies/schemas",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/mod.ts",
+    "./contact": "./src/contact.ts",
+    "./organization": "./src/organization.ts"
+  },
+  "tasks": {
+    "test": "deno test --allow-read tests/",
+    "lint": "deno lint",
+    "check": "deno check src/mod.ts"
+  },
+  "imports": {
+    "zod": "jsr:@zod/zod@^4",
+    "@std/assert": "jsr:@std/assert@^1"
+  },
+  "compilerOptions": {
+    "strict": true
+  },
+  "publish": {
+    "include": ["src/", "deno.json", "LICENSE"]
+  }
+}
