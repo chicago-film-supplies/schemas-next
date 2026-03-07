@@ -40,7 +40,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          persist-credentials: false
 
       - uses: denoland/setup-deno@v2
         with:
@@ -56,4 +55,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DENO_TOKEN: ${{ secrets.JSR_TOKEN }}
         run: semantic-release

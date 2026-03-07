@@ -10,7 +10,7 @@
     ["@semantic-release/release-notes-generator", { "preset": "conventionalcommits" }],
     ["@semantic-release/exec", {
       "prepareCmd": "deno eval \"const c = JSON.parse(Deno.readTextFileSync('deno.json')); c.version = '${nextRelease.version}'; Deno.writeTextFileSync('deno.json', JSON.stringify(c, null, 2) + '\\n');\"",
-      "publishCmd": "deno publish --allow-dirty"
+      "publishCmd": "deno publish --allow-dirty --token=$DENO_TOKEN"
     }],
     ["@semantic-release/git", {
       "assets": ["deno.json"],
