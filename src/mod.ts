@@ -258,7 +258,7 @@ export {
 
 // ── Schema record keyed by collection name ─────────────────────────
 
-import { z } from "zod";
+import type { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";

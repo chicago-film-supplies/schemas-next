@@ -316,8 +316,17 @@ const OrderDocLineItem = z.strictObject({
   crms_id: z.number().nullable().optional(),
 });
 
+export interface OrderDocDestinationItemType {
+  uid: string;
+  type: "destination";
+  name: string;
+  uid_delivery: string | null;
+  uid_collection: string | null;
+  description: string;
+}
+
 /** Destination divider in items array. */
-export const OrderDocDestinationItem = z.strictObject({
+export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z.strictObject({
   uid: z.uuid(),
   type: z.literal("destination"),
   name: z.string().max(200).default(""),

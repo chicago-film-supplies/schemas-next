@@ -31,15 +31,22 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   ...TimestampFields,
 }).meta({ title: "Tracking Category", collection: "tracking-categories" });
 
-export const CreateTrackingCategoryInput = z.object({
+export interface CreateTrackingCategoryInputType {
+  name: string;
+  crms_product_group_id: number;
+  crms_product_group_name: string;
+}
+export const CreateTrackingCategoryInput: z.ZodType<CreateTrackingCategoryInputType> = z.object({
   name: z.string().min(1).max(100),
   crms_product_group_id: z.number(),
   crms_product_group_name: z.string(),
 });
-export type CreateTrackingCategoryInputType = z.infer<typeof CreateTrackingCategoryInput>;
 
-export const UpdateTrackingCategoryInput = z.object({
+export interface UpdateTrackingCategoryInputType {
+  uid: string;
+  name: string;
+}
+export const UpdateTrackingCategoryInput: z.ZodType<UpdateTrackingCategoryInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100),
 });
-export type UpdateTrackingCategoryInputType = z.infer<typeof UpdateTrackingCategoryInput>;
