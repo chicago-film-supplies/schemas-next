@@ -1,6 +1,5 @@
 {
   "name": "@cfs/schemas",
-  // Version is set at publish time by semantic-release in CI
   "version": "0.0.0",
   "license": "MIT",
   "exports": {
