@@ -5,7 +5,9 @@
   "exports": {
     ".": "./src/mod.ts",
     "./contact": "./src/contact.ts",
-    "./organization": "./src/organization.ts"
+    "./organization": "./src/organization.ts",
+    "./user": "./src/user.ts",
+    "./session": "./src/session.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",

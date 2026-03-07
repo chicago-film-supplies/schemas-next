@@ -23,6 +23,16 @@ export {
 } from "./organization.ts";
 
 export {
+  UserSchema,
+  type User,
+} from "./user.ts";
+
+export {
+  SessionSchema,
+  type Session,
+} from "./session.ts";
+
+export {
   Address,
   Coordinates,
   Email,

@@ -1,13 +1,15 @@
-name: Publish
+name: Release & Publish
 
 on:
   push:
     branches:
       - main
-      - "**"
+      - beta
+      - pre-*
+      - beta-*
 
 jobs:
-  publish:
+  ci:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,12 +30,30 @@ jobs:
       - name: Test
         run: deno test tests/
 
-      - name: Publish stable
-        if: github.ref == 'refs/heads/main'
-        run: deno publish
+  release:
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Publish beta
-        if: github.ref != 'refs/heads/main'
-        run: |
-          VERSION=$(deno eval "const c = JSON.parse(Deno.readTextFileSync('deno.json')); console.log(c.version)")
-          deno publish --set-version "${VERSION}-beta.${{ github.run_number }}"
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Install semantic-release
+        run: npm install -g semantic-release @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec @semantic-release/git @semantic-release/github conventional-changelog-conventionalcommits
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: semantic-release
