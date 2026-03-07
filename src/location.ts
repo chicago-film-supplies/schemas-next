@@ -53,4 +53,4 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
   })).default([]).optional(),
   query_by_products: z.array(z.string()).default([]).optional(),
   ...TimestampFields,
-});
+}).meta({ title: "Location", collection: "locations" });

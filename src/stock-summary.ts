@@ -125,4 +125,4 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-});
+}).meta({ title: "Stock Summary", collection: "products/{product_id}/stock-summaries" });

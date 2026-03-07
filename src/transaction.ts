@@ -116,4 +116,8 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     transaction_id: z.number().nullable(),
   })).optional(),
   ...TimestampFields,
+}).meta({
+  title: "Transaction",
+  collection: "transactions",
+  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[]},
 });

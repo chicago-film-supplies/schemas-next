@@ -21,4 +21,4 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
   crms_store_id: z.number(),
   active: z.boolean().default(true),
   ...TimestampFields,
-});
+}).meta({ title: "Store", collection: "stores" });

@@ -28,4 +28,4 @@ export const SessionSchema: z.ZodType<Session> = z.strictObject({
   expiresAt: z.any(),
   created_at: z.number(),
   user_agent: z.string(),
-});
+}).meta({ title: "Session", collection: "sessions" });

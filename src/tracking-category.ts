@@ -29,4 +29,17 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   xero_tracking_option_id: z.string().nullable(),
   updated_by: z.string(),
   ...TimestampFields,
+}).meta({ title: "Tracking Category", collection: "tracking-categories" });
+
+export const CreateTrackingCategoryInput = z.object({
+  name: z.string().min(1).max(100),
+  crms_product_group_id: z.number(),
+  crms_product_group_name: z.string(),
 });
+export type CreateTrackingCategoryInputType = z.infer<typeof CreateTrackingCategoryInput>;
+
+export const UpdateTrackingCategoryInput = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100),
+});
+export type UpdateTrackingCategoryInputType = z.infer<typeof UpdateTrackingCategoryInput>;

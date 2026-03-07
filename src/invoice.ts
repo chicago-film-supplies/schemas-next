@@ -124,4 +124,4 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   xero_id: z.string().nullable(),
   updated_by: z.string(),
   ...TimestampFields,
-});
+}).meta({ title: "Invoice", collection: "invoices" });

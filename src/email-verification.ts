@@ -16,4 +16,4 @@ export const EmailVerificationSchema: z.ZodType<EmailVerification> = z.strictObj
   email: z.string().email(),
   expiresAt: z.any(),
   created_at: z.number(),
-});
+}).meta({ title: "Email Verification", collection: "email-verifications" });

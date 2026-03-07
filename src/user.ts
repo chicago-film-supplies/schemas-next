@@ -22,4 +22,4 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   password_hash: z.string().min(1),
   email_verified: z.boolean().default(false),
   ...TimestampFields,
-});
+}).meta({ title: "User", collection: "users" });
