@@ -39,6 +39,16 @@ export {
 } from "./session.ts";
 
 export {
+  EmailVerificationSchema,
+  type EmailVerification,
+} from "./email-verification.ts";
+
+export {
+  PasswordResetSchema,
+  type PasswordReset,
+} from "./password-reset.ts";
+
+export {
   CreateOrderInput,
   UpdateOrderInput,
   OrderDates,

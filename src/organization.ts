@@ -21,7 +21,7 @@ export interface OrganizationContactType {
 
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1, "Contact name is required").max(100),
   roles: z.array(z.string()).default([]),
 });
 
@@ -48,7 +48,7 @@ export interface Organization {
 
 export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1, "Organization name is required").max(100),
   crms_id: z.number(),
   xero_id: z.string().nullable(),
   tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]).default("tax_applied"),
@@ -75,7 +75,7 @@ export interface NewContactInputType {
 
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1, "Contact name is required").max(100),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
@@ -97,7 +97,7 @@ export interface CreateOrganizationInputType {
 
 export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1, "Organization name is required").max(100),
   tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]),
   billing_address: Address,
   contacts: z.array(OrganizationContact).optional(),
@@ -123,7 +123,7 @@ export interface UpdateOrganizationInputType {
 
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
   uid: z.string().optional(),
-  name: z.string().min(1).max(100).optional(),
+  name: z.string().min(1, "Organization name is required").max(100).optional(),
   tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]).optional(),
   description: z.string().optional(),
   billing_address: Address.optional(),

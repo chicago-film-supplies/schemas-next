@@ -10,21 +10,22 @@ import { z } from "zod";
 
 /**
  * Full session document schema (Firestore document shape).
+ * Note: expiresAt kept in camelCase for Firestore TTL policy.
  */
 export interface Session {
   id: string;
-  userId: string;
+  user_id: string;
   anonymous: boolean;
   expiresAt: unknown;
-  createdAt: number;
-  userAgent: string;
+  created_at: number;
+  user_agent: string;
 }
 
 export const SessionSchema: z.ZodType<Session> = z.strictObject({
   id: z.string().length(40),
-  userId: z.string(),
+  user_id: z.string(),
   anonymous: z.boolean(),
   expiresAt: z.any(),
-  createdAt: z.number(),
-  userAgent: z.string(),
+  created_at: z.number(),
+  user_agent: z.string(),
 });

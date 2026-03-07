@@ -23,12 +23,15 @@ export const TimestampFields: {
 /**
  * Email string with format and length constraints.
  */
-export const Email: z.ZodType<string> = z.email().min(5).max(254);
+export const Email: z.ZodType<string> = z.email("Must be a valid email address").min(5).max(254);
 
 /**
  * Phone string with length constraints.
  */
-export const Phone: z.ZodType<string> = z.string().min(10).max(20);
+export const Phone: z.ZodType<string> = z
+  .string()
+  .min(10, "Phone number must be at least 10 characters")
+  .max(20, "Phone number must not exceed 20 characters");
 
 /**
  * Coordinates object (latitude/longitude).

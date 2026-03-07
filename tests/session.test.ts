@@ -4,11 +4,11 @@ import { SessionSchema } from "../src/session.ts";
 Deno.test("SessionSchema validates a complete session document", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    userId: "user123",
+    user_id: "user123",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
-    createdAt: 1700000000000,
-    userAgent: "Mozilla/5.0",
+    created_at: 1700000000000,
+    user_agent: "Mozilla/5.0",
   });
   assertEquals(result.success, true);
 });
@@ -16,11 +16,11 @@ Deno.test("SessionSchema validates a complete session document", () => {
 Deno.test("SessionSchema validates an anonymous session", () => {
   const result = SessionSchema.safeParse({
     id: "b".repeat(40),
-    userId: "",
+    user_id: "",
     anonymous: true,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
-    createdAt: 1700000000000,
-    userAgent: "",
+    created_at: 1700000000000,
+    user_agent: "",
   });
   assertEquals(result.success, true);
 });
@@ -28,11 +28,11 @@ Deno.test("SessionSchema validates an anonymous session", () => {
 Deno.test("SessionSchema rejects session ID with wrong length", () => {
   const result = SessionSchema.safeParse({
     id: "tooshort",
-    userId: "user123",
+    user_id: "user123",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
-    createdAt: 1700000000000,
-    userAgent: "Mozilla/5.0",
+    created_at: 1700000000000,
+    user_agent: "Mozilla/5.0",
   });
   assertEquals(result.success, false);
 });
@@ -45,24 +45,24 @@ Deno.test("SessionSchema rejects missing required fields", () => {
 Deno.test("SessionSchema rejects additional properties", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    userId: "user123",
+    user_id: "user123",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
-    createdAt: 1700000000000,
-    userAgent: "Mozilla/5.0",
+    created_at: 1700000000000,
+    user_agent: "Mozilla/5.0",
     extraField: "not allowed",
   });
   assertEquals(result.success, false);
 });
 
-Deno.test("SessionSchema rejects non-number createdAt", () => {
+Deno.test("SessionSchema rejects non-number created_at", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    userId: "user123",
+    user_id: "user123",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
-    createdAt: "not a number",
-    userAgent: "Mozilla/5.0",
+    created_at: "not a number",
+    user_agent: "Mozilla/5.0",
   });
   assertEquals(result.success, false);
 });
