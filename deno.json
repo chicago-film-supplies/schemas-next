@@ -1,6 +1,7 @@
 {
   "name": "@cfs/schemas",
-  "version": "1.2.0-beta.3",
+  // Version is set at publish time by semantic-release in CI
+  "version": "0.0.0",
   "license": "MIT",
   "exports": {
     ".": "./src/mod.ts",
