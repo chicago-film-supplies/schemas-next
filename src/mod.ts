@@ -49,23 +49,40 @@ export {
 } from "./password-reset.ts";
 
 export {
+  OrderSchema,
   CreateOrderInput,
   UpdateOrderInput,
   OrderDates,
   Destination,
   DestinationEndpoint,
   DestinationContact,
+  DocDestination,
+  DocDestinationEndpoint,
+  DocDestinationContact,
   OrderItem,
   ItemPrice,
+  type Order,
   type CreateOrderInputType,
   type UpdateOrderInputType,
   type OrderDatesType,
   type DestinationType,
   type DestinationEndpointType,
   type DestinationContactType,
+  type DocDestinationType,
+  type DocDestinationEndpointType,
+  type DocDestinationContactType,
   type OrderItemType,
   type ItemPriceType,
 } from "./order.ts";
+
+export {
+  LoginInput,
+  ResetPasswordInput,
+  EmailInput,
+  type LoginInputType,
+  type ResetPasswordInputType,
+  type EmailInputType,
+} from "./auth.ts";
 
 export {
   Address,
