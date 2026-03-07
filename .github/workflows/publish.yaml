@@ -55,5 +55,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DENO_TOKEN: ${{ secrets.JSR_TOKEN }}
         run: semantic-release

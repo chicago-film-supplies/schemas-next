@@ -18,8 +18,14 @@ export {
 export {
   OrganizationSchema,
   OrganizationContact,
+  CreateOrganizationInput,
+  UpdateOrganizationInput,
+  NewContactInput,
   type Organization,
   type OrganizationContactType,
+  type CreateOrganizationInputType,
+  type UpdateOrganizationInputType,
+  type NewContactInputType,
 } from "./organization.ts";
 
 export {

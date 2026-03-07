@@ -62,3 +62,73 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   updated_by: z.string().optional(),
   ...TimestampFields,
 });
+
+/**
+ * New contact data submitted inline when creating/updating an organization.
+ */
+export interface NewContactInputType {
+  uid: string;
+  name: string;
+  emails?: string[];
+  phones?: string[];
+}
+
+export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100),
+  emails: z.array(Email).optional(),
+  phones: z.array(Phone).optional(),
+});
+
+/**
+ * Input schema for POST /organizations.
+ * crms_id and xero_id are obtained from external APIs — not in input.
+ */
+export interface CreateOrganizationInputType {
+  uid: string;
+  name: string;
+  tax_profile: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  billing_address: AddressType | null;
+  contacts?: OrganizationContactType[];
+  newContacts?: NewContactInputType[];
+  emails?: string[];
+  phones?: string[];
+}
+
+export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100),
+  tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]),
+  billing_address: Address,
+  contacts: z.array(OrganizationContact).optional(),
+  newContacts: z.array(NewContactInput).optional(),
+  emails: z.array(Email).optional(),
+  phones: z.array(Phone).optional(),
+});
+
+/**
+ * Input schema for PUT /organizations/:uid — partial update.
+ */
+export interface UpdateOrganizationInputType {
+  uid?: string;
+  name?: string;
+  tax_profile?: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  description?: string;
+  billing_address?: AddressType | null;
+  contacts?: OrganizationContactType[];
+  newContacts?: NewContactInputType[];
+  emails?: string[];
+  phones?: string[];
+}
+
+export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
+  uid: z.string().optional(),
+  name: z.string().min(1).max(100).optional(),
+  tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]).optional(),
+  description: z.string().optional(),
+  billing_address: Address.optional(),
+  contacts: z.array(OrganizationContact).optional(),
+  newContacts: z.array(NewContactInput).optional(),
+  emails: z.array(Email).optional(),
+  phones: z.array(Phone).optional(),
+});
