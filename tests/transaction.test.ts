@@ -1,5 +1,5 @@
-import { assertEquals } from "@std/assert";
-import { TransactionSchema } from "../src/transaction.ts";
+import { assertEquals, assertThrows } from "@std/assert";
+import { TransactionSchema, getTransactionMultiplier } from "../src/transaction.ts";
 
 const validTransaction = {
   uid: "txn-1",
@@ -8,7 +8,18 @@ const validTransaction = {
   quantity: 10,
   total_cost: 2500,
   unit_cost: 250,
+  unit_costs: [250],
+  date: "2026-03-01",
+  date_fs: null,
   reference: "PO-001",
+  source: { type: "manual", number: null, uid: null },
+  stores: [],
+  query_by_uid_store: [],
+  notes: [],
+  serialized_details: null,
+  crms_sync: {},
+  created_at: null,
+  updated_at: null,
 };
 
 Deno.test("TransactionSchema validates a complete document", () => {
@@ -49,11 +60,15 @@ Deno.test("TransactionSchema validates with stores", () => {
       uid_store: "store-1",
       name: "Main",
       default: true,
+      quantity: 10,
       locations: [{
         uid_location: "loc-1",
         name: "Shelf A",
+        quantity: 20,
         transactionQuantity: 10,
         default: true,
+        notes: [],
+        max: null,
       }],
     }],
   };
@@ -71,7 +86,49 @@ Deno.test("TransactionSchema validates with serialized_details", () => {
   assertEquals(TransactionSchema.safeParse(doc).success, true);
 });
 
+Deno.test("TransactionSchema validates with crms_sync", () => {
+  const doc = {
+    ...validTransaction,
+    crms_sync: {
+      "store-1": { stock_level_id: 100, transaction_id: 200 },
+    },
+  };
+  assertEquals(TransactionSchema.safeParse(doc).success, true);
+});
+
 Deno.test("TransactionSchema rejects additional properties", () => {
   const doc = { ...validTransaction, bogus: true };
   assertEquals(TransactionSchema.safeParse(doc).success, false);
+});
+
+// getTransactionMultiplier tests
+
+Deno.test("getTransactionMultiplier returns 1 for increase types", () => {
+  const increaseTypes = [
+    "purchase", "make", "find", "opening_balance",
+    "adjustment_increase", "transfer_increase",
+  ] as const;
+  for (const type of increaseTypes) {
+    assertEquals(getTransactionMultiplier(type), 1, `${type} should return 1`);
+  }
+});
+
+Deno.test("getTransactionMultiplier returns -1 for decrease types", () => {
+  const decreaseTypes = [
+    "sale", "trade_in", "write_off",
+    "adjustment_decrease", "transfer_decrease",
+  ] as const;
+  for (const type of decreaseTypes) {
+    assertEquals(getTransactionMultiplier(type), -1, `${type} should return -1`);
+  }
+});
+
+Deno.test("getTransactionMultiplier throws for financial-only types", () => {
+  const financialTypes = [
+    "acquisition", "disposal", "partial_disposal",
+    "depreciation_tax", "depreciation_gaap",
+  ] as const;
+  for (const type of financialTypes) {
+    assertThrows(() => getTransactionMultiplier(type), Error);
+  }
 });

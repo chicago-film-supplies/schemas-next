@@ -6,10 +6,28 @@ const validSummary = {
   uid_product: "prod-1",
   summary_type: "rental",
   type: "rental",
-  dates: { start: "2026-03-01" },
+  dates: {
+    start: "2026-03-01",
+    start_fs: null,
+    end: null,
+    end_fs: null,
+  },
   bookings: [],
-  bookings_breakdown: { reserved: 3, out: 2 },
-  out_of_service_breakdown: { damaged: 1 },
+  bookings_breakdown: {
+    quoted: 0,
+    reserved: 3,
+    prepped: 0,
+    out: 2,
+    returned: 0,
+    lost: 0,
+    damaged: 0,
+  },
+  out_of_service_breakdown: {
+    cleaning: 0,
+    damaged: 1,
+    maintenance: 0,
+    lost: 0,
+  },
   quantity_available: 10,
   quantity_booked: 5,
   quantity_held: 20,
@@ -18,16 +36,22 @@ const validSummary = {
   store_breakdown: [{
     uid_store: "store-1",
     name: "Main",
+    default: true,
+    crms_stock_level_id: null,
     quantity: 20,
     locations: [{
       uid_location: "loc-1",
       name: "Shelf A",
       quantity: 20,
       default: true,
+      max: null,
       notes: [],
     }],
   }],
   query_by_uid_store: ["store-1"],
+  created_at: null,
+  updated_at: null,
+  expiresAt: null,
 };
 
 Deno.test("StockSummarySchema validates a complete document", () => {
@@ -46,6 +70,14 @@ Deno.test("StockSummarySchema rejects invalid type", () => {
 
 Deno.test("StockSummarySchema accepts sale summary_type", () => {
   const doc = { ...validSummary, summary_type: "sale", type: "sale" };
+  assertEquals(StockSummarySchema.safeParse(doc).success, true);
+});
+
+Deno.test("StockSummarySchema accepts dates with end value", () => {
+  const doc = {
+    ...validSummary,
+    dates: { ...validSummary.dates, end: "2026-03-10" },
+  };
   assertEquals(StockSummarySchema.safeParse(doc).success, true);
 });
 
