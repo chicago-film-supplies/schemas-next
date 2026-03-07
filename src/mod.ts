@@ -1,5 +1,5 @@
 /**
- * @chicago-film-supplies/schemas
+ * @cfs/schemas
  *
  * Zod schemas for CFS Firestore collections.
  * Each schema exports: Zod schema, interface type, and input schemas.

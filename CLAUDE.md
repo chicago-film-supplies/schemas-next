@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shared Zod schemas for CFS Firestore collections, published to JSR as `@chicago-film-supplies/schemas`.
+Shared Zod schemas for CFS Firestore collections, published to JSR as `@cfs/schemas`.
 
 ## Setup
 
