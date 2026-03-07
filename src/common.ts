@@ -7,7 +7,7 @@ import { z } from "zod";
  * Firestore server timestamp — passthrough since it's a Firestore
  * FieldValue at write time and a Firestore Timestamp at read time.
  */
-export const FirestoreTimestamp: z.ZodType<unknown> = z.any().optional();
+export const FirestoreTimestamp: z.ZodType<unknown> = z.any();
 
 /**
  * Standard timestamp fields present on most documents.

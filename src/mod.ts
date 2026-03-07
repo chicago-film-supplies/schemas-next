@@ -228,7 +228,10 @@ export {
 
 export {
   TransactionSchema,
+  TRANSACTION_TYPES,
+  getTransactionMultiplier,
   type Transaction,
+  type TransactionTypeType,
   type TransactionStore,
   type TransactionStoreLocation,
   type TransactionSource,
