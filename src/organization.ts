@@ -7,6 +7,8 @@ import {
   type AddressType,
   Email,
   Phone,
+  TaxProfileEnum,
+  type TaxProfileType,
   TimestampFields,
 } from "./common.ts";
 
@@ -33,7 +35,7 @@ export interface Organization {
   name: string;
   crms_id: number;
   xero_id: string | null;
-  tax_profile: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  tax_profile: TaxProfileType;
   description?: string;
   emails: string[];
   phones: string[];
@@ -51,7 +53,7 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   name: z.string().min(1, "Organization name is required").max(100),
   crms_id: z.number(),
   xero_id: z.string().nullable(),
-  tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]).default("tax_applied"),
+  tax_profile: TaxProfileEnum.default("tax_applied"),
   description: z.string().default("").optional(),
   emails: z.array(Email).default([]),
   phones: z.array(Phone).default([]),
@@ -87,7 +89,7 @@ export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
 export interface CreateOrganizationInputType {
   uid: string;
   name: string;
-  tax_profile: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  tax_profile: TaxProfileType;
   billing_address: AddressType | null;
   contacts?: OrganizationContactType[];
   newContacts?: NewContactInputType[];
@@ -98,7 +100,7 @@ export interface CreateOrganizationInputType {
 export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1, "Organization name is required").max(100),
-  tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]),
+  tax_profile: TaxProfileEnum,
   billing_address: Address,
   contacts: z.array(OrganizationContact).optional(),
   newContacts: z.array(NewContactInput).optional(),
@@ -112,7 +114,7 @@ export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z
 export interface UpdateOrganizationInputType {
   uid?: string;
   name?: string;
-  tax_profile?: "tax_applied" | "tax_exempt" | "tax_rantoul";
+  tax_profile?: TaxProfileType;
   description?: string;
   billing_address?: AddressType | null;
   contacts?: OrganizationContactType[];
@@ -124,7 +126,7 @@ export interface UpdateOrganizationInputType {
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
   uid: z.string().optional(),
   name: z.string().min(1, "Organization name is required").max(100).optional(),
-  tax_profile: z.enum(["tax_applied", "tax_exempt", "tax_rantoul"]).optional(),
+  tax_profile: TaxProfileEnum.optional(),
   description: z.string().optional(),
   billing_address: Address.optional(),
   contacts: z.array(OrganizationContact).optional(),

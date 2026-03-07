@@ -1,0 +1,38 @@
+/**
+ * Destination document schema — Firestore collection: destinations
+ */
+import { z } from "zod";
+import {
+  Address,
+  type AddressType,
+  TimestampFields,
+  UidNameRef,
+  type UidNameRefType,
+} from "./common.ts";
+
+export interface Destination {
+  uid: string;
+  address: AddressType | null;
+  mapbox_ids: string[];
+  organizations?: UidNameRefType[];
+  query_by_organizations?: string[];
+  products?: UidNameRefType[];
+  query_by_products?: string[];
+  contacts?: UidNameRefType[];
+  query_by_contacts?: string[];
+  created_at?: unknown;
+  updated_at?: unknown;
+}
+
+export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
+  uid: z.string(),
+  address: Address,
+  mapbox_ids: z.array(z.string()).default([]),
+  organizations: z.array(UidNameRef).default([]).optional(),
+  query_by_organizations: z.array(z.string()).default([]).optional(),
+  products: z.array(UidNameRef).default([]).optional(),
+  query_by_products: z.array(z.string()).default([]).optional(),
+  contacts: z.array(UidNameRef).default([]).optional(),
+  query_by_contacts: z.array(z.string()).default([]).optional(),
+  ...TimestampFields,
+});

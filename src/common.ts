@@ -63,6 +63,79 @@ export interface AddressType {
   user_coordinates?: CoordinatesType | null;
 }
 
+/**
+ * Generic uid + name reference used across many collections.
+ */
+export interface UidNameRefType {
+  uid: string;
+  name: string;
+}
+
+export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
+  uid: z.string(),
+  name: z.string(),
+});
+
+/**
+ * Note entry used in store/location breakdowns.
+ */
+export interface NoteEntryType {
+  note: string;
+  updated_at?: unknown;
+  updated_by?: string;
+}
+
+export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
+  note: z.string(),
+  updated_at: FirestoreTimestamp,
+  updated_by: z.string().optional(),
+});
+
+// ── Shared enums ────────────────────────────────────────────────────
+
+const PRODUCT_TYPES = ["rental", "sale", "service", "surcharge", "replacement"] as const;
+export type ProductTypeType = typeof PRODUCT_TYPES[number];
+export const ProductTypeEnum: z.ZodType<ProductTypeType> = z.enum(PRODUCT_TYPES);
+
+const STOCK_METHODS = ["bulk", "serialized", "none"] as const;
+export type StockMethodType = typeof STOCK_METHODS[number];
+export const StockMethodEnum: z.ZodType<StockMethodType> = z.enum(STOCK_METHODS);
+
+const TAX_PROFILES = ["tax_applied", "tax_exempt", "tax_rantoul"] as const;
+export type TaxProfileType = typeof TAX_PROFILES[number];
+export const TaxProfileEnum: z.ZodType<TaxProfileType> = z.enum(TAX_PROFILES);
+
+const PRICE_FORMULAS = ["five_day_week", "fixed"] as const;
+export type PriceFormulaType = typeof PRICE_FORMULAS[number];
+export const PriceFormulaEnum: z.ZodType<PriceFormulaType> = z.enum(PRICE_FORMULAS);
+
+const ITEM_TAX_PROFILES = [
+  "tax_none", "tax_chicago_rental_tax", "tax_chicago_sales_tax", "tax_rantoul_sales_tax",
+] as const;
+export type ItemTaxProfileType = typeof ITEM_TAX_PROFILES[number];
+export const ItemTaxProfileEnum: z.ZodType<ItemTaxProfileType> = z.enum(ITEM_TAX_PROFILES);
+
+const INCLUSION_TYPES = ["default", "mandatory", "optional"] as const;
+export type InclusionTypeType = typeof INCLUSION_TYPES[number];
+export const InclusionTypeEnum: z.ZodType<InclusionTypeType> = z.enum(INCLUSION_TYPES);
+
+const COMPONENT_TYPES = ["rental", "sale", "service"] as const;
+export type ComponentTypeType = typeof COMPONENT_TYPES[number];
+export const ComponentTypeEnum: z.ZodType<ComponentTypeType> = z.enum(COMPONENT_TYPES);
+
+const COA_REVENUE_CODES = [
+  "2210", "2800", "4000", "4100", "4110", "4120", "4130", "4140", "4150",
+  "4200", "4210", "4700", "4800",
+] as const;
+export type COARevenueType = typeof COA_REVENUE_CODES[number];
+export const COARevenueEnum: z.ZodType<COARevenueType> = z.enum(COA_REVENUE_CODES);
+
+const OOS_REASONS = ["cleaning", "damaged", "maintenance", "lost"] as const;
+export type OOSReasonType = typeof OOS_REASONS[number];
+export const OOSReasonEnum: z.ZodType<OOSReasonType> = z.enum(OOS_REASONS);
+
+// ── Address ─────────────────────────────────────────────────────────
+
 export const Address: z.ZodType<AddressType | null> = z.strictObject({
   city: z.string().default(""),
   country_name: z.string().default(""),

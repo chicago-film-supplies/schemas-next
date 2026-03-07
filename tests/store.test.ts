@@ -1,0 +1,39 @@
+import { assertEquals } from "@std/assert";
+import { StoreSchema } from "../src/store.ts";
+
+Deno.test("StoreSchema validates a complete document", () => {
+  const doc = {
+    uid: "store-1",
+    name: "Main Warehouse",
+    default: true,
+    crms_store_id: 100,
+    active: true,
+  };
+  assertEquals(StoreSchema.safeParse(doc).success, true);
+});
+
+Deno.test("StoreSchema rejects missing required fields", () => {
+  assertEquals(StoreSchema.safeParse({ uid: "store-1" }).success, false);
+});
+
+Deno.test("StoreSchema rejects additional properties", () => {
+  const doc = {
+    uid: "store-1",
+    name: "Main",
+    default: false,
+    crms_store_id: 1,
+    active: true,
+    bogus: true,
+  };
+  assertEquals(StoreSchema.safeParse(doc).success, false);
+});
+
+Deno.test("StoreSchema defaults boolean fields", () => {
+  const doc = { uid: "store-1", name: "Main", crms_store_id: 1 };
+  const result = StoreSchema.safeParse(doc);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.default, false);
+    assertEquals(result.data.active, true);
+  }
+});
