@@ -139,3 +139,92 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
   collection: "transactions",
   initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[]},
 });
+
+// ── Input schemas for manual transactions ────────────────────────
+
+const MANUAL_TRANSACTION_TYPES = [
+  "purchase", "find", "make", "opening_balance", "adjustment_increase",
+  "sale", "write_off", "trade_in", "adjustment_decrease",
+] as const;
+
+const InputTransactionStoreLocationSchema = z.object({
+  uid_location: z.string(),
+  name: z.string(),
+  transactionQuantity: z.number().int(),
+  default: z.boolean(),
+  max: z.number().nullable(),
+  notes: z.array(z.string()).default([]),
+});
+
+const InputTransactionStoreSchema = z.object({
+  uid_store: z.string(),
+  name: z.string(),
+  default: z.boolean(),
+  quantity: z.number(),
+  locations: z.array(InputTransactionStoreLocationSchema).min(1),
+});
+
+export const CreateTransactionInput = z.object({
+  uid: z.string().min(1),
+  uid_product: z.string().min(1),
+  type: z.enum(MANUAL_TRANSACTION_TYPES),
+  quantity: z.number().int().positive(),
+  total_cost: z.number().min(0),
+  date: z.string().min(1),
+  reference: z.string(),
+  stores: z.array(InputTransactionStoreSchema).min(1),
+  note: z.string().optional(),
+  serialized_details: z.object({
+    asset_tags: z.array(z.string()).default([]),
+    serial_numbers: z.array(z.string()).default([]),
+  }).nullable().optional(),
+});
+export type CreateTransactionInputType = z.infer<typeof CreateTransactionInput>;
+
+export const UpdateTransactionInput = z.object({
+  uid: z.string().min(1),
+  uid_product: z.string().min(1),
+  type: z.enum(MANUAL_TRANSACTION_TYPES),
+  quantity: z.number().int().positive(),
+  total_cost: z.number().min(0),
+  date: z.string().min(1),
+  reference: z.string(),
+  stores: z.array(InputTransactionStoreSchema).min(1),
+  note: z.string().optional(),
+  serialized_details: z.object({
+    asset_tags: z.array(z.string()).default([]),
+    serial_numbers: z.array(z.string()).default([]),
+  }).nullable().optional(),
+});
+export type UpdateTransactionInputType = z.infer<typeof UpdateTransactionInput>;
+
+export const CreateStoreTransferInput = z.object({
+  uid_product: z.string().min(1),
+  quantity: z.number().int().positive(),
+  date: z.string().min(1),
+  reference: z.string(),
+  stores_from: z.array(InputTransactionStoreSchema).min(1),
+  stores_to: z.array(InputTransactionStoreSchema).min(1),
+  total_cost: z.number().min(0).optional().default(0),
+  serialized_details: z.object({
+    asset_tags: z.array(z.string()).default([]),
+    serial_numbers: z.array(z.string()).default([]),
+  }).nullable().optional(),
+});
+export type CreateStoreTransferInputType = z.infer<typeof CreateStoreTransferInput>;
+
+export const UpdateStoreTransferInput = z.object({
+  uid_product: z.string().min(1),
+  transfer_number: z.number().int(),
+  quantity: z.number().int().positive(),
+  date: z.string().min(1),
+  reference: z.string(),
+  stores_from: z.array(InputTransactionStoreSchema).min(1),
+  stores_to: z.array(InputTransactionStoreSchema).min(1),
+  total_cost: z.number().min(0).optional().default(0),
+  serialized_details: z.object({
+    asset_tags: z.array(z.string()).default([]),
+    serial_numbers: z.array(z.string()).default([]),
+  }).nullable().optional(),
+});
+export type UpdateStoreTransferInputType = z.infer<typeof UpdateStoreTransferInput>;
