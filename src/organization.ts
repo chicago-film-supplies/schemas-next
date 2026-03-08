@@ -96,7 +96,7 @@ export interface CreateOrganizationInputType {
   tax_profile: TaxProfileType;
   billing_address: AddressType | null;
   contacts?: OrganizationContactType[];
-  newContacts?: NewContactInputType[];
+  newContacts?: NewContactInputType[] | null;
   emails?: string[];
   phones?: string[];
 }
@@ -107,7 +107,7 @@ export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z
   tax_profile: TaxProfileEnum,
   billing_address: Address,
   contacts: z.array(OrganizationContact).optional(),
-  newContacts: z.array(NewContactInput).optional(),
+  newContacts: z.array(NewContactInput).nullable().optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
@@ -122,7 +122,7 @@ export interface UpdateOrganizationInputType {
   description?: string;
   billing_address?: AddressType | null;
   contacts?: OrganizationContactType[];
-  newContacts?: NewContactInputType[];
+  newContacts?: NewContactInputType[] | null;
   emails?: string[];
   phones?: string[];
 }
@@ -134,7 +134,7 @@ export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z
   description: z.string().optional(),
   billing_address: Address.optional(),
   contacts: z.array(OrganizationContact).optional(),
-  newContacts: z.array(NewContactInput).optional(),
+  newContacts: z.array(NewContactInput).nullable().optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
