@@ -120,7 +120,11 @@ export {
 
 export {
   StoreSchema,
+  CreateStoreInput,
+  UpdateStoreInput,
   type Store,
+  type CreateStoreInputType,
+  type UpdateStoreInputType,
 } from "./store.ts";
 
 export {
@@ -152,16 +156,24 @@ export {
 
 export {
   LocationTypeSchema,
+  CreateLocationTypeInput,
+  UpdateLocationTypeInput,
   type LocationType,
   type LocationTypeProductCapacity,
   type LocationTypeDimensions,
+  type CreateLocationTypeInputType,
+  type UpdateLocationTypeInputType,
 } from "./location-type.ts";
 
 export {
   LocationSchema,
+  CreateLocationInput,
+  UpdateLocationInput,
   type Location,
   type LocationProductCapacity,
   type LocationProduct,
+  type CreateLocationInputType,
+  type UpdateLocationInputType,
 } from "./location.ts";
 
 export {

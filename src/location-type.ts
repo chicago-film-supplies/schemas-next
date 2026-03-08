@@ -45,3 +45,39 @@ export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({ title: "Location Type", collection: "location-types" });
+
+export interface CreateLocationTypeInputType {
+  name: string;
+  product_capacities?: Record<string, { max: number }>;
+  dimensions?: { width?: number; depth?: number; height?: number; weight_capacity?: number } | null;
+}
+export const CreateLocationTypeInput: z.ZodType<CreateLocationTypeInputType> = z.object({
+  name: z.string().min(1).max(100),
+  product_capacities: z.record(z.string(), z.object({ max: z.number() })).optional(),
+  dimensions: z.object({
+    width: z.number().optional(),
+    depth: z.number().optional(),
+    height: z.number().optional(),
+    weight_capacity: z.number().optional(),
+  }).nullable().optional(),
+});
+
+export interface UpdateLocationTypeInputType {
+  uid: string;
+  name?: string;
+  product_capacities?: Record<string, { max: number | null }>;
+  dimensions?: { width?: number; depth?: number; height?: number; weight_capacity?: number } | null;
+  active?: boolean;
+}
+export const UpdateLocationTypeInput: z.ZodType<UpdateLocationTypeInputType> = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100).optional(),
+  product_capacities: z.record(z.string(), z.object({ max: z.number().nullable() })).optional(),
+  dimensions: z.object({
+    width: z.number().optional(),
+    depth: z.number().optional(),
+    height: z.number().optional(),
+    weight_capacity: z.number().optional(),
+  }).nullable().optional(),
+  active: z.boolean().optional(),
+});

@@ -215,8 +215,12 @@ export interface CreateProductInputType {
   };
   alternates?: Record<string, UidNameRefType>;
   components?: Record<string, unknown>;
+  component_of?: Record<string, unknown>;
   tags?: UidNameRefType[];
+  tracking_category_name?: string;
   uid_tracking_category?: string;
+  uid_linked_rental?: string | null;
+  uid_linked_replacement?: string | null;
   webshop: {
     available: boolean;
     description?: string | null;
@@ -263,8 +267,12 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   }).optional(),
   alternates: z.record(z.string(), UidNameRef).default({}),
   components: z.record(z.string(), z.any()).default({}),
+  component_of: z.record(z.string(), z.any()).default({}),
   tags: z.array(UidNameRef).default([]),
+  tracking_category_name: z.string().optional(),
   uid_tracking_category: z.string().optional(),
+  uid_linked_rental: z.string().nullable().optional(),
+  uid_linked_replacement: z.string().nullable().optional(),
   webshop: z.object({
     available: z.boolean(),
     description: z.string().nullable().optional(),
