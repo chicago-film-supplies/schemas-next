@@ -26,7 +26,7 @@ const ORDER_STATUSES = [
 type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-const ITEM_TYPES = ["destination", "group", "rental", "sale", "service"] as const;
+const ITEM_TYPES = ["destination", "group", "rental", "replacement", "sale", "service", "surcharge"] as const;
 type ItemTypeType = typeof ITEM_TYPES[number];
 
 /** Line item types in the full document (superset of input types). */
@@ -178,7 +178,7 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.strictObject({
 });
 
 /**
- * An individual order item (rental, sale, service, group header, or destination).
+ * An individual order item (rental, replacement, sale, service, surcharge, group header, or destination).
  */
 export interface OrderItemType {
   uid: string;

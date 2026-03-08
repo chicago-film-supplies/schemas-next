@@ -119,7 +119,7 @@ const INCLUSION_TYPES = ["default", "mandatory", "optional"] as const;
 export type InclusionTypeType = typeof INCLUSION_TYPES[number];
 export const InclusionTypeEnum: z.ZodType<InclusionTypeType> = z.enum(INCLUSION_TYPES);
 
-const COMPONENT_TYPES = ["rental", "sale", "service"] as const;
+const COMPONENT_TYPES = ["rental", "sale", "service", "surcharge"] as const;
 export type ComponentTypeType = typeof COMPONENT_TYPES[number];
 export const ComponentTypeEnum: z.ZodType<ComponentTypeType> = z.enum(COMPONENT_TYPES);
 

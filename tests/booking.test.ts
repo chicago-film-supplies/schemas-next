@@ -97,7 +97,7 @@ Deno.test("BookingSchema rejects invalid status", () => {
 });
 
 Deno.test("BookingSchema rejects invalid type", () => {
-  const doc = { ...validBooking, type: "surcharge" };
+  const doc = { ...validBooking, type: "invalid" };
   assertEquals(BookingSchema.safeParse(doc).success, false);
 });
 
