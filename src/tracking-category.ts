@@ -7,7 +7,7 @@ import { TimestampFields, UidNameRef, type UidNameRefType } from "./common.ts";
 export interface TrackingCategory {
   uid: string;
   name: string;
-  count: Record<string, unknown> | number;
+  count?: Record<string, unknown> | number;
   crms_product_group_id?: number;
   crms_service_group_id?: number;
   crms_product_group_name: string;
@@ -21,7 +21,7 @@ export interface TrackingCategory {
 export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100),
-  count: z.union([z.record(z.string(), z.unknown()), z.number()]),
+  count: z.union([z.record(z.string(), z.unknown()), z.number()]).optional(),
   crms_product_group_id: z.number().optional(),
   crms_service_group_id: z.number().optional(),
   crms_product_group_name: z.string(),

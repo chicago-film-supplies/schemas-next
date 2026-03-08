@@ -49,6 +49,11 @@ export {
 } from "./password-reset.ts";
 
 export {
+  RateLimitSchema,
+  type RateLimit,
+} from "./rate-limit.ts";
+
+export {
   OrderSchema,
   CreateOrderInput,
   UpdateOrderInput,
@@ -304,6 +309,7 @@ import { OrganizationSchema } from "./organization.ts";
 import { OutOfServiceRecordSchema } from "./out-of-service-record.ts";
 import { PasswordResetSchema } from "./password-reset.ts";
 import { ProductSchema } from "./product.ts";
+import { RateLimitSchema } from "./rate-limit.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
 import { StockSummarySchema } from "./stock-summary.ts";
@@ -332,6 +338,7 @@ export const schemas: Record<string, z.ZodType> = {
   "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
   "product": ProductSchema, "products": ProductSchema,
+  "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,
   "stock-summary": StockSummarySchema, "stock-summaries": StockSummarySchema,

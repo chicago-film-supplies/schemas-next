@@ -314,6 +314,8 @@ const OrderDocLineItem = z.strictObject({
   inclusion_type: z.enum(INCLUSION_TYPES_NULLABLE).nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   crms_id: z.number().nullable().optional(),
+  uid_delivery: z.string().nullable().optional(),
+  uid_collection: z.string().nullable().optional(),
 });
 
 export interface OrderDocDestinationItemType {
