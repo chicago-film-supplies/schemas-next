@@ -22,3 +22,29 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
   active: z.boolean().default(true),
   ...TimestampFields,
 }).meta({ title: "Store", collection: "stores" });
+
+export interface CreateStoreInputType {
+  name: string;
+  crms_store_id: number;
+  default?: boolean;
+}
+export const CreateStoreInput: z.ZodType<CreateStoreInputType> = z.object({
+  name: z.string().min(1).max(100),
+  crms_store_id: z.number(),
+  default: z.boolean().optional(),
+});
+
+export interface UpdateStoreInputType {
+  uid: string;
+  name?: string;
+  crms_store_id?: number;
+  default?: boolean;
+  active?: boolean;
+}
+export const UpdateStoreInput: z.ZodType<UpdateStoreInputType> = z.object({
+  uid: z.string(),
+  name: z.string().min(1).max(100).optional(),
+  crms_store_id: z.number().optional(),
+  default: z.boolean().optional(),
+  active: z.boolean().optional(),
+});

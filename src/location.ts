@@ -55,3 +55,27 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({ title: "Location", collection: "locations" });
+
+export interface CreateLocationInputType {
+  uid_store: string;
+  name: string;
+  uid_location_type?: string | null;
+}
+export const CreateLocationInput: z.ZodType<CreateLocationInputType> = z.object({
+  uid_store: z.string(),
+  name: z.string().min(1).max(100),
+  uid_location_type: z.string().nullable().optional(),
+});
+
+export interface UpdateLocationInputType {
+  uid: string;
+  uid_store: string;
+  name?: string;
+  active?: boolean;
+}
+export const UpdateLocationInput: z.ZodType<UpdateLocationInputType> = z.object({
+  uid: z.string(),
+  uid_store: z.string(),
+  name: z.string().min(1).max(100).optional(),
+  active: z.boolean().optional(),
+});
