@@ -230,12 +230,25 @@ export {
   TransactionSchema,
   TRANSACTION_TYPES,
   getTransactionMultiplier,
+  CreateTransactionInput,
+  UpdateTransactionInput,
+  CreateStoreTransferInput,
+  UpdateStoreTransferInput,
   type Transaction,
   type TransactionTypeType,
   type TransactionStore,
   type TransactionStoreLocation,
   type TransactionSource,
+  type CreateTransactionInputType,
+  type UpdateTransactionInputType,
+  type CreateStoreTransferInputType,
+  type UpdateStoreTransferInputType,
 } from "./transaction.ts";
+
+export {
+  GetAvailabilityInput,
+  type GetAvailabilityInputType,
+} from "./availability.ts";
 
 export {
   OutOfServiceRecordSchema,
