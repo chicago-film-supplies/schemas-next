@@ -192,7 +192,7 @@ export interface CreateProductInputType {
   type: ProductTypeType;
   stock_method: StockMethodType;
   component_only: boolean;
-  description?: string;
+  description: string;
   eligible_delivery?: boolean;
   eligible_in_store_pickup?: boolean;
   eligible_shipping_ground?: boolean;
@@ -244,7 +244,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   type: ProductTypeEnum,
   stock_method: StockMethodEnum,
   component_only: z.boolean(),
-  description: z.string().optional(),
+  description: z.string(),
   eligible_delivery: z.boolean().optional(),
   eligible_in_store_pickup: z.boolean().optional(),
   eligible_shipping_ground: z.boolean().optional(),
