@@ -83,9 +83,11 @@ export {
 
 export {
   LoginInput,
+  RegisterInput,
   ResetPasswordInput,
   EmailInput,
   type LoginInputType,
+  type RegisterInputType,
   type ResetPasswordInputType,
   type EmailInputType,
 } from "./auth.ts";
@@ -289,6 +291,12 @@ export {
   type PublicStockSummaryStore,
 } from "./public-stock-summary.ts";
 
+export {
+  TypesenseConfigSchema,
+  type TypesenseConfig,
+  type TypesenseConfigReindexStats,
+} from "./typesense-config.ts";
+
 // ── Schema record keyed by collection name ─────────────────────────
 
 import type { z } from "zod";
@@ -318,6 +326,7 @@ import { TagSchema } from "./tag.ts";
 import { TrackingCategorySchema } from "./tracking-category.ts";
 import { TransactionSchema } from "./transaction.ts";
 import { UserSchema } from "./user.ts";
+import { TypesenseConfigSchema } from "./typesense-config.ts";
 import { WebshopProductSchema } from "./webshop-product.ts";
 
 /** All document schemas keyed by singular and plural collection names. */
@@ -348,4 +357,5 @@ export const schemas: Record<string, z.ZodType> = {
   "transaction": TransactionSchema, "transactions": TransactionSchema,
   "user": UserSchema, "users": UserSchema,
   "webshop-product": WebshopProductSchema, "webshop-products": WebshopProductSchema,
+  "typesense-config": TypesenseConfigSchema, "typesense": TypesenseConfigSchema,
 };

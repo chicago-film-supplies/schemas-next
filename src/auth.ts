@@ -18,6 +18,19 @@ export const LoginInput: z.ZodType<LoginInputType> = z.object({
 });
 
 /**
+ * Input schema for POST /auth/register.
+ */
+export interface RegisterInputType {
+  email: string;
+  password: string;
+}
+
+export const RegisterInput: z.ZodType<RegisterInputType> = z.object({
+  email: Email,
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+/**
  * Input schema for POST /auth/reset-password.
  */
 export interface ResetPasswordInputType {
