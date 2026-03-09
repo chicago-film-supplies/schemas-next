@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   Address,
   type AddressType,
+  type FirestoreTimestampType,
   TimestampFields,
   UidNameRef,
   type UidNameRefType,
@@ -20,8 +21,8 @@ export interface Destination {
   query_by_products?: string[];
   contacts?: UidNameRefType[];
   query_by_contacts?: string[];
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const DestinationSchema: z.ZodType<Destination> = z.strictObject({

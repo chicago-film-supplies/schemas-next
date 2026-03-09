@@ -2,7 +2,7 @@
  * User document schema — Firestore collection: users
  */
 import { z } from "zod";
-import { Email, TimestampFields } from "./common.ts";
+import { Email, type FirestoreTimestampType, TimestampFields } from "./common.ts";
 
 /**
  * Full user document schema (Firestore document shape).
@@ -14,8 +14,8 @@ export interface User {
   email_verified: boolean;
   uid_customer?: string | null;
   roles?: string[];
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const UserSchema: z.ZodType<User> = z.strictObject({

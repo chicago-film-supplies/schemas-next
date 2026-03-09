@@ -79,6 +79,10 @@ export {
   type DocDestinationContactType,
   type OrderItemType,
   type ItemPriceType,
+  OrderDocDates,
+  OrderDocItem,
+  type OrderDocDatesType,
+  type OrderDocItemType,
 } from "./order.ts";
 
 export {
@@ -112,6 +116,9 @@ export {
   OOSReasonEnum,
   type AddressType,
   type CoordinatesType,
+  type FirestoreTimestampType,
+  type FirestoreTimestampValue,
+  type FirestoreFieldValue,
   type UidNameRefType,
   type NoteEntryType,
   type ProductTypeType,
@@ -236,6 +243,8 @@ export {
   type Invoice,
   type InvoiceItem,
   type InvoiceItemPrice,
+  type InvoiceItemTypeType,
+  type InvoiceStatusType,
 } from "./invoice.ts";
 
 export {
@@ -247,6 +256,8 @@ export {
 
 export {
   TransactionSchema,
+  TransactionStoreSchema,
+  TransactionStoreLocationSchema,
   TRANSACTION_TYPES,
   getTransactionMultiplier,
   CreateTransactionInput,
@@ -296,6 +307,45 @@ export {
   type TypesenseConfig,
   type TypesenseConfigReindexStats,
 } from "./typesense-config.ts";
+
+// ── Union of all Firestore document types ───────────────────────────
+
+import type { Booking } from "./booking.ts";
+import type { CacheGeocodes } from "./cache-geocodes.ts";
+import type { ChartOfAccounts } from "./chart-of-accounts.ts";
+import type { Contact } from "./contact.ts";
+import type { Destination as DestinationDocType } from "./destination.ts";
+import type { EmailVerification } from "./email-verification.ts";
+import type { HolidayDates } from "./holiday-dates.ts";
+import type { InventoryLedger } from "./inventory-ledger.ts";
+import type { Invoice } from "./invoice.ts";
+import type { Location } from "./location.ts";
+import type { LocationType } from "./location-type.ts";
+import type { Order } from "./order.ts";
+import type { Organization } from "./organization.ts";
+import type { OutOfServiceRecord } from "./out-of-service-record.ts";
+import type { PasswordReset } from "./password-reset.ts";
+import type { Product } from "./product.ts";
+import type { PublicStockSummary } from "./public-stock-summary.ts";
+import type { RateLimit } from "./rate-limit.ts";
+import type { Session } from "./session.ts";
+import type { StockSummary } from "./stock-summary.ts";
+import type { Store } from "./store.ts";
+import type { Tag } from "./tag.ts";
+import type { TrackingCategory } from "./tracking-category.ts";
+import type { Transaction } from "./transaction.ts";
+import type { TypesenseConfig } from "./typesense-config.ts";
+import type { User } from "./user.ts";
+import type { WebshopProduct } from "./webshop-product.ts";
+
+/** Union of all Firestore document types. Use with validateBeforeWrite. */
+export type SchemaDocType =
+  | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
+  | EmailVerification | HolidayDates | InventoryLedger | Invoice | Location
+  | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
+  | Product | PublicStockSummary | RateLimit | Session | StockSummary
+  | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
+  | WebshopProduct;
 
 // ── Schema record keyed by collection name ─────────────────────────
 

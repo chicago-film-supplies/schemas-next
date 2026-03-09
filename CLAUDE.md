@@ -7,7 +7,7 @@ Shared Zod schemas for CFS Firestore collections, published to JSR as `@cfs/sche
 ## Setup
 
 - **Deno** runtime
-- `deno install` — install dependencies
+- `deno task setup` — install dependencies and enable git hooks
 
 ## Commands
 
@@ -60,6 +60,10 @@ This package uses Zod 4 (`jsr:@zod/zod@^4`), not Zod 3. Key differences from v3:
 - `src/mod.ts` — re-exports everything
 
 Each schema file exports: Zod schema object, TypeScript interface, and input schemas (where applicable).
+
+### UID property naming
+
+Any `uid` property should be named either `uid` (for the document's own user ID) or `uid_{descriptor}` (e.g., `uid_owner`, `uid_creator`) when referencing another user.
 
 ### Document vs input schemas
 

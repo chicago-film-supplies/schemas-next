@@ -2,7 +2,7 @@
  * Contact document schema — Firestore collection: contacts
  */
 import { z } from "zod";
-import { Email, Phone, TimestampFields } from "./common.ts";
+import { Email, type FirestoreTimestampType, Phone, TimestampFields } from "./common.ts";
 
 /**
  * Organization reference embedded in a contact document.
@@ -28,9 +28,10 @@ export interface Contact {
   phones: string[];
   organizations: ContactOrganizationType[];
   query_by_organizations: string[];
+  uid_user?: string;
   updated_by?: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const ContactSchema: z.ZodType<Contact> = z.strictObject({
@@ -41,6 +42,7 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   phones: z.array(Phone).default([]),
   organizations: z.array(ContactOrganization).default([]),
   query_by_organizations: z.array(z.string()).default([]),
+  uid_user: z.string().optional(),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({

@@ -7,6 +7,7 @@ import {
   type AddressType,
   COARevenueEnum,
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   ItemTaxProfileEnum,
   type ItemTaxProfileType,
   TaxProfileEnum,
@@ -15,11 +16,11 @@ import {
 } from "./common.ts";
 
 const INVOICE_STATUSES = ["draft", "issued", "paid", "voided"] as const;
-type InvoiceStatusType = typeof INVOICE_STATUSES[number];
+export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
 const INVOICE_ITEM_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "group"] as const;
-type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
+export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
 
 export interface InvoiceItemPrice {
   base: number;
@@ -52,9 +53,9 @@ export interface Invoice {
   status: InvoiceStatusType;
   tax_profile: TaxProfileType;
   date: string;
-  date_fs?: unknown;
+  date_fs?: FirestoreTimestampType;
   due_date?: string;
-  due_date_fs?: unknown;
+  due_date_fs?: FirestoreTimestampType;
   subject?: string | null;
   reference?: string | null;
   external_notes?: string | null;
@@ -71,8 +72,8 @@ export interface Invoice {
   items_consolidated: Record<string, InvoiceItem>;
   xero_id: string | null;
   updated_by: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 const InvoiceItemSchema: z.ZodType<InvoiceItem> = z.strictObject({

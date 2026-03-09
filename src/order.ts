@@ -6,6 +6,7 @@ import {
   Address,
   type AddressType,
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
   ItemTaxProfileEnum,
@@ -287,7 +288,19 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
 /**
  * Line item price in the full order document (all fields required after server compute).
  */
-const OrderDocItemPrice = z.strictObject({
+interface OrderDocItemPriceType {
+  base: number;
+  chargeable_days: number | null;
+  discount_amount: number;
+  discount_percent: number;
+  formula: PriceFormulaType;
+  subtotal: number;
+  tax_amount: number;
+  tax_profile: ItemTaxProfileType;
+  total: number;
+}
+
+const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
   base: z.number().default(0),
   chargeable_days: z.number().int().nullable().default(null),
   discount_amount: z.number().default(0),
@@ -300,7 +313,25 @@ const OrderDocItemPrice = z.strictObject({
 });
 
 /** Line item in the full order document. */
-const OrderDocLineItem = z.strictObject({
+interface OrderDocLineItemType {
+  uid: string;
+  type: DocLineItemTypeType;
+  name: string;
+  description: string;
+  quantity: number;
+  price?: OrderDocItemPriceType;
+  stock_method?: StockMethodType;
+  order_number?: number;
+  uid_order?: string;
+  uid_component_of?: string | null;
+  inclusion_type?: "default" | "mandatory" | "optional" | null;
+  zero_priced?: boolean | null;
+  crms_id?: number | null;
+  uid_delivery?: string | null;
+  uid_collection?: string | null;
+}
+
+const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid: z.string(),
   type: z.enum(DOC_LINE_ITEM_TYPES),
   name: z.string().min(1).max(100),
@@ -340,7 +371,14 @@ export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z
 });
 
 /** Group divider in items array. */
-const OrderDocGroupItem = z.strictObject({
+interface OrderDocGroupItemType {
+  uid: string;
+  type: "group";
+  name: string;
+  description: string;
+}
+
+const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
   uid: z.uuid(),
   type: z.literal("group"),
   name: z.string().min(1).max(100),
@@ -348,14 +386,29 @@ const OrderDocGroupItem = z.strictObject({
 });
 
 /** Union of all item types in the document. */
-const OrderDocItem = z.union([
+export const OrderDocItem: z.ZodType<OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType> = z.union([
   OrderDocLineItem,
   OrderDocDestinationItem,
   OrderDocGroupItem,
 ]);
 
 /** Order dates with Firestore timestamp companions. */
-const OrderDocDates = z.strictObject({
+export interface OrderDocDatesType {
+  delivery_start: string;
+  delivery_start_fs: FirestoreTimestampType;
+  delivery_end: string;
+  delivery_end_fs: FirestoreTimestampType;
+  collection_start: string;
+  collection_start_fs: FirestoreTimestampType;
+  collection_end: string;
+  collection_end_fs: FirestoreTimestampType;
+  charge_start: string;
+  charge_start_fs: FirestoreTimestampType;
+  charge_end: string;
+  charge_end_fs: FirestoreTimestampType;
+}
+
+export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   delivery_start: z.string().default(""),
   delivery_start_fs: FirestoreTimestamp,
   delivery_end: z.string().default(""),
@@ -369,6 +422,8 @@ const OrderDocDates = z.strictObject({
   charge_end: z.string().default(""),
   charge_end_fs: FirestoreTimestamp,
 });
+
+export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType;
 
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
@@ -402,9 +457,9 @@ export interface Order {
     xero_id?: string | null;
     billing_address?: AddressType | null;
   };
-  dates: Record<string, unknown>;
+  dates: OrderDocDatesType;
   destinations: DocDestinationType[];
-  items: Record<string, unknown>[];
+  items: OrderDocItemType[];
   tax_profile: TaxProfileType;
   totals: { discount_amount: number; subtotal: number; taxes: Record<string, number>; total: number };
   query_by_items: string[];
@@ -416,8 +471,8 @@ export interface Order {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const OrderSchema: z.ZodType<Order> = z.strictObject({

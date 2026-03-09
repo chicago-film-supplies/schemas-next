@@ -4,7 +4,7 @@
  * One doc per Typesense collection, tracks reindex state and schema hash.
  */
 import { z } from "zod";
-import { FirestoreTimestamp } from "./common.ts";
+import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 export interface TypesenseConfigReindexStats {
   total: number;
@@ -18,7 +18,7 @@ export interface TypesenseConfig {
   current_collection: string;
   schema_hash: string;
   updates: number;
-  last_reindex?: unknown;
+  last_reindex?: FirestoreTimestampType;
   last_reindex_stats?: TypesenseConfigReindexStats;
 }
 

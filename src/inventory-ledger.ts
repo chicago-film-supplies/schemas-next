@@ -4,6 +4,7 @@
 import { z } from "zod";
 import {
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   NoteEntry,
   type NoteEntryType,
   ProductTypeEnum,
@@ -49,8 +50,8 @@ export interface InventoryLedger {
   };
   store_breakdown: InventoryLedgerStore[];
   query_by_uid_store: string[];
-  created_at: unknown;
-  updated_at: unknown;
+  created_at: FirestoreTimestampType;
+  updated_at: FirestoreTimestampType;
 }
 
 const InventoryLedgerLocationSchema: z.ZodType<InventoryLedgerLocation> = z.strictObject({

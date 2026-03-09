@@ -2,7 +2,7 @@
  * ChartOfAccounts document schema — Firestore collection: chart-of-accounts
  */
 import { z } from "zod";
-import { TimestampFields } from "./common.ts";
+import { type FirestoreTimestampType, TimestampFields } from "./common.ts";
 
 const COA_CODES = [
   "2210", "2800",
@@ -32,8 +32,8 @@ export interface ChartOfAccounts {
   description?: string;
   default_tax_profile: string;
   updated_by: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const ChartOfAccountsSchema: z.ZodType<ChartOfAccounts> = z.strictObject({

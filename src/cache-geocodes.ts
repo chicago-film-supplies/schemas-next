@@ -2,7 +2,7 @@
  * CacheGeocodes document schema — Firestore collection: cache-geocodes
  */
 import { z } from "zod";
-import { Coordinates, type CoordinatesType, FirestoreTimestamp } from "./common.ts";
+import { Coordinates, type CoordinatesType, FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 export interface CacheGeocodesAddress {
   street?: string;
@@ -19,8 +19,8 @@ export interface CacheGeocodes {
   coordinates: CoordinatesType | null;
   mapbox_id: string;
   address: CacheGeocodesAddress;
-  created_at?: unknown;
-  expiresAt?: unknown;
+  created_at?: FirestoreTimestampType;
+  expiresAt?: FirestoreTimestampType;
 }
 
 export const CacheGeocodesSchema: z.ZodType<CacheGeocodes> = z.strictObject({

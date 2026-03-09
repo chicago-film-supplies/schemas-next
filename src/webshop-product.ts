@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   ComponentTypeEnum,
   type ComponentTypeType,
+  type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
   PriceFormulaEnum,
@@ -81,8 +82,8 @@ export interface WebshopProduct {
     available: boolean;
     description?: string | null;
   };
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 const WebshopComponentSchema: z.ZodType<WebshopProductComponent> = z.strictObject({

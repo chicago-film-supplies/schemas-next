@@ -2,7 +2,7 @@
  * LocationType document schema — Firestore collection: location-types
  */
 import { z } from "zod";
-import { FirestoreTimestamp } from "./common.ts";
+import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 export interface LocationTypeProductCapacity {
   uid: string;
@@ -23,8 +23,8 @@ export interface LocationType {
   query_by_product_capacities?: string[];
   dimensions?: LocationTypeDimensions | null;
   active: boolean;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({

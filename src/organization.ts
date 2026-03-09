@@ -6,6 +6,8 @@ import {
   Address,
   type AddressType,
   Email,
+  FirestoreTimestamp,
+  type FirestoreTimestampType,
   Phone,
   TaxProfileEnum,
   type TaxProfileType,
@@ -42,10 +44,10 @@ export interface Organization {
   billing_address: AddressType | null;
   contacts: OrganizationContactType[];
   query_by_contacts: string[];
-  last_order?: unknown;
+  last_order?: FirestoreTimestampType | null;
   updated_by?: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
@@ -60,7 +62,7 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   billing_address: Address,
   contacts: z.array(OrganizationContact).default([]),
   query_by_contacts: z.array(z.string()).default([]),
-  last_order: z.any().optional(),
+  last_order: FirestoreTimestamp.nullable().optional(),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({

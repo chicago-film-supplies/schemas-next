@@ -8,6 +8,7 @@ import {
   ComponentTypeEnum,
   type ComponentTypeType,
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   NoteEntry,
   type NoteEntryType,
 } from "./common.ts";
@@ -65,13 +66,13 @@ export interface Booking {
   };
   dates: {
     start: string;
-    start_fs: unknown;
+    start_fs: FirestoreTimestampType;
     end: string | null;
-    end_fs: unknown;
+    end_fs: FirestoreTimestampType | null;
     charge_start: string;
-    charge_start_fs: unknown;
+    charge_start_fs: FirestoreTimestampType;
     charge_end: string | null;
-    charge_end_fs: unknown;
+    charge_end_fs: FirestoreTimestampType | null;
   };
   destinations: {
     delivery: BookingDestinationRef | null;
@@ -86,8 +87,8 @@ export interface Booking {
   query_by_uid_store: string[];
   uid_destination_delivery: string;
   uid_destination_collection: string;
-  created_at: unknown;
-  updated_at: unknown;
+  created_at: FirestoreTimestampType;
+  updated_at: FirestoreTimestampType;
 }
 
 const BookingDestinationRefSchema: z.ZodType<BookingDestinationRef> = z.strictObject({
@@ -140,11 +141,11 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
     start: z.string(),
     start_fs: FirestoreTimestamp,
     end: z.string().nullable(),
-    end_fs: FirestoreTimestamp,
+    end_fs: FirestoreTimestamp.nullable(),
     charge_start: z.string(),
     charge_start_fs: FirestoreTimestamp,
     charge_end: z.string().nullable(),
-    charge_end_fs: FirestoreTimestamp,
+    charge_end_fs: FirestoreTimestamp.nullable(),
   }),
   destinations: z.strictObject({
     delivery: BookingDestinationRefSchema.nullable(),
