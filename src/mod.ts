@@ -133,6 +133,12 @@ export {
 } from "./common.ts";
 
 export {
+  ErrorSyncSchema,
+  type ErrorSync,
+  type SyncServiceType,
+} from "./error-sync.ts";
+
+export {
   StoreSchema,
   CreateStoreInput,
   UpdateStoreInput,
@@ -316,6 +322,7 @@ import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
 import type { Destination as DestinationDocType } from "./destination.ts";
 import type { EmailVerification } from "./email-verification.ts";
+import type { ErrorSync } from "./error-sync.ts";
 import type { HolidayDates } from "./holiday-dates.ts";
 import type { InventoryLedger } from "./inventory-ledger.ts";
 import type { Invoice } from "./invoice.ts";
@@ -341,7 +348,7 @@ import type { WebshopProduct } from "./webshop-product.ts";
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
-  | EmailVerification | HolidayDates | InventoryLedger | Invoice | Location
+  | EmailVerification | ErrorSync | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | Product | PublicStockSummary | RateLimit | Session | StockSummary
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
@@ -357,6 +364,7 @@ import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
 import { ContactSchema } from "./contact.ts";
 import { DestinationSchema } from "./destination.ts";
 import { EmailVerificationSchema } from "./email-verification.ts";
+import { ErrorSyncSchema } from "./error-sync.ts";
 import { HolidayDatesSchema } from "./holiday-dates.ts";
 import { InventoryLedgerSchema } from "./inventory-ledger.ts";
 import { InvoiceSchema } from "./invoice.ts";
@@ -387,6 +395,7 @@ export const schemas: Record<string, z.ZodType> = {
   "contact": ContactSchema, "contacts": ContactSchema,
   "destination": DestinationSchema, "destinations": DestinationSchema,
   "email-verification": EmailVerificationSchema, "email-verifications": EmailVerificationSchema,
+  "error-sync": ErrorSyncSchema, "errors-sync": ErrorSyncSchema,
   "holiday-dates": HolidayDatesSchema,
   "inventory-ledger": InventoryLedgerSchema, "inventory-ledgers": InventoryLedgerSchema,
   "invoice": InvoiceSchema, "invoices": InvoiceSchema,
