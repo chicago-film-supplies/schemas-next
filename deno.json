@@ -11,6 +11,7 @@
     "./contact": "./src/contact.ts",
     "./destination": "./src/destination.ts",
     "./email-verification": "./src/email-verification.ts",
+    "./error-sync": "./src/error-sync.ts",
     "./holiday-dates": "./src/holiday-dates.ts",
     "./inventory-ledger": "./src/inventory-ledger.ts",
     "./invoice": "./src/invoice.ts",
