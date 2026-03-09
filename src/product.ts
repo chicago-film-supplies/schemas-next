@@ -2,10 +2,12 @@
  * Product document schema — Firestore collection: products
  */
 import { z } from "zod";
+import { type TransactionStore, TransactionStoreSchema } from "./transaction.ts";
 import {
   COARevenueEnum,
   ComponentTypeEnum,
   type ComponentTypeType,
+  type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
   ItemTaxProfileEnum,
@@ -100,11 +102,12 @@ export interface Product {
   uid_linked_replacement?: string;
   uid_tracking_category?: string;
   webshop: ProductWebshop;
+  images?: string[];
   xero_id?: string | null;
   xero_tracking_option_id?: string;
   updated_by?: string;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
@@ -175,6 +178,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
     available: z.boolean().default(false),
     description: z.string().nullable().optional(),
   }),
+  images: z.array(z.string()).optional(),
   xero_id: z.string().nullable().optional(),
   xero_tracking_option_id: z.string().optional(),
   updated_by: z.string().optional(),
@@ -214,8 +218,8 @@ export interface CreateProductInputType {
     air_un: number | null;
   };
   alternates?: Record<string, UidNameRefType>;
-  components?: Record<string, unknown>;
-  component_of?: Record<string, unknown>;
+  components?: Record<string, ProductComponent>;
+  component_of?: Record<string, ProductComponent>;
   tags?: UidNameRefType[];
   tracking_category_name?: string;
   uid_tracking_category?: string;
@@ -232,7 +236,7 @@ export interface CreateProductInputType {
     total_cost: number;
     date: string;
     reference: string;
-    stores: unknown[];
+    stores: TransactionStore[];
   };
   updated_by?: string;
 }
@@ -266,8 +270,8 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.record(z.string(), UidNameRef).default({}),
-  components: z.record(z.string(), z.any()).default({}),
-  component_of: z.record(z.string(), z.any()).default({}),
+  components: z.record(z.string(), ComponentSchema).default({}),
+  component_of: z.record(z.string(), ComponentSchema).default({}),
   tags: z.array(UidNameRef).default([]),
   tracking_category_name: z.string().optional(),
   uid_tracking_category: z.string().optional(),
@@ -284,7 +288,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     total_cost: z.number(),
     date: z.string(),
     reference: z.string(),
-    stores: z.array(z.any()),
+    stores: z.array(TransactionStoreSchema),
   }).optional(),
   updated_by: z.string().optional(),
 });
@@ -317,8 +321,8 @@ export interface UpdateProductInputType {
     air_un: number | null;
   };
   alternates?: Record<string, UidNameRefType>;
-  components?: Record<string, unknown>;
-  component_of?: Record<string, unknown>;
+  components?: Record<string, ProductComponent>;
+  component_of?: Record<string, ProductComponent>;
   tags?: UidNameRefType[];
   uid_tracking_category?: string;
   uid_linked_rental?: string;
@@ -328,7 +332,8 @@ export interface UpdateProductInputType {
     description?: string | null;
   };
   updated_by?: string;
-  [key: string]: unknown;
+  // deno-lint-ignore no-explicit-any
+  [key: string]: any;
 }
 
 export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
@@ -360,8 +365,8 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.record(z.string(), UidNameRef).optional(),
-  components: z.record(z.string(), z.any()).optional(),
-  component_of: z.record(z.string(), z.any()).optional(),
+  components: z.record(z.string(), ComponentSchema).optional(),
+  component_of: z.record(z.string(), ComponentSchema).optional(),
   tags: z.array(UidNameRef).optional(),
   uid_tracking_category: z.string().optional(),
   uid_linked_rental: z.string().optional(),

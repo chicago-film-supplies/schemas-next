@@ -61,6 +61,10 @@ This package uses Zod 4 (`jsr:@zod/zod@^4`), not Zod 3. Key differences from v3:
 
 Each schema file exports: Zod schema object, TypeScript interface, and input schemas (where applicable).
 
+### UID property naming
+
+Any `uid` property should be named either `uid` (for the document's own user ID) or `uid_{descriptor}` (e.g., `uid_owner`, `uid_creator`) when referencing another user.
+
 ### Document vs input schemas
 
 - **Document schemas** (`ContactSchema`, `OrganizationSchema`) — full Firestore document shape, use `z.strictObject()`

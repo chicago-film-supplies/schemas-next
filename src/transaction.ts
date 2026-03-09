@@ -2,7 +2,7 @@
  * Transaction document schema — Firestore collection: transactions
  */
 import { z } from "zod";
-import { FirestoreTimestamp, NoteEntry, type NoteEntryType } from "./common.ts";
+import { FirestoreTimestamp, type FirestoreTimestampType, NoteEntry, type NoteEntryType } from "./common.ts";
 
 export const TRANSACTION_TYPES = [
   "purchase", "find", "make", "opening_balance", "adjustment_increase",
@@ -67,7 +67,7 @@ export interface Transaction {
   unit_cost: number;
   unit_costs: number[];
   date: string;
-  date_fs: unknown;
+  date_fs: FirestoreTimestampType;
   reference: string;
   source: TransactionSource;
   stores: TransactionStore[];
@@ -81,11 +81,11 @@ export interface Transaction {
     stock_level_id: number | null;
     transaction_id: number | null;
   }>;
-  created_at: unknown;
-  updated_at: unknown;
+  created_at: FirestoreTimestampType;
+  updated_at: FirestoreTimestampType;
 }
 
-const TransactionStoreLocationSchema: z.ZodType<TransactionStoreLocation> = z.strictObject({
+export const TransactionStoreLocationSchema: z.ZodType<TransactionStoreLocation> = z.strictObject({
   uid_location: z.string(),
   name: z.string(),
   quantity: z.number(),
@@ -95,7 +95,7 @@ const TransactionStoreLocationSchema: z.ZodType<TransactionStoreLocation> = z.st
   max: z.number().nullable(),
 });
 
-const TransactionStoreSchema: z.ZodType<TransactionStore> = z.strictObject({
+export const TransactionStoreSchema: z.ZodType<TransactionStore> = z.strictObject({
   uid_store: z.string(),
   name: z.string(),
   default: z.boolean(),

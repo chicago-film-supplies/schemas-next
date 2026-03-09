@@ -5,15 +5,16 @@
  * TTL policy on expiresAt for automatic Firestore cleanup.
  */
 import { z } from "zod";
+import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 export interface RateLimit {
   attempt_count: number;
   first_attempt_at: number;
-  expiresAt: unknown;
+  expiresAt: FirestoreTimestampType;
 }
 
 export const RateLimitSchema: z.ZodType<RateLimit> = z.strictObject({
   attempt_count: z.number().int().min(1),
   first_attempt_at: z.number(),
-  expiresAt: z.any(),
+  expiresAt: FirestoreTimestamp,
 }).meta({ title: "RateLimit", collection: "rate-limits" });

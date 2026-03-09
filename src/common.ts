@@ -4,17 +4,36 @@
 import { z } from "zod";
 
 /**
+ * Structural interfaces for Firestore Timestamp and FieldValue.
+ * Expressed structurally so the schemas package has no firebase-admin dependency.
+ */
+export interface FirestoreTimestampValue {
+  toMillis(): number;
+  toDate(): Date;
+  seconds: number;
+  nanoseconds: number;
+}
+
+export interface FirestoreFieldValue {
+  isEqual(other: FirestoreFieldValue): boolean;
+}
+
+export type FirestoreTimestampType = FirestoreTimestampValue | FirestoreFieldValue;
+
+/**
  * Firestore server timestamp — passthrough since it's a Firestore
  * FieldValue at write time and a Firestore Timestamp at read time.
  */
-export const FirestoreTimestamp: z.ZodType<unknown> = z.any();
+export const FirestoreTimestamp: z.ZodType<FirestoreTimestampType> = z.custom<FirestoreTimestampType>(
+  (val) => val === undefined || val === null || typeof val === "object",
+);
 
 /**
  * Standard timestamp fields present on most documents.
  */
 export const TimestampFields: {
-  created_at: z.ZodType<unknown>;
-  updated_at: z.ZodType<unknown>;
+  created_at: z.ZodType<FirestoreTimestampType>;
+  updated_at: z.ZodType<FirestoreTimestampType>;
 } = {
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
@@ -81,7 +100,7 @@ export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
  */
 export interface NoteEntryType {
   note: string;
-  updated_at?: unknown;
+  updated_at?: FirestoreTimestampType;
   updated_by?: string;
 }
 

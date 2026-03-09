@@ -4,6 +4,7 @@
 import { z } from "zod";
 import {
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   NoteEntry,
   type NoteEntryType,
   OOSReasonEnum,
@@ -33,7 +34,7 @@ export interface OOSTransaction {
   crms_quarantine_id?: number | null;
   crms_stock_level_id?: number | null;
   date: string;
-  date_fs?: unknown;
+  date_fs?: FirestoreTimestampType;
   notes?: string | null;
   out_of_service_uid: string;
   quantity: number;
@@ -56,9 +57,9 @@ export interface OutOfServiceRecord {
   quantity_write_off: number;
   complete?: boolean;
   date_start: string;
-  date_start_fs?: unknown;
+  date_start_fs?: FirestoreTimestampType;
   date_end?: string;
-  date_end_fs?: unknown;
+  date_end_fs?: FirestoreTimestampType;
   crms_id?: number | null;
   crms_stock_level_id?: number | null;
   source: OOSSource;
@@ -67,8 +68,8 @@ export interface OutOfServiceRecord {
   query_by_uid_store?: string[];
   notes?: NoteEntryType[];
   transactions?: OOSTransaction[];
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 const OOSStoreLocationSchema: z.ZodType<OOSStoreLocation> = z.strictObject({

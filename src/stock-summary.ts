@@ -4,6 +4,7 @@
 import { z } from "zod";
 import {
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   NoteEntry,
   type NoteEntryType,
   ProductTypeEnum,
@@ -38,9 +39,9 @@ export interface StockSummary {
   type: ProductTypeType;
   dates: {
     start: string;
-    start_fs: unknown;
+    start_fs: FirestoreTimestampType;
     end: string | null;
-    end_fs: unknown;
+    end_fs: FirestoreTimestampType | null;
   };
   bookings: Record<string, unknown>[];
   bookings_breakdown: {
@@ -65,9 +66,9 @@ export interface StockSummary {
   quantity_out_of_service: number;
   store_breakdown: StockSummaryStore[];
   query_by_uid_store: string[];
-  created_at: unknown;
-  updated_at: unknown;
-  expiresAt: unknown;
+  created_at: FirestoreTimestampType;
+  updated_at: FirestoreTimestampType;
+  expiresAt: FirestoreTimestampType;
 }
 
 const StockSummaryStoreLocationSchema: z.ZodType<StockSummaryStoreLocation> = z.strictObject({
@@ -97,7 +98,7 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
     start: z.string(),
     start_fs: FirestoreTimestamp,
     end: z.string().nullable(),
-    end_fs: FirestoreTimestamp,
+    end_fs: FirestoreTimestamp.nullable(),
   }),
   bookings: z.array(z.record(z.string(), z.unknown())),
   bookings_breakdown: z.strictObject({

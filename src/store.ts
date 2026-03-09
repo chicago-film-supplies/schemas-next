@@ -2,7 +2,7 @@
  * Store document schema — Firestore collection: stores
  */
 import { z } from "zod";
-import { TimestampFields } from "./common.ts";
+import { type FirestoreTimestampType, TimestampFields } from "./common.ts";
 
 export interface Store {
   uid: string;
@@ -10,8 +10,8 @@ export interface Store {
   default: boolean;
   crms_store_id: number;
   active: boolean;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const StoreSchema: z.ZodType<Store> = z.strictObject({

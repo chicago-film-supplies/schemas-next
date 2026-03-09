@@ -2,17 +2,17 @@
  * HolidayDates document schema — Firestore collection: holiday-dates
  */
 import { z } from "zod";
-import { FirestoreTimestamp } from "./common.ts";
+import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 export interface HolidayDates {
   uid: string;
   uid_holiday: string;
   date: string;
-  date_fs?: unknown;
+  date_fs?: FirestoreTimestampType;
   name: string;
   type: "fixed" | "variable";
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const HolidayDatesSchema: z.ZodType<HolidayDates> = z.strictObject({

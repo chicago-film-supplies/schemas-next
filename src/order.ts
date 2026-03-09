@@ -6,6 +6,7 @@ import {
   Address,
   type AddressType,
   FirestoreTimestamp,
+  type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
   ItemTaxProfileEnum,
@@ -348,14 +349,14 @@ const OrderDocGroupItem = z.strictObject({
 });
 
 /** Union of all item types in the document. */
-const OrderDocItem = z.union([
+export const OrderDocItem = z.union([
   OrderDocLineItem,
   OrderDocDestinationItem,
   OrderDocGroupItem,
 ]);
 
 /** Order dates with Firestore timestamp companions. */
-const OrderDocDates = z.strictObject({
+export const OrderDocDates = z.strictObject({
   delivery_start: z.string().default(""),
   delivery_start_fs: FirestoreTimestamp,
   delivery_end: z.string().default(""),
@@ -369,6 +370,9 @@ const OrderDocDates = z.strictObject({
   charge_end: z.string().default(""),
   charge_end_fs: FirestoreTimestamp,
 });
+
+export type OrderDocDatesType = z.infer<typeof OrderDocDates>;
+export type OrderDocItemType = z.infer<typeof OrderDocItem>;
 
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
@@ -402,9 +406,9 @@ export interface Order {
     xero_id?: string | null;
     billing_address?: AddressType | null;
   };
-  dates: Record<string, unknown>;
+  dates: OrderDocDatesType;
   destinations: DocDestinationType[];
-  items: Record<string, unknown>[];
+  items: OrderDocItemType[];
   tax_profile: TaxProfileType;
   totals: { discount_amount: number; subtotal: number; taxes: Record<string, number>; total: number };
   query_by_items: string[];
@@ -416,8 +420,8 @@ export interface Order {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
-  created_at?: unknown;
-  updated_at?: unknown;
+  created_at?: FirestoreTimestampType;
+  updated_at?: FirestoreTimestampType;
 }
 
 export const OrderSchema: z.ZodType<Order> = z.strictObject({
