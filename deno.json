@@ -31,7 +31,8 @@
     "./transaction": "./src/transaction.ts",
     "./user": "./src/user.ts",
     "./webshop-product": "./src/webshop-product.ts",
-    "./typesense": "./src/typesense/mod.ts"
+    "./typesense": "./src/typesense/mod.ts",
+    "./webhook-event": "./src/webhook-event.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",
@@ -40,6 +41,7 @@
     "setup": "deno install && git config core.hooksPath .githooks"
   },
   "imports": {
+    "@cfs/schemas": "jsr:@cfs/schemas@^1.11.0",
     "zod": "jsr:@zod/zod@^4",
     "@std/assert": "jsr:@std/assert@^1"
   },
