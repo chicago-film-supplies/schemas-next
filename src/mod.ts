@@ -314,6 +314,11 @@ export {
   type TypesenseConfigReindexStats,
 } from "./typesense-config.ts";
 
+export {
+  WebhookEventSchema,
+  type WebhookEvent,
+} from "./webhook-event.ts";
+
 // ── Union of all Firestore document types ───────────────────────────
 
 import type { Booking } from "./booking.ts";
@@ -343,6 +348,7 @@ import type { TrackingCategory } from "./tracking-category.ts";
 import type { Transaction } from "./transaction.ts";
 import type { TypesenseConfig } from "./typesense-config.ts";
 import type { User } from "./user.ts";
+import type { WebhookEvent } from "./webhook-event.ts";
 import type { WebshopProduct } from "./webshop-product.ts";
 
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
@@ -352,7 +358,7 @@ export type SchemaDocType =
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | Product | PublicStockSummary | RateLimit | Session | StockSummary
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
-  | WebshopProduct;
+  | WebhookEvent | WebshopProduct;
 
 // ── Schema record keyed by collection name ─────────────────────────
 
@@ -385,6 +391,7 @@ import { TrackingCategorySchema } from "./tracking-category.ts";
 import { TransactionSchema } from "./transaction.ts";
 import { UserSchema } from "./user.ts";
 import { TypesenseConfigSchema } from "./typesense-config.ts";
+import { WebhookEventSchema as WebhookEventSchema_ } from "./webhook-event.ts";
 import { WebshopProductSchema } from "./webshop-product.ts";
 
 /** All document schemas keyed by singular and plural collection names. */
@@ -415,6 +422,7 @@ export const schemas: Record<string, z.ZodType> = {
   "tracking-category": TrackingCategorySchema, "tracking-categories": TrackingCategorySchema,
   "transaction": TransactionSchema, "transactions": TransactionSchema,
   "user": UserSchema, "users": UserSchema,
+  "webhook-event": WebhookEventSchema_, "webhook-events": WebhookEventSchema_,
   "webshop-product": WebshopProductSchema, "webshop-products": WebshopProductSchema,
   "typesense-config": TypesenseConfigSchema, "typesense": TypesenseConfigSchema,
 };
