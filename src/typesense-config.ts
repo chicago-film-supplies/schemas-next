@@ -1,0 +1,39 @@
+/**
+ * TypesenseConfig document schema — Firestore collection: typesense
+ *
+ * One doc per Typesense collection, tracks reindex state and schema hash.
+ */
+import { z } from "zod";
+import { FirestoreTimestamp } from "./common.ts";
+
+export interface TypesenseConfigReindexStats {
+  total: number;
+  success: number;
+  failed: number;
+  errors?: string[];
+}
+
+export interface TypesenseConfig {
+  uid: string;
+  current_collection: string;
+  schema_hash: string;
+  updates: number;
+  last_reindex?: unknown;
+  last_reindex_stats?: TypesenseConfigReindexStats;
+}
+
+const ReindexStats = z.object({
+  total: z.number(),
+  success: z.number(),
+  failed: z.number(),
+  errors: z.array(z.string()).optional(),
+});
+
+export const TypesenseConfigSchema: z.ZodType<TypesenseConfig> = z.strictObject({
+  uid: z.string(),
+  current_collection: z.string(),
+  schema_hash: z.string(),
+  updates: z.number(),
+  last_reindex: FirestoreTimestamp.optional(),
+  last_reindex_stats: ReindexStats.optional(),
+}).meta({ title: "TypesenseConfig", collection: "typesense" });
