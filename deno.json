@@ -35,7 +35,8 @@
   "tasks": {
     "test": "deno test --allow-read tests/",
     "lint": "deno lint",
-    "check": "deno check src/mod.ts src/typesense/mod.ts"
+    "check": "deno check src/mod.ts src/typesense/mod.ts",
+    "setup": "deno install && git config core.hooksPath .githooks"
   },
   "imports": {
     "zod": "jsr:@zod/zod@^4",

@@ -7,7 +7,7 @@ Shared Zod schemas for CFS Firestore collections, published to JSR as `@cfs/sche
 ## Setup
 
 - **Deno** runtime
-- `deno install` — install dependencies
+- `deno task setup` — install dependencies and enable git hooks
 
 ## Commands
 
