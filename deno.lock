@@ -1,18 +1,11 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@cfs/schemas@^1.11.0": "1.11.0",
     "jsr:@std/assert@1": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@zod/zod@4": "4.3.6"
   },
   "jsr": {
-    "@cfs/schemas@1.11.0": {
-      "integrity": "1a96db8c24865d45473308a65f2a79def426155e03d716b8b7e17b425b62cefa",
-      "dependencies": [
-        "jsr:@zod/zod"
-      ]
-    },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
       "dependencies": [
@@ -28,7 +21,6 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@cfs/schemas@^1.11.0",
       "jsr:@std/assert@1",
       "jsr:@zod/zod@4"
     ]

@@ -322,6 +322,15 @@ export {
   type WebhookEvent,
 } from "./webhook-event.ts";
 
+export {
+  QuoteSchema,
+  SaveQuoteVersionInput,
+  RestoreQuoteInput,
+  type Quote,
+  type SaveQuoteVersionInputType,
+  type RestoreQuoteInputType,
+} from "./quote.ts";
+
 // ── Union of all Firestore document types ───────────────────────────
 
 import type { Booking } from "./booking.ts";
@@ -341,6 +350,7 @@ import type { Organization } from "./organization.ts";
 import type { OutOfServiceRecord } from "./out-of-service-record.ts";
 import type { PasswordReset } from "./password-reset.ts";
 import type { Product } from "./product.ts";
+import type { Quote } from "./quote.ts";
 import type { PublicStockSummary } from "./public-stock-summary.ts";
 import type { RateLimit } from "./rate-limit.ts";
 import type { Session } from "./session.ts";
@@ -359,7 +369,7 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
   | EmailVerification | ErrorSync | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | Product | PublicStockSummary | RateLimit | Session | StockSummary
+  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
@@ -384,6 +394,7 @@ import { OrganizationSchema } from "./organization.ts";
 import { OutOfServiceRecordSchema } from "./out-of-service-record.ts";
 import { PasswordResetSchema } from "./password-reset.ts";
 import { ProductSchema } from "./product.ts";
+import { QuoteSchema as QuoteSchema_ } from "./quote.ts";
 import { RateLimitSchema } from "./rate-limit.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
@@ -416,6 +427,7 @@ export const schemas: Record<string, z.ZodType> = {
   "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
   "product": ProductSchema, "products": ProductSchema,
+  "quote": QuoteSchema_, "quotes": QuoteSchema_,
   "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,
