@@ -1,10 +1,6 @@
 name: Release & Publish
 
 on:
-  pull_request:
-    branches:
-      - main
-      - beta
   push:
     branches:
       - main
@@ -25,17 +21,19 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Install dependencies
+        run: deno install
+
       - name: Lint
-        run: deno lint
+        run: deno task lint
 
       - name: Type check
-        run: deno check src/mod.ts
+        run: deno task check
 
       - name: Test
-        run: deno test tests/
+        run: deno task test
 
   release:
-    if: github.event_name == 'push'
     needs: ci
     runs-on: ubuntu-latest
     permissions:
@@ -49,6 +47,9 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+
+      - name: Install dependencies
+        run: deno install
 
       - uses: actions/setup-node@v6
         with:

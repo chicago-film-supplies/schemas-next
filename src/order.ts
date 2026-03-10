@@ -288,7 +288,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
 /**
  * Line item price in the full order document (all fields required after server compute).
  */
-interface OrderDocItemPriceType {
+export interface OrderDocItemPriceType {
   base: number;
   chargeable_days: number | null;
   discount_amount: number;
@@ -313,7 +313,7 @@ const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
 });
 
 /** Line item in the full order document. */
-interface OrderDocLineItemType {
+export interface OrderDocLineItemType {
   uid: string;
   type: DocLineItemTypeType;
   name: string;
@@ -371,7 +371,7 @@ export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z
 });
 
 /** Group divider in items array. */
-interface OrderDocGroupItemType {
+export interface OrderDocGroupItemType {
   uid: string;
   type: "group";
   name: string;

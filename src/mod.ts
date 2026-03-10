@@ -83,6 +83,9 @@ export {
   OrderDocItem,
   type OrderDocDatesType,
   type OrderDocItemType,
+  type OrderDocItemPriceType,
+  type OrderDocLineItemType,
+  type OrderDocGroupItemType,
 } from "./order.ts";
 
 export {
