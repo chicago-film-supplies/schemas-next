@@ -67,7 +67,7 @@ Deno.test("CreateOrderInput rejects invalid tax_profile", () => {
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
-Deno.test("CreateOrderInput rejects extra properties on dates", () => {
+Deno.test("CreateOrderInput strips extra properties on dates", () => {
   const input = {
     uid: "order-1",
     organization: { uid: "org-1" },
@@ -76,10 +76,14 @@ Deno.test("CreateOrderInput rejects extra properties on dates", () => {
     tax_profile: "tax_applied",
     destinations: [validDestination],
   };
-  assertEquals(CreateOrderInput.safeParse(input).success, false);
+  const result = CreateOrderInput.safeParse(input);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals("extra_field" in result.data.dates, false);
+  }
 });
 
-Deno.test("CreateOrderInput rejects extra properties on destination endpoint", () => {
+Deno.test("CreateOrderInput strips extra properties on destination endpoint", () => {
   const input = {
     uid: "order-1",
     organization: { uid: "org-1" },
@@ -91,7 +95,11 @@ Deno.test("CreateOrderInput rejects extra properties on destination endpoint", (
       collection: { uid: "dest-2" },
     }],
   };
-  assertEquals(CreateOrderInput.safeParse(input).success, false);
+  const result = CreateOrderInput.safeParse(input);
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals("bonus" in result.data.destinations[0].delivery!, false);
+  }
 });
 
 Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {

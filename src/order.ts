@@ -50,7 +50,7 @@ export interface OrderDatesType {
   charge_end: string;
 }
 
-export const OrderDates: z.ZodType<OrderDatesType> = z.strictObject({
+export const OrderDates: z.ZodType<OrderDatesType> = z.object({
   delivery_start: z.string(),
   delivery_end: z.string(),
   collection_start: z.string(),
@@ -68,7 +68,7 @@ export interface DestinationContactType {
   phones?: string[];
 }
 
-export const DestinationContact: z.ZodType<DestinationContactType> = z.strictObject({
+export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string().optional(),
   name: z.string().optional(),
   phones: z.array(Phone).optional(),
@@ -99,7 +99,7 @@ export interface DestinationEndpointType {
   contact?: DestinationContactType | null;
 }
 
-export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.strictObject({
+export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.object({
   uid: z.string().nullable().optional(),
   address: Address.optional(),
   instructions: z.string().nullable().optional(),
@@ -133,7 +133,7 @@ export interface DestinationType {
   collection: DestinationEndpointType;
 }
 
-export const Destination: z.ZodType<DestinationType> = z.strictObject({
+export const Destination: z.ZodType<DestinationType> = z.object({
   delivery: DestinationEndpoint,
   collection: DestinationEndpoint,
 });
@@ -166,7 +166,7 @@ export interface ItemPriceType {
   total?: number;
 }
 
-export const ItemPrice: z.ZodType<ItemPriceType> = z.strictObject({
+export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   base: z.number().optional(),
   chargeable_days: z.int().nullable().optional(),
   discount_percent: z.number().optional(),
@@ -198,7 +198,7 @@ export interface OrderItemType {
   uid_order?: string;
 }
 
-export const OrderItem: z.ZodType<OrderItemType> = z.strictObject({
+export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
   type: z.enum(ITEM_TYPES).optional(),
   name: z.string().optional(),
