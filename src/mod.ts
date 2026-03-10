@@ -30,7 +30,15 @@ export {
 
 export {
   UserSchema,
+  SaveTablePreferenceInput,
+  SaveColumnPreferenceInput,
+  SaveFilterPreferenceInput,
   type User,
+  type TablePreference,
+  type FilterPreferences,
+  type SaveTablePreferenceInputType,
+  type SaveColumnPreferenceInputType,
+  type SaveFilterPreferenceInputType,
 } from "./user.ts";
 
 export {
