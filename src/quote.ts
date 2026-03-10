@@ -34,13 +34,17 @@ export const QuoteSchema: z.ZodType<Quote> = z.strictObject({
 }).meta({ title: "Quote", collection: "quotes" });
 
 /** Input for saving a new quote version. */
-export const SaveQuoteVersionInput = z.strictObject({
+export interface SaveQuoteVersionInputType {
+  uid_order: string;
+}
+export const SaveQuoteVersionInput: z.ZodType<SaveQuoteVersionInputType> = z.object({
   uid_order: z.string().min(1),
 });
-export type SaveQuoteVersionInputType = z.infer<typeof SaveQuoteVersionInput>;
 
 /** Input for restoring a soft-deleted quote. */
-export const RestoreQuoteInput = z.strictObject({
+export interface RestoreQuoteInputType {
+  uid: string;
+}
+export const RestoreQuoteInput: z.ZodType<RestoreQuoteInputType> = z.object({
   uid: z.string().min(1),
 });
-export type RestoreQuoteInputType = z.infer<typeof RestoreQuoteInput>;
