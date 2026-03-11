@@ -11,6 +11,7 @@ import {
   products,
   stores,
   tags,
+  templates,
   trackingCategories,
   typesenseSchemas,
   webshopProducts,
@@ -28,6 +29,7 @@ const allConfigs = [
   products,
   stores,
   tags,
+  templates,
   trackingCategories,
   webshopProducts,
 ];
