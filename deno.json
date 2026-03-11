@@ -33,6 +33,7 @@
     "./webshop-product": "./src/webshop-product.ts",
     "./typesense": "./src/typesense/mod.ts",
     "./quote": "./src/quote.ts",
+    "./template": "./src/template.ts",
     "./webhook-event": "./src/webhook-event.ts"
   },
   "tasks": {

@@ -339,6 +339,19 @@ export {
   type RestoreQuoteInputType,
 } from "./quote.ts";
 
+export {
+  TemplateSchema,
+  TemplateInputSchema,
+  TemplateUpdateInputSchema,
+  type Template,
+  type TemplateInputType,
+  type TemplateUpdateInputType,
+  type TemplateContext,
+  type TemplateSourceCollectionType,
+  type TemplateTargetCollectionType,
+  type TemplateScopeType,
+} from "./template.ts";
+
 // ── Union of all Firestore document types ───────────────────────────
 
 import type { Booking } from "./booking.ts";
@@ -359,6 +372,7 @@ import type { OutOfServiceRecord } from "./out-of-service-record.ts";
 import type { PasswordReset } from "./password-reset.ts";
 import type { Product } from "./product.ts";
 import type { Quote } from "./quote.ts";
+import type { Template } from "./template.ts";
 import type { PublicStockSummary } from "./public-stock-summary.ts";
 import type { RateLimit } from "./rate-limit.ts";
 import type { Session } from "./session.ts";
@@ -377,7 +391,7 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
   | EmailVerification | ErrorSync | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary
+  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
@@ -403,6 +417,7 @@ import { OutOfServiceRecordSchema } from "./out-of-service-record.ts";
 import { PasswordResetSchema } from "./password-reset.ts";
 import { ProductSchema } from "./product.ts";
 import { QuoteSchema as QuoteSchema_ } from "./quote.ts";
+import { TemplateSchema as TemplateSchema_ } from "./template.ts";
 import { RateLimitSchema } from "./rate-limit.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
@@ -436,6 +451,7 @@ export const schemas: Record<string, z.ZodType> = {
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
   "product": ProductSchema, "products": ProductSchema,
   "quote": QuoteSchema_, "quotes": QuoteSchema_,
+  "template": TemplateSchema_, "templates": TemplateSchema_,
   "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,

@@ -23,6 +23,7 @@ export { products } from "./products.ts";
 export { stores } from "./stores.ts";
 export { tags } from "./tags.ts";
 export { trackingCategories } from "./tracking-categories.ts";
+export { templates } from "./templates.ts";
 export { webshopProducts } from "./webshop-products.ts";
 
 import type { TypesenseCollectionConfig } from "./types.ts";
@@ -38,6 +39,7 @@ import { products } from "./products.ts";
 import { stores } from "./stores.ts";
 import { tags } from "./tags.ts";
 import { trackingCategories } from "./tracking-categories.ts";
+import { templates } from "./templates.ts";
 import { webshopProducts } from "./webshop-products.ts";
 
 const allSchemas: TypesenseCollectionConfig[] = [
@@ -52,6 +54,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
   products,
   stores,
   tags,
+  templates,
   trackingCategories,
   webshopProducts,
 ];
