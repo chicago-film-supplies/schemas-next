@@ -17,7 +17,7 @@ export interface TypesenseConfig {
   uid: string;
   current_collection: string;
   schema_hash: string;
-  updates: number;
+  updates?: number;
   last_reindex?: FirestoreTimestampType;
   last_reindex_stats?: TypesenseConfigReindexStats;
 }
@@ -33,7 +33,7 @@ export const TypesenseConfigSchema: z.ZodType<TypesenseConfig> = z.strictObject(
   uid: z.string(),
   current_collection: z.string(),
   schema_hash: z.string(),
-  updates: z.number(),
+  updates: z.number().optional(),
   last_reindex: FirestoreTimestamp.optional(),
   last_reindex_stats: ReindexStats.optional(),
 }).meta({ title: "TypesenseConfig", collection: "typesense" });
