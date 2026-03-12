@@ -277,6 +277,8 @@ export {
   TransactionStoreLocationSchema,
   TRANSACTION_TYPES,
   getTransactionMultiplier,
+  hasCosts,
+  getDisplayTransactionTypes,
   CreateTransactionInput,
   UpdateTransactionInput,
   CreateStoreTransferInput,

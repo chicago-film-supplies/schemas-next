@@ -31,6 +31,37 @@ export function getTransactionMultiplier(type: TransactionTypeType): 1 | -1 {
   throw new Error("Transaction type does not have a quantity multiplier: " + type);
 }
 
+/** Financial-only types that don't involve physical inventory movement. */
+const FINANCIAL_ONLY_TYPES: TransactionTypeType[] = [
+  "acquisition", "disposal", "partial_disposal",
+  "depreciation_tax", "depreciation_gaap",
+];
+
+/**
+ * Determines if a transaction type should track costs (total_cost / unit_cost).
+ * Returns false for transfers and financial-only types.
+ */
+export function hasCosts(type: TransactionTypeType): boolean {
+  if (FINANCIAL_ONLY_TYPES.includes(type)) return false;
+  if (type === "transfer_increase" || type === "transfer_decrease") return false;
+  return true;
+}
+
+/**
+ * Returns transaction types suitable for UI display in manual transaction forms.
+ * Excludes financial-only types (acquisition, disposal, depreciation) and transfers.
+ * When `increaseOnly` is true, returns only types that increase inventory
+ * (for first transactions / opening balance scenarios).
+ */
+export function getDisplayTransactionTypes(increaseOnly?: boolean): TransactionTypeType[] {
+  if (increaseOnly) {
+    return ["purchase", "make", "find"];
+  }
+  return TRANSACTION_TYPES.filter(
+    (t) => !FINANCIAL_ONLY_TYPES.includes(t) && t !== "transfer_increase" && t !== "transfer_decrease" && t !== "opening_balance",
+  );
+}
+
 const TRANSACTION_SOURCE_TYPES = ["manual", "order", "internal"] as const;
 type TransactionSourceTypeType = typeof TRANSACTION_SOURCE_TYPES[number];
 
