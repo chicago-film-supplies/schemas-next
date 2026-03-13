@@ -41,7 +41,6 @@ export {
 } from "./user.ts";
 
 export {
-  firestoreDisplayDefaults,
   typesenseDisplayDefaults,
   getTypesenseDisplayDefaults,
   type FirestoreDisplayDefaults,
@@ -405,7 +404,7 @@ export type SchemaDocType =
 
 // ── Schema record keyed by collection name ─────────────────────────
 
-import type { z } from "zod";
+import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
@@ -473,3 +472,22 @@ export const schemas: Record<string, z.ZodType> = {
   "webshop-product": WebshopProductSchema, "webshop-products": WebshopProductSchema,
   "typesense-config": TypesenseConfigSchema, "typesense": TypesenseConfigSchema,
 };
+
+// Defined here (not in display-defaults.ts) to avoid a circular dependency.
+// Firestore display defaults live in Zod's .meta() registry, so we need the
+// `schemas` record above to extract them. display-defaults.ts is re-exported
+// by this file, so importing `schemas` from there would hit a TDZ error.
+import type { FirestoreDisplayDefaults } from "./display-defaults.ts";
+
+/** Display defaults for every Firestore collection, derived from schema meta. */
+export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> =
+  Object.fromEntries(
+    Object.entries(schemas)
+      .map(([key, schema]) => {
+        const meta = z.globalRegistry.get(schema) as
+          | { displayDefaults?: FirestoreDisplayDefaults }
+          | undefined;
+        return [key, meta?.displayDefaults] as const;
+      })
+      .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
+  );

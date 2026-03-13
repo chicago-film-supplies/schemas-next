@@ -1,11 +1,12 @@
 /**
- * Display defaults for Firestore collections and a helper for Typesense defaults.
+ * Display defaults for Firestore and Typesense collections.
  *
- * Firestore defaults are derived from each schema's .meta() `displayDefaults`
- * field, keyed by the `schemas` record keys from mod.ts.
+ * `firestoreDisplayDefaults` is defined in mod.ts (not here) because it reads
+ * from the `schemas` record via Zod's .meta() registry. Defining it here would
+ * create a circular dependency: mod.ts re-exports from this file, so `schemas`
+ * would not be initialized yet at import time. Typesense defaults don't have
+ * this problem — they read from ./typesense/mod.ts which has no cycle with mod.ts.
  */
-import { z } from "zod";
-import { schemas } from "./mod.ts";
 import { typesenseSchemas, type TypesenseDisplayDefaults } from "./typesense/mod.ts";
 
 /** Display defaults for a Firestore collection in the UI. */
@@ -14,19 +15,6 @@ export interface FirestoreDisplayDefaults {
   filters: Record<string, (string | boolean)[]>;
   sort: { column: string | null; direction: "asc" | "desc" };
 }
-
-/** Display defaults for every Firestore collection, derived from schema meta. */
-export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> =
-  Object.fromEntries(
-    Object.entries(schemas)
-      .map(([key, schema]) => {
-        const meta = z.globalRegistry.get(schema) as
-          | { displayDefaults?: FirestoreDisplayDefaults }
-          | undefined;
-        return [key, meta?.displayDefaults] as const;
-      })
-      .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
-  );
 
 /** Display defaults for every Typesense collection, derived from collection config. */
 export const typesenseDisplayDefaults: Record<string, TypesenseDisplayDefaults> =
