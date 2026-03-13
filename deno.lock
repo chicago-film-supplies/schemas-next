@@ -1,9 +1,9 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@std/assert@1": "1.0.19",
+    "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.12",
-    "jsr:@zod/zod@4": "4.3.6"
+    "jsr:@zod/zod@^4.3.6": "4.3.6"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -21,8 +21,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@std/assert@1",
-      "jsr:@zod/zod@4"
+      "jsr:@std/assert@^1.0.19",
+      "jsr:@zod/zod@^4.3.6"
     ]
   }
 }
