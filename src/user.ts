@@ -70,7 +70,15 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema).optional(),
   prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema).optional(),
   ...TimestampFields,
-}).meta({ title: "User", collection: "users" });
+}).meta({
+  title: "User",
+  collection: "users",
+  displayDefaults: {
+    columns: ["email", "roles"],
+    filters: {},
+    sort: { column: "email", direction: "asc" },
+  },
+});
 
 // ── Input schemas for preference endpoints ──────────────────────────
 

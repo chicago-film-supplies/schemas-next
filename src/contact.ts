@@ -49,6 +49,11 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   title: "Contact",
   collection: "contacts",
   initial: {"uid":null,"name":"","emails":[],"phones":[],"organizations":[],"query_by_organizations":[]},
+  displayDefaults: {
+    columns: ["name", "emails", "phones"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
 });
 
 /**

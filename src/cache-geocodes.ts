@@ -38,4 +38,12 @@ export const CacheGeocodesSchema: z.ZodType<CacheGeocodes> = z.strictObject({
   }),
   created_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "Cache Geocodes", collection: "cache-geocodes" });
+}).meta({
+  title: "Cache Geocodes",
+  collection: "cache-geocodes",
+  displayDefaults: {
+    columns: ["address.full", "address.city", "address.region"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

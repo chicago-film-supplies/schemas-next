@@ -36,4 +36,12 @@ export const TypesenseConfigSchema: z.ZodType<TypesenseConfig> = z.strictObject(
   updates: z.number().optional(),
   last_reindex: FirestoreTimestamp.optional(),
   last_reindex_stats: ReindexStats.optional(),
-}).meta({ title: "TypesenseConfig", collection: "typesense" });
+}).meta({
+  title: "TypesenseConfig",
+  collection: "typesense",
+  displayDefaults: {
+    columns: ["uid", "current_collection"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

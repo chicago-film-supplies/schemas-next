@@ -499,4 +499,9 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   title: "Order",
   collection: "orders",
   initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null},
+  displayDefaults: {
+    columns: ["number", "organization.name", "subject", "status"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+  },
 }) as z.ZodType<Order>;

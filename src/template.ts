@@ -47,7 +47,15 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   source_filename: z.string(),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Template", collection: "templates" });
+}).meta({
+  title: "Template",
+  collection: "templates",
+  displayDefaults: {
+    columns: ["name", "version"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});
 
 /** Input for creating a new template (v1). */
 export interface TemplateInputType {

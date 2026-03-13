@@ -92,4 +92,12 @@ export const InventoryLedgerSchema: z.ZodType<InventoryLedger> = z.strictObject(
   query_by_uid_store: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Inventory Ledger", collection: "inventory-ledgers" });
+}).meta({
+  title: "Inventory Ledger",
+  collection: "inventory-ledgers",
+  displayDefaults: {
+    columns: ["uid_product", "stores"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

@@ -125,4 +125,12 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   xero_id: z.string().nullable(),
   updated_by: z.string(),
   ...TimestampFields,
-}).meta({ title: "Invoice", collection: "invoices" });
+}).meta({
+  title: "Invoice",
+  collection: "invoices",
+  displayDefaults: {
+    columns: ["number", "organization.name", "status", "subject"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+  },
+});

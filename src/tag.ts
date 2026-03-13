@@ -23,7 +23,15 @@ export const TagSchema: z.ZodType<Tag> = z.strictObject({
   query_by_products: z.array(z.string()).default([]).optional(),
   updated_by: z.string().optional(),
   ...TimestampFields,
-}).meta({ title: "Tag", collection: "tags" });
+}).meta({
+  title: "Tag",
+  collection: "tags",
+  displayDefaults: {
+    columns: ["name", "count"],
+    filters: {},
+    sort: { column: "count", direction: "desc" },
+  },
+});
 
 export interface CreateTagInputType {
   uid?: string;

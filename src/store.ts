@@ -21,7 +21,15 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
   crms_store_id: z.number(),
   active: z.boolean().default(true),
   ...TimestampFields,
-}).meta({ title: "Store", collection: "stores" });
+}).meta({
+  title: "Store",
+  collection: "stores",
+  displayDefaults: {
+    columns: ["name", "active", "default"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
+});
 
 export interface CreateStoreInputType {
   name: string;

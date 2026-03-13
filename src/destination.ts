@@ -40,4 +40,9 @@ export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
   title: "Destination",
   collection: "destinations",
   initial: {"uid":null,"address":null,"mapbox_ids":[],"organizations":[],"query_by_organizations":[],"products":[],"query_by_products":[],"contacts":[],"query_by_contacts":[]},
+  displayDefaults: {
+    columns: ["address.full", "address.city", "address.region"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
 });

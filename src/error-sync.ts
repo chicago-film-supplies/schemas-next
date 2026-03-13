@@ -42,4 +42,12 @@ export const ErrorSyncSchema: z.ZodType<ErrorSync> = z.strictObject({
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "ErrorSync", collection: "errors-sync" });
+}).meta({
+  title: "ErrorSync",
+  collection: "errors-sync",
+  displayDefaults: {
+    columns: ["service", "message"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

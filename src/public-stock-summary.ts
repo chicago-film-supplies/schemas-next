@@ -51,4 +51,12 @@ export const PublicStockSummarySchema: z.ZodType<PublicStockSummary> = z.strictO
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "Public Stock Summary", collection: "public-stock-summaries" });
+}).meta({
+  title: "Public Stock Summary",
+  collection: "public-stock-summaries",
+  displayDefaults: {
+    columns: ["uid_product", "stores"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

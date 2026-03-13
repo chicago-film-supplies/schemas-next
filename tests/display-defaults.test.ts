@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import type { z } from "zod";
+import { z } from "zod";
 import { firestoreDisplayDefaults, getTypesenseDisplayDefaults } from "../src/display-defaults.ts";
 import { schemas } from "../src/mod.ts";
 import { typesenseSchemas } from "../src/typesense/mod.ts";
@@ -8,10 +8,10 @@ import { typesenseSchemas } from "../src/typesense/mod.ts";
 const EXCLUDED_COLLECTIONS = new Set(["session", "sessions"]);
 
 /**
- * Group schema record keys by unique schema identity.
- * Returns arrays of alias keys that map to the same schema.
+ * Deduplicate the schemas record by identity — returns one [key[], schema]
+ * tuple per unique schema.
  */
-function schemaKeyGroups(): string[][] {
+function uniqueSchemas(): [string[], z.ZodType][] {
   const map = new Map<z.ZodType, string[]>();
   for (const [key, schema] of Object.entries(schemas)) {
     const existing = map.get(schema);
@@ -21,31 +21,37 @@ function schemaKeyGroups(): string[][] {
       map.set(schema, [key]);
     }
   }
-  return [...map.values()];
+  return [...map.entries()].map(([schema, keys]) => [keys, schema]);
 }
 
-Deno.test("every Firestore collection (except sessions) has display defaults", () => {
-  const groups = schemaKeyGroups();
-  for (const keys of groups) {
+Deno.test("every schema (except sessions) has displayDefaults in meta", () => {
+  for (const [keys, schema] of uniqueSchemas()) {
     if (keys.every((k) => EXCLUDED_COLLECTIONS.has(k))) continue;
-    const hasDefault = keys.some((k) => k in firestoreDisplayDefaults);
+    const meta = z.globalRegistry.get(schema) as
+      | { displayDefaults?: unknown }
+      | undefined;
     assertEquals(
-      hasDefault,
+      meta?.displayDefaults != null,
       true,
-      `missing firestore display defaults for any of: ${keys.join(", ")}`,
+      `schema [${keys.join(", ")}] is missing displayDefaults in .meta()`,
     );
   }
 });
 
-Deno.test("every Firestore collection with a Typesense mirror has a typesense schema", () => {
-  for (const alias of Object.keys(typesenseSchemas)) {
-    const defaults = getTypesenseDisplayDefaults(alias);
+Deno.test("firestoreDisplayDefaults is derived for every non-session schema key", () => {
+  for (const key of Object.keys(schemas)) {
+    if (EXCLUDED_COLLECTIONS.has(key)) continue;
     assertEquals(
-      defaults !== undefined,
+      key in firestoreDisplayDefaults,
       true,
-      `Typesense collection "${alias}" is missing displayDefaults`,
+      `"${key}" missing from firestoreDisplayDefaults`,
     );
   }
+});
+
+Deno.test("sessions are excluded from firestoreDisplayDefaults", () => {
+  assertEquals("session" in firestoreDisplayDefaults, false);
+  assertEquals("sessions" in firestoreDisplayDefaults, false);
 });
 
 Deno.test("no Firestore collection has empty columns", () => {
@@ -63,6 +69,17 @@ Deno.test("Firestore display defaults have correct shape", () => {
       defaults.sort.direction === "asc" || defaults.sort.direction === "desc",
       true,
       `${key}: sort.direction should be asc or desc`,
+    );
+  }
+});
+
+Deno.test("every Typesense collection has displayDefaults", () => {
+  for (const alias of Object.keys(typesenseSchemas)) {
+    const defaults = getTypesenseDisplayDefaults(alias);
+    assertEquals(
+      defaults !== undefined,
+      true,
+      `Typesense collection "${alias}" is missing displayDefaults`,
     );
   }
 });

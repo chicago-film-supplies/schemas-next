@@ -69,6 +69,11 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   title: "Organization",
   collection: "organizations",
   initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[]},
+  displayDefaults: {
+    columns: ["name", "emails", "phones"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
 });
 
 /**

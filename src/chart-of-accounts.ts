@@ -45,4 +45,12 @@ export const ChartOfAccountsSchema: z.ZodType<ChartOfAccounts> = z.strictObject(
   default_tax_profile: z.string(),
   updated_by: z.string(),
   ...TimestampFields,
-}).meta({ title: "Chart of Accounts", collection: "chart-of-accounts" });
+}).meta({
+  title: "Chart of Accounts",
+  collection: "chart-of-accounts",
+  displayDefaults: {
+    columns: ["code", "name", "type"],
+    filters: {},
+    sort: { column: "code", direction: "asc" },
+  },
+});

@@ -17,4 +17,12 @@ export const EmailVerificationSchema: z.ZodType<EmailVerification> = z.strictObj
   email: z.string().email(),
   expiresAt: FirestoreTimestamp,
   created_at: z.number(),
-}).meta({ title: "Email Verification", collection: "email-verifications" });
+}).meta({
+  title: "Email Verification",
+  collection: "email-verifications",
+  displayDefaults: {
+    columns: ["email", "code"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

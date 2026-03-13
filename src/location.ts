@@ -54,7 +54,15 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
   query_by_products: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Location", collection: "locations" });
+}).meta({
+  title: "Location",
+  collection: "locations",
+  displayDefaults: {
+    columns: ["name", "active", "default"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
+});
 
 export interface CreateLocationInputType {
   uid_store: string;

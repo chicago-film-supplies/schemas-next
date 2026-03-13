@@ -145,4 +145,12 @@ export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
     description: z.string().nullable().optional(),
   }),
   ...TimestampFields,
-}).meta({ title: "Webshop Product", collection: "webshop-products" });
+}).meta({
+  title: "Webshop Product",
+  collection: "webshop-products",
+  displayDefaults: {
+    columns: ["name", "type", "active"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
+});

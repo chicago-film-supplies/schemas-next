@@ -126,4 +126,12 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
   notes: z.array(NoteEntry).optional(),
   transactions: z.array(OOSTransactionSchema).optional(),
   ...TimestampFields,
-}).meta({ title: "Out of Service Record", collection: "products/{product_id}/out-of-service-records" });
+}).meta({
+  title: "Out of Service Record",
+  collection: "products/{product_id}/out-of-service-records",
+  displayDefaults: {
+    columns: ["source.type", "reason", "quantity", "date_start", "date_end"],
+    filters: {},
+    sort: { column: "date_start", direction: "desc" },
+  },
+});
