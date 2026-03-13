@@ -42,6 +42,7 @@ export {
 
 export {
   firestoreDisplayDefaults,
+  typesenseDisplayDefaults,
   getTypesenseDisplayDefaults,
   type FirestoreDisplayDefaults,
 } from "./display-defaults.ts";

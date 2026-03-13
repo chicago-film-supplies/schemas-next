@@ -28,6 +28,12 @@ export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> 
       .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
   );
 
+/** Display defaults for every Typesense collection, derived from collection config. */
+export const typesenseDisplayDefaults: Record<string, TypesenseDisplayDefaults> =
+  Object.fromEntries(
+    Object.entries(typesenseSchemas).map(([alias, config]) => [alias, config.displayDefaults])
+  );
+
 /** Get the display defaults for a Typesense collection by alias. */
 export function getTypesenseDisplayDefaults(alias: string): TypesenseDisplayDefaults | undefined {
   return typesenseSchemas[alias]?.displayDefaults;
