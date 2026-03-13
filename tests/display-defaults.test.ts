@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { z } from "zod";
-import { firestoreDisplayDefaults, getTypesenseDisplayDefaults } from "../src/display-defaults.ts";
-import { schemas } from "../src/mod.ts";
+import { getTypesenseDisplayDefaults } from "../src/display-defaults.ts";
+import { firestoreDisplayDefaults, schemas } from "../src/mod.ts";
 import { typesenseSchemas } from "../src/typesense/mod.ts";
 
 /** Collections that are not client-readable and don't need display prefs. */
