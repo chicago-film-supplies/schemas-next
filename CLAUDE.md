@@ -65,6 +65,10 @@ Each schema file exports: Zod schema object, TypeScript interface, and input sch
 
 Any `uid` property should be named either `uid` (for the document's own user ID) or `uid_{descriptor}` (e.g., `uid_owner`, `uid_creator`) when referencing another user.
 
+### Dependencies
+
+When introducing a new dependency, always double check you are introducing the latest version.
+
 ### Document vs input schemas
 
 - **Document schemas** (`ContactSchema`, `OrganizationSchema`) — full Firestore document shape, use `z.strictObject()`

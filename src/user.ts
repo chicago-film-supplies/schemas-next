@@ -54,8 +54,8 @@ export interface User {
   email_verified: boolean;
   uid_customer?: string | null;
   roles?: string[];
-  prefs_firestore?: Record<string, FirestoreDisplayPrefs>;
-  prefs_typesense?: Record<string, TypesenseDisplayPrefs>;
+  prefs_firestore: Record<string, FirestoreDisplayPrefs>;
+  prefs_typesense: Record<string, TypesenseDisplayPrefs>;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -67,8 +67,8 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   email_verified: z.boolean().default(false),
   uid_customer: z.string().nullable().optional(),
   roles: z.array(z.string()).optional(),
-  prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema).optional(),
-  prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema).optional(),
+  prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema),
+  prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema),
   ...TimestampFields,
 }).meta({
   title: "User",

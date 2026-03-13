@@ -1,12 +1,18 @@
 import { assertEquals } from "@std/assert";
 import { UserSchema, SaveFirestorePrefsInput, SaveTypesensePrefsInput } from "../src/user.ts";
 
+const emptyPrefs = {
+  prefs_firestore: {},
+  prefs_typesense: {},
+};
+
 Deno.test("UserSchema validates a complete user document", () => {
   const result = UserSchema.safeParse({
     uid: "abc123",
     email: "test@example.com",
     password_hash: "$argon2id$v=19$m=19456,t=2,p=1$abc$def",
     email_verified: false,
+    ...emptyPrefs,
     created_at: { _seconds: 1700000000, _nanoseconds: 0 },
     updated_at: { _seconds: 1700000000, _nanoseconds: 0 },
   });
@@ -43,6 +49,7 @@ Deno.test("UserSchema defaults email_verified to false", () => {
     uid: "abc123",
     email: "test@example.com",
     password_hash: "$argon2id$v=19$hash",
+    ...emptyPrefs,
   });
   assertEquals(result.success, true);
   if (result.success) {
@@ -56,6 +63,7 @@ Deno.test("UserSchema rejects additional properties", () => {
     email: "test@example.com",
     password_hash: "$argon2id$v=19$hash",
     email_verified: true,
+    ...emptyPrefs,
     extraField: "not allowed",
   });
   assertEquals(result.success, false);
@@ -87,6 +95,7 @@ Deno.test("UserSchema accepts prefs_firestore", () => {
         sort: { column: "number", direction: "desc" },
       },
     },
+    prefs_typesense: {},
   });
   assertEquals(result.success, true);
 });
@@ -97,6 +106,7 @@ Deno.test("UserSchema accepts prefs_typesense", () => {
     email: "test@example.com",
     password_hash: "$argon2id$v=19$hash",
     email_verified: true,
+    prefs_firestore: {},
     prefs_typesense: {
       bookings: {
         columns: ["number", "name"],
