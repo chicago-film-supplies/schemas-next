@@ -23,4 +23,11 @@ export const templates: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "updated_at",
   },
+  displayDefaults: {
+    columns: ["name", "version"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+    group: null,
+    facet: [],
+  },
 };

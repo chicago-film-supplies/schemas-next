@@ -30,16 +30,21 @@ export {
 
 export {
   UserSchema,
-  SaveTablePreferenceInput,
-  SaveColumnPreferenceInput,
-  SaveFilterPreferenceInput,
+  SaveFirestorePrefsInput,
+  SaveTypesensePrefsInput,
   type User,
-  type TablePreference,
-  type FilterPreferences,
-  type SaveTablePreferenceInputType,
-  type SaveColumnPreferenceInputType,
-  type SaveFilterPreferenceInputType,
+  type DisplaySort,
+  type FirestoreDisplayPrefs,
+  type TypesenseDisplayPrefs,
+  type SaveFirestorePrefsInputType,
+  type SaveTypesensePrefsInputType,
 } from "./user.ts";
+
+export {
+  firestoreDisplayDefaults,
+  getTypesenseDisplayDefaults,
+  type FirestoreDisplayDefaults,
+} from "./display-defaults.ts";
 
 export {
   SessionSchema,

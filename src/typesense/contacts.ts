@@ -25,4 +25,11 @@ export const contacts: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  displayDefaults: {
+    columns: ["name", "emails", "phones", "organizations"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

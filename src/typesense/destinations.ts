@@ -33,4 +33,11 @@ export const destinations: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "updated_at",
   },
+  displayDefaults: {
+    columns: ["address.full", "address.city", "address.region"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+    group: null,
+    facet: [],
+  },
 };

@@ -97,4 +97,11 @@ export const products: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  displayDefaults: {
+    columns: ["type", "name"],
+    filters: { type: ["rental", "sale", "service"], active: [true] },
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

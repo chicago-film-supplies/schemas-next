@@ -37,6 +37,15 @@ export interface TypesenseSchema {
   default_sorting_field?: string;
 }
 
+/** Display defaults for a Typesense collection in the UI. */
+export interface TypesenseDisplayDefaults {
+  columns: string[];
+  filters: Record<string, (string | boolean)[]>;
+  sort: { column: string | null; direction: "asc" | "desc" };
+  group: string | null;
+  facet: string[];
+}
+
 /** Full collection config with alias, version, and Firestore mapping. */
 export interface TypesenseCollectionConfig {
   alias: string;
@@ -44,4 +53,5 @@ export interface TypesenseCollectionConfig {
   firestoreCollection: string;
   collectionName: string;
   schema: TypesenseSchema;
+  displayDefaults: TypesenseDisplayDefaults;
 }

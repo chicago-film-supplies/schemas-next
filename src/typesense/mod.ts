@@ -6,6 +6,7 @@
  */
 export type {
   TypesenseCollectionConfig,
+  TypesenseDisplayDefaults,
   TypesenseField,
   TypesenseFieldType,
   TypesenseSchema,

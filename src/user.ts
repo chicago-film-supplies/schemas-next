@@ -6,32 +6,43 @@ import { Email, type FirestoreTimestampType, TimestampFields } from "./common.ts
 
 // ── Preference sub-schemas ──────────────────────────────────────────
 
-export interface TablePreference {
-  columns: string[];
-  sort: { column: string | null; direction: "asc" | "desc" };
-  pagination?: { itemsPerPage: number; currentPage: number };
+export interface DisplaySort {
+  column: string | null;
+  direction: "asc" | "desc";
 }
 
-const TablePreferenceSchema: z.ZodType<TablePreference> = z.strictObject({
-  columns: z.array(z.string()),
-  sort: z.strictObject({
-    column: z.string().nullable(),
-    direction: z.enum(["asc", "desc"]),
-  }),
-  pagination: z.strictObject({
-    itemsPerPage: z.number().int().positive(),
-    currentPage: z.number().int().positive(),
-  }).optional(),
+const DisplaySortSchema: z.ZodType<DisplaySort> = z.strictObject({
+  column: z.string().nullable(),
+  direction: z.enum(["asc", "desc"]),
 });
 
-export interface FilterPreferences {
-  [key: string]: (string | boolean)[];
+export interface FirestoreDisplayPrefs {
+  columns: string[];
+  filters: Record<string, (string | boolean)[]>;
+  sort: DisplaySort;
 }
 
-const FilterPreferencesSchema: z.ZodType<FilterPreferences> = z.record(
-  z.string(),
-  z.array(z.union([z.string(), z.boolean()])),
-);
+const FirestoreDisplayPrefsSchema: z.ZodType<FirestoreDisplayPrefs> = z.strictObject({
+  columns: z.array(z.string()),
+  filters: z.record(z.string(), z.array(z.union([z.string(), z.boolean()]))),
+  sort: DisplaySortSchema,
+});
+
+export interface TypesenseDisplayPrefs {
+  columns: string[];
+  filters: Record<string, (string | boolean)[]>;
+  sort: DisplaySort;
+  group: string | null;
+  facet: string[];
+}
+
+const TypesenseDisplayPrefsSchema: z.ZodType<TypesenseDisplayPrefs> = z.strictObject({
+  columns: z.array(z.string()),
+  filters: z.record(z.string(), z.array(z.union([z.string(), z.boolean()]))),
+  sort: DisplaySortSchema,
+  group: z.string().nullable(),
+  facet: z.array(z.string()),
+});
 
 /**
  * Full user document schema (Firestore document shape).
@@ -43,9 +54,8 @@ export interface User {
   email_verified: boolean;
   uid_customer?: string | null;
   roles?: string[];
-  tablePreferences?: Record<string, TablePreference>;
-  columnPreferences?: Record<string, string[]>;
-  filterPreferences?: Record<string, FilterPreferences>;
+  prefs_firestore?: Record<string, FirestoreDisplayPrefs>;
+  prefs_typesense?: Record<string, TypesenseDisplayPrefs>;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -57,50 +67,29 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   email_verified: z.boolean().default(false),
   uid_customer: z.string().nullable().optional(),
   roles: z.array(z.string()).optional(),
-  tablePreferences: z.record(z.string(), TablePreferenceSchema).optional(),
-  columnPreferences: z.record(z.string(), z.array(z.string())).optional(),
-  filterPreferences: z.record(z.string(), FilterPreferencesSchema).optional(),
+  prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema).optional(),
+  prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema).optional(),
   ...TimestampFields,
 }).meta({ title: "User", collection: "users" });
 
 // ── Input schemas for preference endpoints ──────────────────────────
 
-export interface SaveTablePreferenceInputType {
+export interface SaveFirestorePrefsInputType {
   context: string;
-  columns: string[];
-  sort: { column: string | null; direction: "asc" | "desc" };
-  pagination?: { itemsPerPage: number; currentPage: number };
+  prefs: FirestoreDisplayPrefs;
 }
 
-export const SaveTablePreferenceInput: z.ZodType<SaveTablePreferenceInputType> = z.object({
+export const SaveFirestorePrefsInput: z.ZodType<SaveFirestorePrefsInputType> = z.object({
   context: z.string().min(1),
-  columns: z.array(z.string()),
-  sort: z.object({
-    column: z.string().nullable(),
-    direction: z.enum(["asc", "desc"]),
-  }),
-  pagination: z.object({
-    itemsPerPage: z.number().int().positive(),
-    currentPage: z.number().int().positive(),
-  }).optional(),
+  prefs: FirestoreDisplayPrefsSchema,
 });
 
-export interface SaveColumnPreferenceInputType {
+export interface SaveTypesensePrefsInputType {
   collection: string;
-  columns: string[];
+  prefs: TypesenseDisplayPrefs;
 }
 
-export const SaveColumnPreferenceInput: z.ZodType<SaveColumnPreferenceInputType> = z.object({
+export const SaveTypesensePrefsInput: z.ZodType<SaveTypesensePrefsInputType> = z.object({
   collection: z.string().min(1),
-  columns: z.array(z.string()),
-});
-
-export interface SaveFilterPreferenceInputType {
-  collection: string;
-  filters: FilterPreferences;
-}
-
-export const SaveFilterPreferenceInput: z.ZodType<SaveFilterPreferenceInputType> = z.object({
-  collection: z.string().min(1),
-  filters: FilterPreferencesSchema,
+  prefs: TypesenseDisplayPrefsSchema,
 });

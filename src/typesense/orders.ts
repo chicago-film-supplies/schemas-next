@@ -58,4 +58,11 @@ export const orders: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "number",
   },
+  displayDefaults: {
+    columns: ["number", "organization.name", "subject", "status"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+    group: null,
+    facet: [],
+  },
 };

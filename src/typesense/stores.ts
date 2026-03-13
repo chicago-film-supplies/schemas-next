@@ -19,4 +19,11 @@ export const stores: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "default",
   },
+  displayDefaults: {
+    columns: ["name", "active", "default"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

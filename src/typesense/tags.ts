@@ -20,4 +20,11 @@ export const tags: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "count",
   },
+  displayDefaults: {
+    columns: ["name", "count"],
+    filters: {},
+    sort: { column: "count", direction: "desc" },
+    group: null,
+    facet: [],
+  },
 };

@@ -20,4 +20,11 @@ export const chartOfAccounts: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "code",
   },
+  displayDefaults: {
+    columns: ["code", "name", "type"],
+    filters: { type: [] },
+    sort: { column: "code", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

@@ -26,4 +26,11 @@ export const trackingCategories: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  displayDefaults: {
+    columns: ["name", "count"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };
