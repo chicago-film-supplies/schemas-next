@@ -337,8 +337,6 @@ export interface UpdateProductInputType {
     description?: string | null;
   };
   updated_by?: string;
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any;
 }
 
 export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
@@ -381,4 +379,4 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     description: z.string().nullable().optional(),
   }).optional(),
   updated_by: z.string().optional(),
-}).passthrough();
+});

@@ -10,6 +10,7 @@ import {
   ProductTypeEnum,
   type ProductTypeType,
 } from "./common.ts";
+import { type Booking, BookingSchema } from "./booking.ts";
 
 const SUMMARY_TYPES = ["sale", "rental"] as const;
 type SummaryTypeType = typeof SUMMARY_TYPES[number];
@@ -43,7 +44,7 @@ export interface StockSummary {
     end: string | null;
     end_fs: FirestoreTimestampType | null;
   };
-  bookings: Record<string, unknown>[];
+  bookings: Booking[];
   bookings_breakdown: {
     quoted: number;
     reserved: number;
@@ -100,7 +101,7 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
     end: z.string().nullable(),
     end_fs: FirestoreTimestamp.nullable(),
   }),
-  bookings: z.array(z.record(z.string(), z.unknown())),
+  bookings: z.array(BookingSchema),
   bookings_breakdown: z.strictObject({
     quoted: z.number(),
     reserved: z.number(),

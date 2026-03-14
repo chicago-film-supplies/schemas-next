@@ -14,6 +14,7 @@ import {
   templates,
   trackingCategories,
   typesenseSchemas,
+  type TypesenseAlias,
   webshopProducts,
 } from "../src/typesense/mod.ts";
 
@@ -48,7 +49,7 @@ Deno.test("all configs have required properties", () => {
 
 Deno.test("typesenseSchemas contains all aliases", () => {
   for (const config of allConfigs) {
-    assertEquals(typesenseSchemas[config.alias], config);
+    assertEquals(typesenseSchemas[config.alias as TypesenseAlias], config);
   }
   assertEquals(Object.keys(typesenseSchemas).length, allConfigs.length);
 });

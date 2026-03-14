@@ -7,7 +7,7 @@
  * would not be initialized yet at import time. Typesense defaults don't have
  * this problem — they read from ./typesense/mod.ts which has no cycle with mod.ts.
  */
-import { typesenseSchemas, type TypesenseDisplayDefaults } from "./typesense/mod.ts";
+import { typesenseSchemas, type TypesenseAlias, type TypesenseDisplayDefaults } from "./typesense/mod.ts";
 
 /** Display defaults for a Firestore collection in the UI. */
 export interface FirestoreDisplayDefaults {
@@ -24,5 +24,8 @@ export const typesenseDisplayDefaults: Record<string, TypesenseDisplayDefaults> 
 
 /** Get the display defaults for a Typesense collection by alias. */
 export function getTypesenseDisplayDefaults(alias: string): TypesenseDisplayDefaults | undefined {
-  return typesenseSchemas[alias]?.displayDefaults;
+  if (alias in typesenseSchemas) {
+    return typesenseSchemas[alias as TypesenseAlias].displayDefaults;
+  }
+  return undefined;
 }

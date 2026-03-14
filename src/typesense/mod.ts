@@ -12,6 +12,14 @@ export type {
   TypesenseSchema,
 } from "./types.ts";
 
+export {
+  TypesenseFieldTypeEnum,
+  TypesenseFieldSchema,
+  TypesenseSchemaSchema,
+  TypesenseDisplayDefaultsSchema,
+  TypesenseCollectionConfigSchema,
+} from "./types.ts";
+
 export { bookings } from "./bookings.ts";
 export { chartOfAccounts } from "./chart-of-accounts.ts";
 export { contacts } from "./contacts.ts";
@@ -60,6 +68,23 @@ const allSchemas: TypesenseCollectionConfig[] = [
   webshopProducts,
 ];
 
+/** Union of all Typesense collection alias names. */
+export type TypesenseAlias =
+  | "bookings"
+  | "chart-of-accounts"
+  | "contacts"
+  | "destinations"
+  | "invoices"
+  | "locations"
+  | "orders"
+  | "organizations"
+  | "products"
+  | "stores"
+  | "tags"
+  | "templates"
+  | "tracking-categories"
+  | "webshop-products";
+
 /** All Typesense collection configs keyed by alias. */
-export const typesenseSchemas: Record<string, TypesenseCollectionConfig> =
-  Object.fromEntries(allSchemas.map((s) => [s.alias, s]));
+export const typesenseSchemas: Record<TypesenseAlias, TypesenseCollectionConfig> =
+  Object.fromEntries(allSchemas.map((s) => [s.alias, s])) as Record<TypesenseAlias, TypesenseCollectionConfig>;

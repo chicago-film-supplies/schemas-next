@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const products: TypesenseCollectionConfig = {
   alias: "products",
-  version: 9,
+  version: 10,
   firestoreCollection: "products",
-  collectionName: "products_v9",
+  collectionName: "products_v10",
   schema: {
-    name: "products_v9",
+    name: "products_v10",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -91,6 +91,8 @@ export const products: TypesenseCollectionConfig = {
       { name: "component_of.price.tax_profile", type: "string[]", optional: true },
       { name: "component_of.price.formula", type: "string[]", facet: true, optional: true },
       { name: "component_of.price.discountable", type: "bool[]", facet: true, optional: true },
+      { name: "crms_stock_level_ids", type: "int64[]", optional: true },
+      { name: "images", type: "string[]", optional: true },
       { name: "updated_by", type: "string", facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
       { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },

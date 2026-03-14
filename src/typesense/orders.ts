@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const orders: TypesenseCollectionConfig = {
   alias: "orders",
-  version: 9,
+  version: 10,
   firestoreCollection: "orders",
-  collectionName: "orders_v9",
+  collectionName: "orders_v10",
   schema: {
-    name: "orders_v9",
+    name: "orders_v10",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -53,6 +53,17 @@ export const orders: TypesenseCollectionConfig = {
       { name: "destinations.collection.contact", type: "object[]", optional: true },
       { name: "destinations.collection.contact.uid", type: "string[]", facet: false, optional: true },
       { name: "destinations.collection.contact.name", type: "string[]", stem: true, optional: true },
+      { name: "totals", type: "object" },
+      { name: "totals.discount_amount", type: "float", optional: true },
+      { name: "totals.subtotal", type: "float", optional: true },
+      { name: "totals.taxes", type: "object", optional: true },
+      { name: "totals.total", type: "float", sort: true, optional: true },
+      { name: "items", type: "object[]", optional: true },
+      { name: "items.uid", type: "string[]", facet: false, optional: true },
+      { name: "items.name", type: "string[]", stem: true, optional: true },
+      { name: "items.quantity", type: "int32[]", optional: true },
+      { name: "items.type", type: "string[]", facet: true, optional: true },
+      { name: "items.total_price", type: "float[]", optional: true },
       { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
     ],
