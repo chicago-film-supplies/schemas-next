@@ -359,6 +359,34 @@ export {
   type TemplateScopeType,
 } from "./template.ts";
 
+// ── Propagation ─────────────────────────────────────────────────────
+
+export type {
+  PropagationMode,
+  FieldMapping,
+  CollectionRule,
+  TransactionDefinition,
+  AggregateDefinition,
+} from "./propagation.ts";
+
+// ── Domain events ───────────────────────────────────────────────────
+
+export type {
+  EventEnvelope,
+  OrderCreated,
+  OrderUpdated,
+  OrderStatusChanged,
+  OrderCanceled,
+  BookingCreated,
+  BookingUpdated,
+  BookingStatusChanged,
+  StockSummaryRecalculated,
+  PublicStockSummaryRecalculated,
+  QuoteCreated,
+  QuoteRestored,
+  QuoteDeleted,
+} from "./events/mod.ts";
+
 // ── Union of all Firestore document types ───────────────────────────
 
 import type { Booking } from "./booking.ts";
