@@ -43,7 +43,7 @@
     "setup": "deno install && git config core.hooksPath .githooks"
   },
   "imports": {
-    "zod": "jsr:@zod/zod@^4.3.6",
+    "zod": "npm:zod@^4.3.6",
     "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "compilerOptions": {
