@@ -102,6 +102,66 @@ Deno.test("CreateOrderInput strips extra properties on destination endpoint", ()
   }
 });
 
+Deno.test("CreateOrderInput accepts destination with null contact", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: null },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput accepts destination with complete contact", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { uid: "c-1", name: "Jane", phones: ["312-555-0100"] } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput rejects destination contact missing name", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { uid: "c-1" } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput rejects destination contact missing uid", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { name: "Jane" } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
 Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {
   const input = {
     uid: "order-1",

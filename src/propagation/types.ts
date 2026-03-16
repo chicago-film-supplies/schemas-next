@@ -1,9 +1,9 @@
 /**
- * Propagation rules — documents how data flows between Firestore collections.
+ * Propagation type definitions.
  *
- * These are type definitions only. No triggers, no Cloud Functions, no writes.
+ * No triggers, no Cloud Functions, no writes.
  * The API imports these types when building Eventarc triggers.
- * The doc generator walks these to produce Mermaid diagrams and VitePress pages.
+ * The doc generator walks rules built from these types to produce Mermaid diagrams.
  */
 
 // ── Propagation modes ───────────────────────────────────────────────

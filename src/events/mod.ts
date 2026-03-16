@@ -22,3 +22,68 @@ export type {
   QuoteRestored,
   QuoteDeleted,
 } from "./orders.ts";
+
+// ── Product aggregate ───────────────────────────────────────────────
+
+export type {
+  ProductCreated,
+  ProductUpdated,
+  WebshopProductUpdated,
+  InventoryLedgerRecalculated,
+} from "./products.ts";
+
+// ── Invoice aggregate ───────────────────────────────────────────────
+
+export type {
+  InvoiceCreated,
+  InvoiceUpdated,
+} from "./invoices.ts";
+
+// ── Organization aggregate ──────────────────────────────────────────
+
+export type {
+  OrganizationCreated,
+  OrganizationUpdated,
+} from "./organizations.ts";
+
+// ── Contact aggregate ───────────────────────────────────────────────
+
+export type {
+  ContactCreated,
+  ContactUpdated,
+} from "./contacts.ts";
+
+// ── Store aggregate ─────────────────────────────────────────────────
+
+export type {
+  StoreCreated,
+  StoreUpdated,
+  LocationCreated,
+  LocationUpdated,
+  LocationTypeCreated,
+  LocationTypeUpdated,
+} from "./stores.ts";
+
+// ── Transaction aggregate ───────────────────────────────────────────
+
+export type {
+  TransactionCreated,
+  TransactionUpdated,
+  OutOfServiceRecordCreated,
+  OutOfServiceRecordUpdated,
+} from "./transactions.ts";
+
+// ── Reference data ──────────────────────────────────────────────────
+
+export type {
+  TagCreated,
+  TagUpdated,
+  TagDeleted,
+  TrackingCategoryCreated,
+  TrackingCategoryUpdated,
+  TemplateCreated,
+  TemplateUpdated,
+  HolidayDatesAdded,
+  HolidayDatesDeleted,
+  ChartOfAccountsUpdated,
+} from "./reference-data.ts";

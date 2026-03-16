@@ -367,12 +367,41 @@ export type {
   CollectionRule,
   TransactionDefinition,
   AggregateDefinition,
-} from "./propagation.ts";
+} from "./propagation/mod.ts";
+
+export {
+  aggregates,
+  rules,
+  transactions,
+  createOrderRules,
+  createOrderTransaction,
+  updateOrderRules,
+  updateOrderTransaction,
+  createTransactionRules,
+  createTransactionTransaction,
+  createProductRules,
+  createProductTransaction,
+  updateProductRules,
+  updateProductTransaction,
+  createOrganizationRules,
+  createOrganizationTransaction,
+  updateOrganizationRules,
+  updateOrganizationTransaction,
+  createContactRules,
+  createContactTransaction,
+  updateContactRules,
+  updateContactTransaction,
+  updateTagRules,
+  deleteTagRules,
+  updateTrackingCategoryRules,
+  updateLocationTypeRules,
+} from "./propagation/mod.ts";
 
 // ── Domain events ───────────────────────────────────────────────────
 
 export type {
   EventEnvelope,
+  // Order aggregate
   OrderCreated,
   OrderUpdated,
   OrderStatusChanged,
@@ -385,6 +414,43 @@ export type {
   QuoteCreated,
   QuoteRestored,
   QuoteDeleted,
+  // Product aggregate
+  ProductCreated,
+  ProductUpdated,
+  WebshopProductUpdated,
+  InventoryLedgerRecalculated,
+  // Invoice aggregate
+  InvoiceCreated,
+  InvoiceUpdated,
+  // Organization aggregate
+  OrganizationCreated,
+  OrganizationUpdated,
+  // Contact aggregate
+  ContactCreated,
+  ContactUpdated,
+  // Store aggregate
+  StoreCreated,
+  StoreUpdated,
+  LocationCreated,
+  LocationUpdated,
+  LocationTypeCreated,
+  LocationTypeUpdated,
+  // Transaction aggregate
+  TransactionCreated,
+  TransactionUpdated,
+  OutOfServiceRecordCreated,
+  OutOfServiceRecordUpdated,
+  // Reference data
+  TagCreated,
+  TagUpdated,
+  TagDeleted,
+  TrackingCategoryCreated,
+  TrackingCategoryUpdated,
+  TemplateCreated,
+  TemplateUpdated,
+  HolidayDatesAdded,
+  HolidayDatesDeleted,
+  ChartOfAccountsUpdated,
 } from "./events/mod.ts";
 
 // ── Union of all Firestore document types ───────────────────────────

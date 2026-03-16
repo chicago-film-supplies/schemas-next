@@ -61,16 +61,17 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
 
 /**
  * Contact reference embedded in a destination endpoint.
+ * When present (not null), uid and name are required.
  */
 export interface DestinationContactType {
-  uid?: string;
-  name?: string;
+  uid: string;
+  name: string;
   phones?: string[];
 }
 
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
-  uid: z.string().optional(),
-  name: z.string().optional(),
+  uid: z.string(),
+  name: z.string().min(1).max(100),
   phones: z.array(Phone).optional(),
 });
 
