@@ -41,6 +41,7 @@ export const invoices: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "number",
   },
+  synonyms: [],
   displayDefaults: {
     columns: ["number", "organization.name", "reference", "subject", "status"],
     filters: { status: [] },

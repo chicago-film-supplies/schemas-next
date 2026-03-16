@@ -56,6 +56,38 @@ export const TypesenseSchemaSchema: z.ZodType<TypesenseSchema> = z.strictObject(
   default_sorting_field: z.string().optional(),
 });
 
+/** A multi-way synonym where all terms are interchangeable. */
+export interface TypesenseMultiWaySynonym {
+  id: string;
+  synonyms: string[];
+}
+
+/** A one-way synonym where a root term expands to alternatives. */
+export interface TypesenseOneWaySynonym {
+  id: string;
+  root: string;
+  synonyms: string[];
+}
+
+/** A synonym rule for a Typesense collection. */
+export type TypesenseSynonym = TypesenseMultiWaySynonym | TypesenseOneWaySynonym;
+
+export const TypesenseMultiWaySynonymSchema: z.ZodType<TypesenseMultiWaySynonym> = z.strictObject({
+  id: z.string(),
+  synonyms: z.array(z.string()).min(2),
+});
+
+export const TypesenseOneWaySynonymSchema: z.ZodType<TypesenseOneWaySynonym> = z.strictObject({
+  id: z.string(),
+  root: z.string(),
+  synonyms: z.array(z.string()).min(1),
+});
+
+export const TypesenseSynonymSchema: z.ZodType<TypesenseSynonym> = z.union([
+  TypesenseOneWaySynonymSchema,
+  TypesenseMultiWaySynonymSchema,
+]);
+
 /** Display defaults for a Typesense collection in the UI. */
 export interface TypesenseDisplayDefaults {
   columns: string[];
@@ -83,6 +115,7 @@ export interface TypesenseCollectionConfig {
   firestoreCollection: string;
   collectionName: string;
   schema: TypesenseSchema;
+  synonyms: TypesenseSynonym[];
   displayDefaults: TypesenseDisplayDefaults;
 }
 
@@ -92,5 +125,6 @@ export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfi
   firestoreCollection: z.string(),
   collectionName: z.string(),
   schema: TypesenseSchemaSchema,
+  synonyms: z.array(TypesenseSynonymSchema),
   displayDefaults: TypesenseDisplayDefaultsSchema,
 });

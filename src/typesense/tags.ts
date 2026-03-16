@@ -20,6 +20,7 @@ export const tags: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "count",
   },
+  synonyms: [],
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},

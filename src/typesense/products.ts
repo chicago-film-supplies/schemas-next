@@ -99,6 +99,12 @@ export const products: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  synonyms: [
+    { id: "garbage-trash", synonyms: ["garbage", "trash"] },
+    { id: "walkie-radio", synonyms: ["walkie", "radio"] },
+    { id: "hotspot-mifi", synonyms: ["hotspot", "mifi"] },
+    { id: "can-bin", synonyms: ["can", "bin"] },
+  ],
   displayDefaults: {
     columns: ["type", "name", "tags.name", "components.name"],
     filters: { type: ["rental", "sale", "service"], active: [true] },

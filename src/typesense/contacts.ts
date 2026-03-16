@@ -25,6 +25,7 @@ export const contacts: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  synonyms: [],
   displayDefaults: {
     columns: ["name", "emails", "phones", "organizations"],
     filters: {},

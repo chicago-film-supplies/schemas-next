@@ -68,6 +68,7 @@ export const bookings: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "updated_at",
   },
+  synonyms: [],
   displayDefaults: {
     columns: ["number", "name", "status", "organization.name", "quantity"],
     filters: { status: [] },

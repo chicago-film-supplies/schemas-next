@@ -9,7 +9,10 @@ export type {
   TypesenseDisplayDefaults,
   TypesenseField,
   TypesenseFieldType,
+  TypesenseMultiWaySynonym,
+  TypesenseOneWaySynonym,
   TypesenseSchema,
+  TypesenseSynonym,
 } from "./types.ts";
 
 export {
@@ -18,6 +21,9 @@ export {
   TypesenseSchemaSchema,
   TypesenseDisplayDefaultsSchema,
   TypesenseCollectionConfigSchema,
+  TypesenseMultiWaySynonymSchema,
+  TypesenseOneWaySynonymSchema,
+  TypesenseSynonymSchema,
 } from "./types.ts";
 
 export { bookings } from "./bookings.ts";

@@ -69,6 +69,7 @@ export const orders: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "number",
   },
+  synonyms: [],
   displayDefaults: {
     columns: ["number", "organization.name", "subject", "status"],
     filters: { status: [] },
