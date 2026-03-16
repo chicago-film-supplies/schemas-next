@@ -14,11 +14,11 @@ export const createTransactionRules: CollectionRule[] = [
     invariant: "Every inventory transaction immediately updates the ledger — the ledger is the source of truth for current stock levels",
     transaction: "create-transaction",
     fields: [
-      { source: "quantity", target: "quantity_held", transform: "± based on transaction type multiplier" },
-      { source: "quantity", target: "quantity_in_service", transform: "± based on transaction type multiplier" },
-      { source: "total_cost", target: "total_cost_basis", transform: "± based on transaction type" },
-      { source: "total_cost", target: "average_unit_cost", transform: "total_cost_basis / quantity_held" },
-      { source: "stores[].locations[].transactionQuantity", target: "store_breakdown[].locations[].quantity", transform: "± per location" },
+      { source: ["quantity"], target: ["quantity_held"], transform: "± based on transaction type multiplier" },
+      { source: ["quantity"], target: ["quantity_in_service"], transform: "± based on transaction type multiplier" },
+      { source: ["total_cost"], target: ["total_cost_basis"], transform: "± based on transaction type" },
+      { source: ["total_cost"], target: ["average_unit_cost"], transform: "total_cost_basis / quantity_held" },
+      { source: ["stores", "locations", "transactionQuantity"], target: ["store_breakdown", "locations", "quantity"], transform: "± per location" },
     ],
   },
   {
@@ -29,11 +29,11 @@ export const createTransactionRules: CollectionRule[] = [
     invariant: "Locations track which products are stored there and how many, updated on every transaction",
     transaction: "create-transaction",
     fields: [
-      { source: "uid_product", target: "products[].uid" },
-      { source: "(product name)", target: "products[].name" },
-      { source: "stores[].locations[].transactionQuantity", target: "products[].quantity", transform: "± per location" },
-      { source: "uid_product", target: "product_capacities[].uid", transform: "creates capacity entry if missing, using location-type defaults" },
-      { source: "uid_product", target: "query_by_products", transform: "adds product uid if missing" },
+      { source: ["uid_product"], target: ["products", "uid"] },
+      { source: [], target: ["products", "name"], transform: "product name looked up from product doc" },
+      { source: ["stores", "locations", "transactionQuantity"], target: ["products", "quantity"], transform: "± per location" },
+      { source: ["uid_product"], target: ["product_capacities", "uid"], transform: "creates capacity entry if missing, using location-type defaults" },
+      { source: ["uid_product"], target: ["query_by_products"], transform: "adds product uid if missing" },
     ],
   },
   {
@@ -44,11 +44,11 @@ export const createTransactionRules: CollectionRule[] = [
     invariant: "Stock summaries are recalculated from the updated ledger after every transaction",
     transaction: "create-transaction",
     fields: [
-      { source: "quantity_held", target: "quantity_held" },
-      { source: "quantity_in_service", target: "quantity_in_service" },
-      { source: "quantity_out_of_service", target: "quantity_out_of_service" },
-      { source: "store_breakdown", target: "store_breakdown" },
-      { source: "(derived)", target: "quantity_available", transform: "quantity_held - quantity_booked - quantity_out_of_service" },
+      { source: ["quantity_held"], target: ["quantity_held"] },
+      { source: ["quantity_in_service"], target: ["quantity_in_service"] },
+      { source: ["quantity_out_of_service"], target: ["quantity_out_of_service"] },
+      { source: ["store_breakdown"], target: ["store_breakdown"] },
+      { source: [], target: ["quantity_available"], transform: "quantity_held - quantity_booked - quantity_out_of_service" },
     ],
   },
   {
@@ -59,7 +59,7 @@ export const createTransactionRules: CollectionRule[] = [
     invariant: "Public view updated whenever stock summaries change",
     transaction: "create-transaction",
     fields: [
-      { source: "*", target: "*", transform: "same derivation as order rules — simplified store_breakdown" },
+      { source: [], target: [], transform: "same derivation as order rules — simplified store_breakdown" },
     ],
   },
 ];

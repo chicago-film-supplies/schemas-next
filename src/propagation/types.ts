@@ -18,12 +18,15 @@ export type PropagationMode =
 
 // ── Field mapping ───────────────────────────────────────────────────
 
+/** Path segments into a document — e.g. ["organization", "uid"]. Empty = computed/metadata. */
+export type FieldPath = string[];
+
 /** Describes how a single field moves from source to target. */
 export interface FieldMapping {
-  /** Field path on the source document (e.g. "price.base", "items[].name") */
-  source: string;
-  /** Field path on the target document */
-  target: string;
+  /** Field path on the source document — e.g. ["price", "base"]. Empty array for computed/metadata sources. */
+  source: FieldPath;
+  /** Field path on the target document. Empty array for computed/metadata targets. */
+  target: FieldPath;
   /** Human-readable description if not a direct copy (e.g. "subset(uid, name)") */
   transform?: string;
 }

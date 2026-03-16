@@ -16,9 +16,9 @@ export const createProductRules: CollectionRule[] = [
     invariant: "Tags track which products reference them for reverse lookup and count display",
     transaction: "create-product",
     fields: [
-      { source: "uid", target: "products[].uid" },
-      { source: "name", target: "products[].name" },
-      { source: "(count)", target: "count", transform: "FieldValue.increment(1)" },
+      { source: ["uid"], target: ["products", "uid"] },
+      { source: ["name"], target: ["products", "name"] },
+      { source: [], target: ["count"], transform: "FieldValue.increment(1)" },
     ],
   },
   {
@@ -29,9 +29,9 @@ export const createProductRules: CollectionRule[] = [
     invariant: "Tracking categories track which products are assigned for Xero reporting",
     transaction: "create-product",
     fields: [
-      { source: "uid", target: "products[uid].uid" },
-      { source: "name", target: "products[uid].name" },
-      { source: "(count)", target: "count", transform: "FieldValue.increment(1)" },
+      { source: ["uid"], target: ["products", "uid"] },
+      { source: ["name"], target: ["products", "name"] },
+      { source: [], target: ["count"], transform: "FieldValue.increment(1)" },
     ],
   },
   {
@@ -42,8 +42,8 @@ export const createProductRules: CollectionRule[] = [
     invariant: "Component products maintain a back-reference to their parent products",
     transaction: "create-product",
     fields: [
-      { source: "uid", target: "component_of[uid].uid" },
-      { source: "name", target: "component_of[uid].name" },
+      { source: ["uid"], target: ["component_of", "uid"] },
+      { source: ["name"], target: ["component_of", "name"] },
     ],
   },
   {
@@ -54,9 +54,9 @@ export const createProductRules: CollectionRule[] = [
     invariant: "Products with tracked stock (bulk/serialized) need an inventory ledger from day one",
     transaction: "create-product",
     fields: [
-      { source: "uid", target: "uid" },
-      { source: "type", target: "type" },
-      { source: "stock_method", target: "stock_method" },
+      { source: ["uid"], target: ["uid"] },
+      { source: ["type"], target: ["type"] },
+      { source: ["stock_method"], target: ["stock_method"] },
     ],
   },
   {
@@ -67,19 +67,19 @@ export const createProductRules: CollectionRule[] = [
     invariant: "Webshop products are a public-safe subset of the product catalog for the online store",
     transaction: "create-product",
     fields: [
-      { source: "uid", target: "uid" },
-      { source: "name", target: "name" },
-      { source: "description", target: "description" },
-      { source: "type", target: "type" },
-      { source: "stock_method", target: "stock_method" },
-      { source: "active", target: "active" },
-      { source: "price", target: "price", transform: "strips coa_revenue field" },
-      { source: "tags", target: "tags", transform: "copies tag refs" },
-      { source: "components", target: "components", transform: "strips crms fields from component price" },
-      { source: "component_of", target: "component_of", transform: "strips crms fields" },
-      { source: "alternates", target: "alternates" },
-      { source: "shipping", target: "shipping" },
-      { source: "webshop", target: "webshop" },
+      { source: ["uid"], target: ["uid"] },
+      { source: ["name"], target: ["name"] },
+      { source: ["description"], target: ["description"] },
+      { source: ["type"], target: ["type"] },
+      { source: ["stock_method"], target: ["stock_method"] },
+      { source: ["active"], target: ["active"] },
+      { source: ["price"], target: ["price"], transform: "strips coa_revenue field" },
+      { source: ["tags"], target: ["tags"], transform: "copies tag refs" },
+      { source: ["components"], target: ["components"], transform: "strips crms fields from component price" },
+      { source: ["component_of"], target: ["component_of"], transform: "strips crms fields" },
+      { source: ["alternates"], target: ["alternates"] },
+      { source: ["shipping"], target: ["shipping"] },
+      { source: ["webshop"], target: ["webshop"] },
     ],
   },
 ];
@@ -107,9 +107,9 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "Product name changes cascade to all component and alternate cross-references",
     transaction: "update-product",
     fields: [
-      { source: "name", target: "component_of[uid].name", transform: "updates name in parent products' component_of map" },
-      { source: "name", target: "components[uid].name", transform: "updates name in child products' components map" },
-      { source: "name", target: "alternates[uid].name", transform: "updates name in alternate products" },
+      { source: ["name"], target: ["component_of", "name"], transform: "updates name in parent products' component_of map" },
+      { source: ["name"], target: ["components", "name"], transform: "updates name in child products' components map" },
+      { source: ["name"], target: ["alternates", "name"], transform: "updates name in alternate products" },
     ],
   },
   {
@@ -120,7 +120,7 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "Location product lists show product names — must stay current",
     transaction: "update-product",
     fields: [
-      { source: "name", target: "products[].name" },
+      { source: ["name"], target: ["products", "name"] },
     ],
   },
   {
@@ -131,7 +131,7 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "Tags display product names in their product list",
     transaction: "update-product",
     fields: [
-      { source: "name", target: "products[].name" },
+      { source: ["name"], target: ["products", "name"] },
     ],
   },
   {
@@ -142,7 +142,7 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "Tracking categories display product names",
     transaction: "update-product",
     fields: [
-      { source: "name", target: "products[uid].name" },
+      { source: ["name"], target: ["products", "name"] },
     ],
   },
   {
@@ -153,14 +153,14 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "All public-facing product fields propagate to the webshop on every update",
     transaction: "update-product",
     fields: [
-      { source: "name", target: "name" },
-      { source: "active", target: "active" },
-      { source: "price", target: "price", transform: "strips coa_revenue" },
-      { source: "tags", target: "tags" },
-      { source: "components", target: "components", transform: "strips crms fields" },
-      { source: "component_of", target: "component_of", transform: "strips crms fields" },
-      { source: "alternates", target: "alternates" },
-      { source: "webshop", target: "webshop" },
+      { source: ["name"], target: ["name"] },
+      { source: ["active"], target: ["active"] },
+      { source: ["price"], target: ["price"], transform: "strips coa_revenue" },
+      { source: ["tags"], target: ["tags"] },
+      { source: ["components"], target: ["components"], transform: "strips crms fields" },
+      { source: ["component_of"], target: ["component_of"], transform: "strips crms fields" },
+      { source: ["alternates"], target: ["alternates"] },
+      { source: ["webshop"], target: ["webshop"] },
     ],
   },
   {
@@ -171,8 +171,8 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "When a product's tag list changes, old tags lose the product ref and new tags gain it",
     transaction: "update-product",
     fields: [
-      { source: "tags (removed)", target: "products[]", transform: "remove product ref, decrement count" },
-      { source: "tags (added)", target: "products[]", transform: "add product ref, increment count" },
+      { source: [], target: ["products"], transform: "tags removed → remove product ref, decrement count" },
+      { source: [], target: ["products"], transform: "tags added → add product ref, increment count" },
     ],
   },
   {
@@ -183,8 +183,8 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "When a product's tracking category changes, old category loses the ref and new one gains it",
     transaction: "update-product",
     fields: [
-      { source: "uid_tracking_category (old)", target: "products[uid]", transform: "remove product, decrement count" },
-      { source: "uid_tracking_category (new)", target: "products[uid]", transform: "add product, increment count" },
+      { source: [], target: ["products"], transform: "old tracking category → remove product, decrement count" },
+      { source: [], target: ["products"], transform: "new tracking category → add product, increment count" },
     ],
   },
   {
@@ -195,7 +195,7 @@ export const updateProductRules: CollectionRule[] = [
     invariant: "Changing stock method to 'none' deletes the ledger; changing from 'none' creates one",
     transaction: "update-product",
     fields: [
-      { source: "stock_method", target: "(document)", transform: "delete ledger if 'none', create empty ledger if 'bulk'/'serialized'" },
+      { source: ["stock_method"], target: [], transform: "delete ledger if 'none', create empty ledger if 'bulk'/'serialized'" },
     ],
   },
 ];

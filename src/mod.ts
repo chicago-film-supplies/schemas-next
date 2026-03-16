@@ -362,6 +362,7 @@ export {
 // ── Propagation ─────────────────────────────────────────────────────
 
 export type {
+  FieldPath,
   PropagationMode,
   FieldMapping,
   CollectionRule,

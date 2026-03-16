@@ -21,7 +21,7 @@ export const updateTagRules: CollectionRule[] = [
     invariant: "Products embed tag names — a tag rename must cascade to all tagged products",
     trigger: "name change — post-transaction two-pass batch (arrayRemove old, arrayUnion new)",
     fields: [
-      { source: "name", target: "tags[].name", transform: "two-pass idempotent: pass 1 removes {uid, oldName}, pass 2 adds {uid, newName}" },
+      { source: ["name"], target: ["tags", "name"], transform: "two-pass idempotent: pass 1 removes {uid, oldName}, pass 2 adds {uid, newName}" },
     ],
   },
 ];
@@ -35,8 +35,8 @@ export const deleteTagRules: CollectionRule[] = [
     invariant: "Deleting a tag must clean up all product references to prevent orphan refs",
     trigger: "delete — post-transaction batch",
     fields: [
-      { source: "uid", target: "tags[]", transform: "arrayRemove tag ref" },
-      { source: "uid", target: "query_by_tags[]", transform: "arrayRemove tag uid" },
+      { source: ["uid"], target: ["tags"], transform: "arrayRemove tag ref" },
+      { source: ["uid"], target: ["query_by_tags"], transform: "arrayRemove tag uid" },
     ],
   },
 ];
@@ -52,7 +52,7 @@ export const updateTrackingCategoryRules: CollectionRule[] = [
     invariant: "Products store tracking category name for display — must cascade on rename",
     trigger: "name change — post-transaction batch with existence check",
     fields: [
-      { source: "name", target: "tracking_category_name" },
+      { source: ["name"], target: ["tracking_category_name"] },
     ],
   },
 ];
@@ -68,9 +68,9 @@ export const updateLocationTypeRules: CollectionRule[] = [
     invariant: "Location-type capacity defaults cascade to all locations of that type — custom overrides are preserved",
     trigger: "product_capacities change — post-transaction batch (chunks of 400)",
     fields: [
-      { source: "product_capacities[].max", target: "product_capacities[].max", transform: "only if location cap matches old default; otherwise updates max_default only" },
-      { source: "product_capacities[].max", target: "product_capacities[].max_default", transform: "always updated to new type default" },
-      { source: "product_capacities[] (new)", target: "product_capacities[]", transform: "new products added with type defaults" },
+      { source: ["product_capacities", "max"], target: ["product_capacities", "max"], transform: "only if location cap matches old default; otherwise updates max_default only" },
+      { source: ["product_capacities", "max"], target: ["product_capacities", "max_default"], transform: "always updated to new type default" },
+      { source: ["product_capacities"], target: ["product_capacities"], transform: "new products added with type defaults" },
     ],
   },
 ];

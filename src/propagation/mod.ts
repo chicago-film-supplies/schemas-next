@@ -8,6 +8,7 @@
 // ── Types ────────────────────────────────────────────────────────────
 
 export type {
+  FieldPath,
   PropagationMode,
   FieldMapping,
   CollectionRule,

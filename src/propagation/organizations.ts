@@ -16,9 +16,9 @@ export const createOrganizationRules: CollectionRule[] = [
     invariant: "Contacts maintain a list of orgs they belong to for bidirectional navigation",
     transaction: "create-organization",
     fields: [
-      { source: "uid", target: "organizations[].uid" },
-      { source: "name", target: "organizations[].name" },
-      { source: "uid", target: "query_by_organizations[]" },
+      { source: ["uid"], target: ["organizations", "uid"] },
+      { source: ["name"], target: ["organizations", "name"] },
+      { source: ["uid"], target: ["query_by_organizations"] },
     ],
   },
 ];
@@ -42,7 +42,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     invariant: "Contacts display their org names — must stay current when org is renamed",
     transaction: "update-organization",
     fields: [
-      { source: "name", target: "organizations[].name" },
+      { source: ["name"], target: ["organizations", "name"] },
     ],
   },
   {
@@ -54,7 +54,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     transaction: "update-organization",
     trigger: "name change — targets active orders (not complete/canceled)",
     fields: [
-      { source: "name", target: "organization.name" },
+      { source: ["name"], target: ["organization", "name"] },
     ],
   },
   {
@@ -66,7 +66,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     transaction: "update-organization",
     trigger: "billing_address change — targets active orders",
     fields: [
-      { source: "billing_address", target: "organization.billing_address" },
+      { source: ["billing_address"], target: ["organization", "billing_address"] },
     ],
   },
   {
@@ -78,7 +78,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     transaction: "update-organization",
     trigger: "name change — targets active invoices (not paid/voided)",
     fields: [
-      { source: "name", target: "organization.name" },
+      { source: ["name"], target: ["organization", "name"] },
     ],
   },
   {
@@ -90,7 +90,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     transaction: "update-organization",
     trigger: "billing_address change — targets active invoices",
     fields: [
-      { source: "billing_address", target: "organization.billing_address" },
+      { source: ["billing_address"], target: ["organization", "billing_address"] },
     ],
   },
   {
@@ -101,10 +101,10 @@ export const updateOrganizationRules: CollectionRule[] = [
     invariant: "When an org's contact list changes, added/removed contacts update their org back-references",
     transaction: "update-organization",
     fields: [
-      { source: "contacts (added)", target: "organizations[]", transform: "add org ref {uid, name}" },
-      { source: "contacts (removed)", target: "organizations[]", transform: "remove org ref" },
-      { source: "contacts (added)", target: "query_by_organizations[]", transform: "add org uid" },
-      { source: "contacts (removed)", target: "query_by_organizations[]", transform: "remove org uid" },
+      { source: [], target: ["organizations"], transform: "contacts added → add org ref {uid, name}" },
+      { source: [], target: ["organizations"], transform: "contacts removed → remove org ref" },
+      { source: [], target: ["query_by_organizations"], transform: "contacts added → add org uid" },
+      { source: [], target: ["query_by_organizations"], transform: "contacts removed → remove org uid" },
     ],
   },
 ];

@@ -16,9 +16,9 @@ export const createContactRules: CollectionRule[] = [
     invariant: "Organizations maintain a list of contacts for bidirectional navigation",
     transaction: "create-contact",
     fields: [
-      { source: "uid", target: "contacts[].uid" },
-      { source: "name", target: "contacts[].name" },
-      { source: "uid", target: "query_by_contacts[]" },
+      { source: ["uid"], target: ["contacts", "uid"] },
+      { source: ["name"], target: ["contacts", "name"] },
+      { source: ["uid"], target: ["query_by_contacts"] },
     ],
   },
 ];
@@ -42,7 +42,7 @@ export const updateContactRules: CollectionRule[] = [
     invariant: "Organizations display contact names in their contacts list",
     transaction: "update-contact",
     fields: [
-      { source: "name", target: "contacts[].name" },
+      { source: ["name"], target: ["contacts", "name"] },
     ],
   },
   {
@@ -54,8 +54,8 @@ export const updateContactRules: CollectionRule[] = [
     transaction: "update-contact",
     trigger: "name change — targets active orders (not canceled/complete)",
     fields: [
-      { source: "name", target: "destinations[].delivery.contact.name" },
-      { source: "name", target: "destinations[].collection.contact.name" },
+      { source: ["name"], target: ["destinations", "delivery", "contact", "name"] },
+      { source: ["name"], target: ["destinations", "collection", "contact", "name"] },
     ],
   },
   {
@@ -67,8 +67,8 @@ export const updateContactRules: CollectionRule[] = [
     transaction: "update-contact",
     trigger: "phones change — targets active orders",
     fields: [
-      { source: "phones", target: "destinations[].delivery.contact.phones" },
-      { source: "phones", target: "destinations[].collection.contact.phones" },
+      { source: ["phones"], target: ["destinations", "delivery", "contact", "phones"] },
+      { source: ["phones"], target: ["destinations", "collection", "contact", "phones"] },
     ],
   },
 ];
