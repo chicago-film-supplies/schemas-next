@@ -26,6 +26,27 @@ export {
   TypesenseSynonymSchema,
 } from "./types.ts";
 
+export type {
+  BookingDocument,
+  ChartOfAccountsDocument,
+  ContactDocument,
+  DestinationDocument,
+  InvoiceDocument,
+  LocationDocument,
+  OrderDocument,
+  OrganizationDocument,
+  ProductDocument,
+  ProductDocumentComponent,
+  StoreDocument,
+  TagDocument,
+  TemplateDocument,
+  TrackingCategoryDocument,
+  WebshopProductDocument,
+  WebshopProductDocumentComponent,
+  TypesenseDocument,
+  TypesenseDocumentMap,
+} from "./documents.ts";
+
 export { bookings } from "./bookings.ts";
 export { chartOfAccounts } from "./chart-of-accounts.ts";
 export { contacts } from "./contacts.ts";
