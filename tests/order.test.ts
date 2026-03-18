@@ -418,13 +418,21 @@ Deno.test("OrderSchema rejects line item with invalid type", () => {
 });
 
 Deno.test("OrderSchema accepts all doc line item types", () => {
-  for (const type of ["custom", "rental", "replacement", "sale", "service", "surcharge"]) {
+  for (const type of ["rental", "replacement", "sale", "service", "surcharge"]) {
     const doc = {
       ...minimalDoc,
       items: [{ uid: "prod-1", type, name: "Thing" }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `type "${type}" should be valid`);
   }
+});
+
+Deno.test("OrderSchema rejects custom line item type", () => {
+  const doc = {
+    ...minimalDoc,
+    items: [{ uid: "prod-1", type: "custom", name: "Thing" }],
+  };
+  assertEquals(OrderSchema.safeParse(doc).success, false);
 });
 
 Deno.test("OrderSchema rejects float chargeable_days in price", () => {
