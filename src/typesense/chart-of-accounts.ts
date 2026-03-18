@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const chartOfAccounts: TypesenseCollectionConfig = {
   alias: "chart-of-accounts",
-  version: 3,
+  version: 4,
   firestoreCollection: "chart-of-accounts",
-  collectionName: "chart-of-accounts_v3",
+  collectionName: "chart-of-accounts_v4",
   schema: {
-    name: "chart-of-accounts_v3",
+    name: "chart-of-accounts_v4",
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "name", type: "string", sort: true, stem: true, facet: false },

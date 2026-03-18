@@ -168,6 +168,17 @@ export interface InvoiceDocument {
     name?: string;
     quantity?: number;
     type?: string;
+    price?: {
+      base?: number;
+      total?: number;
+      discount_percent?: number;
+      chargeable_days?: number;
+      formula?: string;
+      tax_profile?: string;
+    };
+    crms_opportunity_id?: number;
+    tracking_category?: string;
+    coa_revenue?: string;
   }>;
   crms_opportunity_ids?: number[];
   xero_id?: string;
@@ -236,6 +247,7 @@ export interface OrderDocument {
   };
   destinations: Array<{
     delivery?: {
+      uid?: string;
       address?: {
         full?: string;
         city?: string;
@@ -248,6 +260,7 @@ export interface OrderDocument {
       };
     };
     collection?: {
+      uid?: string;
       address?: {
         full?: string;
         city?: string;
@@ -271,7 +284,27 @@ export interface OrderDocument {
     name?: string;
     quantity?: number;
     type?: string;
+    description?: string;
+    stock_method?: string;
+    inclusion_type?: string;
+    zero_priced?: boolean;
+    uid_order?: string;
+    order_number?: number;
+    uid_component_of?: string;
+    uid_delivery?: string;
+    uid_collection?: string;
     total_price?: number;
+    price?: {
+      base?: number;
+      subtotal?: number;
+      total?: number;
+      tax_amount?: number;
+      discount_amount?: number;
+      discount_percent?: number;
+      chargeable_days?: number;
+      formula?: string;
+      tax_profile?: string;
+    };
   }>;
   created_at?: number;
   updated_at: number;

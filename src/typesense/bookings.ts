@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const bookings: TypesenseCollectionConfig = {
   alias: "bookings",
-  version: 2,
+  version: 3,
   firestoreCollection: "bookings",
-  collectionName: "bookings_v2",
+  collectionName: "bookings_v3",
   schema: {
-    name: "bookings_v2",
+    name: "bookings_v3",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },

@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const invoices: TypesenseCollectionConfig = {
   alias: "invoices",
-  version: 3,
+  version: 4,
   firestoreCollection: "invoices",
-  collectionName: "invoices_v3",
+  collectionName: "invoices_v4",
   schema: {
-    name: "invoices_v3",
+    name: "invoices_v4",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -31,6 +31,16 @@ export const invoices: TypesenseCollectionConfig = {
       { name: "items_consolidated.name", type: "string[]", stem: true, optional: true },
       { name: "items_consolidated.quantity", type: "int32[]", optional: true },
       { name: "items_consolidated.type", type: "string[]", facet: true, optional: true },
+      { name: "items_consolidated.price", type: "object[]", optional: true },
+      { name: "items_consolidated.price.base", type: "float[]", optional: true },
+      { name: "items_consolidated.price.total", type: "float[]", optional: true },
+      { name: "items_consolidated.price.discount_percent", type: "float[]", optional: true },
+      { name: "items_consolidated.price.chargeable_days", type: "int32[]", optional: true },
+      { name: "items_consolidated.price.formula", type: "string[]", optional: true },
+      { name: "items_consolidated.price.tax_profile", type: "string[]", facet: true, optional: true },
+      { name: "items_consolidated.crms_opportunity_id", type: "int64[]", optional: true },
+      { name: "items_consolidated.tracking_category", type: "string[]", optional: true },
+      { name: "items_consolidated.coa_revenue", type: "string[]", optional: true },
       { name: "crms_opportunity_ids", type: "int64[]", optional: true },
       { name: "xero_id", type: "string", optional: true },
       { name: "updated_by", type: "string", facet: false, optional: true },

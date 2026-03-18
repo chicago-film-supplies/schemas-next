@@ -32,7 +32,7 @@ type ItemTypeType = typeof ITEM_TYPES[number];
 
 /** Line item types in the full document (superset of input types). */
 const DOC_LINE_ITEM_TYPES = [
-  "custom", "rental", "replacement", "sale", "service", "surcharge",
+  "rental", "replacement", "sale", "service", "surcharge",
 ] as const;
 type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
 
