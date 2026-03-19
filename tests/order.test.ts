@@ -283,7 +283,7 @@ const minimalDoc = {
   totals: {
     discount_amount: 0,
     subtotal: 100,
-    taxes: {},
+    taxes: [],
     total: 100,
   },
 };
@@ -362,7 +362,7 @@ Deno.test("OrderSchema rejects additional properties on organization", () => {
 Deno.test("OrderSchema rejects additional properties on totals", () => {
   const doc = {
     ...minimalDoc,
-    totals: { discount_amount: 0, subtotal: 0, taxes: {}, total: 0, extra: 1 },
+    totals: { discount_amount: 0, subtotal: 0, taxes: [], total: 0, extra: 1 },
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });

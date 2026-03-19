@@ -439,7 +439,7 @@ const OrderDocOrganization = z.strictObject({
 const OrderDocTotals = z.strictObject({
   discount_amount: z.number().default(0),
   subtotal: z.number().default(0),
-  taxes: z.record(z.string(), z.number()).default({}),
+  taxes: z.array(z.strictObject({ name: z.string(), total: z.number() })).default([]),
   total: z.number().default(0),
 });
 
@@ -462,7 +462,7 @@ export interface Order {
   destinations: DocDestinationType[];
   items: OrderDocItemType[];
   tax_profile: TaxProfileType;
-  totals: { discount_amount: number; subtotal: number; taxes: Record<string, number>; total: number };
+  totals: { discount_amount: number; subtotal: number; taxes: Array<{ name: string; total: number }>; total: number };
   query_by_items: string[];
   query_by_contacts: string[];
   crms_id?: number | null;

@@ -2,11 +2,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const orders: TypesenseCollectionConfig = {
   alias: "orders",
-  version: 11,
+  version: 12,
   firestoreCollection: "orders",
-  collectionName: "orders_v11",
+  collectionName: "orders_v12",
   schema: {
-    name: "orders_v11",
+    name: "orders_v12",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -56,7 +56,9 @@ export const orders: TypesenseCollectionConfig = {
       { name: "totals", type: "object" },
       { name: "totals.discount_amount", type: "float", optional: true },
       { name: "totals.subtotal", type: "float", optional: true },
-      { name: "totals.taxes", type: "object", optional: true },
+      { name: "totals.taxes", type: "object[]", optional: true },
+      { name: "totals.taxes.name", type: "string[]", optional: true },
+      { name: "totals.taxes.total", type: "float[]", optional: true },
       { name: "totals.total", type: "float", sort: true, optional: true },
       { name: "items", type: "object[]", optional: true },
       { name: "items.uid", type: "string[]", facet: false, optional: true },
