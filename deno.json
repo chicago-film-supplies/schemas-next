@@ -34,7 +34,8 @@
     "./typesense": "./src/typesense/mod.ts",
     "./quote": "./src/quote.ts",
     "./template": "./src/template.ts",
-    "./webhook-event": "./src/webhook-event.ts"
+    "./webhook-event": "./src/webhook-event.ts",
+    "./log": "./src/log.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",

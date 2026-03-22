@@ -155,6 +155,13 @@ export {
 } from "./error-sync.ts";
 
 export {
+  LogRecordSchema,
+  type LogRecord,
+  type LogLevelType,
+  type PiiClassification,
+} from "./log.ts";
+
+export {
   StoreSchema,
   CreateStoreInput,
   UpdateStoreInput,
