@@ -267,6 +267,7 @@ export interface UpdateOrderInputType {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
+  version: number;
 }
 
 export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
@@ -282,6 +283,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   notes: z.string().optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
+  version: z.int(),
 });
 
 // ── Full document schemas ────────────────────────────────────────
@@ -472,6 +474,7 @@ export interface Order {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
+  version: number;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -495,11 +498,12 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   notes: z.string().default(""),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
+  version: z.int().default(0),
   ...TimestampFields,
 }).meta({
   title: "Order",
   collection: "orders",
-  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null},
+  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null,"version":0},
   displayDefaults: {
     columns: ["number", "organization.name", "subject", "status"],
     filters: { status: [] },

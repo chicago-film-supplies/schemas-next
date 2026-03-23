@@ -112,6 +112,7 @@ export interface Transaction {
     stock_level_id: number | null;
     transaction_id: number | null;
   }>;
+  version: number;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -163,12 +164,13 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     stock_level_id: z.number().nullable(),
     transaction_id: z.number().nullable(),
   })).default({}),
+  version: z.int().default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({
   title: "Transaction",
   collection: "transactions",
-  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[]},
+  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[],"version":0},
   displayDefaults: {
     columns: ["date", "quantity", "source.type", "type", "reference"],
     filters: {},
@@ -263,6 +265,7 @@ export interface UpdateTransactionInputType {
     asset_tags: string[];
     serial_numbers: string[];
   } | null;
+  version: number;
 }
 
 export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.object({
@@ -279,6 +282,7 @@ export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.o
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
+  version: z.int(),
 });
 
 export interface CreateStoreTransferInputType {
@@ -322,6 +326,7 @@ export interface UpdateStoreTransferInputType {
     asset_tags: string[];
     serial_numbers: string[];
   } | null;
+  version: number;
 }
 
 export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> = z.object({
@@ -337,4 +342,5 @@ export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> =
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
+  version: z.int(),
 });

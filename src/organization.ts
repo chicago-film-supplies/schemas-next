@@ -45,6 +45,7 @@ export interface Organization {
   contacts: OrganizationContactType[];
   query_by_contacts: string[];
   last_order?: FirestoreTimestampType | null;
+  version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -63,12 +64,13 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   contacts: z.array(OrganizationContact).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   last_order: FirestoreTimestamp.nullable().optional(),
+  version: z.int().default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
   title: "Organization",
   collection: "organizations",
-  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[]},
+  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[],"version":0},
   displayDefaults: {
     columns: ["name", "emails", "phones"],
     filters: {},
@@ -132,6 +134,7 @@ export interface UpdateOrganizationInputType {
   newContacts?: NewContactInputType[] | null;
   emails?: string[];
   phones?: string[];
+  version: number;
 }
 
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
@@ -144,4 +147,5 @@ export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z
   newContacts: z.array(NewContactInput).nullable().optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
+  version: z.int(),
 });

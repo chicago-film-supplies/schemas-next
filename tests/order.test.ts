@@ -230,12 +230,12 @@ Deno.test("CreateOrderInput rejects float quantity on items", () => {
 // ── UpdateOrderInput ─────────────────────────────────────────────
 
 Deno.test("UpdateOrderInput accepts partial update", () => {
-  const input = { status: "active" };
+  const input = { status: "active", version: 1 };
   assertEquals(UpdateOrderInput.safeParse(input).success, true);
 });
 
-Deno.test("UpdateOrderInput accepts empty object", () => {
-  assertEquals(UpdateOrderInput.safeParse({}).success, true);
+Deno.test("UpdateOrderInput rejects missing version", () => {
+  assertEquals(UpdateOrderInput.safeParse({}).success, false);
 });
 
 // ── OrderSchema (document) ───────────────────────────────────────
