@@ -38,6 +38,45 @@ export const LogRecordSchema: z.ZodType<LogRecord> = z.object({
   duration_ms: z.number().optional(),
 }).passthrough().meta({ title: "LogRecord" });
 
+// ── Propagation log record ──────────────────────────────────────────
+
+const PROPAGATION_MODES = ["embed", "fan-out", "co-write", "derive", "reference"] as const;
+const PROPAGATION_STATUSES = ["completed", "skipped", "failed"] as const;
+
+export type PropagationStatusType = typeof PROPAGATION_STATUSES[number];
+
+export const PropagationLogRecordSchema = z.object({
+  level: z.enum(LOG_LEVELS),
+  msg: z.literal("propagation"),
+  ts: z.string(),
+  rule_id: z.string(),
+  source: z.string(),
+  target: z.string(),
+  mode: z.enum(PROPAGATION_MODES),
+  transaction: z.string().optional(),
+  fields_mapped: z.number(),
+  source_doc_id: z.string().optional(),
+  target_doc_id: z.string().optional(),
+  status: z.enum(PROPAGATION_STATUSES),
+  duration_ms: z.number().optional(),
+  error: z.string().optional(),
+  rules_fired: z.array(z.string()).optional(),
+  rules_fired_count: z.number().optional(),
+  rules_expected: z.number().optional(),
+  target_counts: z.record(z.string(), z.number()).optional(),
+  target_count: z.number().optional(),
+  // Envelope fields from request context
+  request_id: z.string().optional(),
+  method: z.string().optional(),
+  path: z.string().optional(),
+  route: z.string().optional(),
+  user_id: z.string().meta({ pii: "hash" }).optional(),
+  trace_id: z.string().optional(),
+  span_id: z.string().optional(),
+}).passthrough().meta({ title: "PropagationLogRecord" });
+
+export type PropagationLogRecord = z.infer<typeof PropagationLogRecordSchema>;
+
 // ── PII meta type ───────────────────────────────────────────────────
 
 /**

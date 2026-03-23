@@ -156,9 +156,12 @@ export {
 
 export {
   LogRecordSchema,
+  PropagationLogRecordSchema,
   type LogRecord,
   type LogLevelType,
   type PiiClassification,
+  type PropagationLogRecord,
+  type PropagationStatusType,
 } from "./log.ts";
 
 export {
