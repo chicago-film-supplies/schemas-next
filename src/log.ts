@@ -21,6 +21,7 @@ export interface LogRecord {
   trace_id?: string;
   span_id?: string;
   duration_ms?: number;
+  dry_run?: boolean;
   [key: string]: unknown;
 }
 
@@ -36,6 +37,7 @@ export const LogRecordSchema: z.ZodType<LogRecord> = z.object({
   trace_id: z.string().optional(),
   span_id: z.string().optional(),
   duration_ms: z.number().optional(),
+  dry_run: z.boolean().optional(),
 }).passthrough().meta({ title: "LogRecord" });
 
 // ── Propagation log record ──────────────────────────────────────────
