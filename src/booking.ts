@@ -153,7 +153,7 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   }),
   organization: z.strictObject({
     uid: z.string().nullable(),
-    name: z.string(),
+    name: z.string().meta({ pii: "mask" }),
     crms_id: z.number().nullable(),
   }),
   stores: z.array(BookingStoreSchema).default([]),

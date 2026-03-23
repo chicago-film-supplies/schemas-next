@@ -71,7 +71,7 @@ export interface DestinationContactType {
 
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   phones: z.array(Phone).optional(),
 });
 
@@ -86,7 +86,7 @@ export interface DocDestinationContactType {
 
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   phones: z.array(Phone).default([]),
 });
 
@@ -246,7 +246,7 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().optional(),
+  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
 });
@@ -280,7 +280,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().optional(),
+  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
   version: z.int(),
@@ -431,7 +431,7 @@ export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemTyp
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
   uid: z.string().nullable(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   crms_id: z.number().nullable().optional(),
   xero_id: z.string().nullable().optional(),
   billing_address: Address.optional(),
@@ -495,7 +495,7 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   crms_status: z.string().optional(),
   subject: z.string().default(""),
   reference: z.string().max(255).nullable().default(null),
-  notes: z.string().default(""),
+  notes: z.string().meta({ pii: "mask" }).default(""),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
   version: z.int().default(0),

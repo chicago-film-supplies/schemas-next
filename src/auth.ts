@@ -14,7 +14,7 @@ export interface LoginInputType {
 
 export const LoginInput: z.ZodType<LoginInputType> = z.object({
   email: Email,
-  password: z.string().min(1, "Password is required"),
+  password: z.string().min(1, "Password is required").meta({ pii: "redact" }),
 });
 
 /**
@@ -27,7 +27,7 @@ export interface RegisterInputType {
 
 export const RegisterInput: z.ZodType<RegisterInputType> = z.object({
   email: Email,
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters").meta({ pii: "redact" }),
 });
 
 /**
@@ -39,8 +39,8 @@ export interface ResetPasswordInputType {
 }
 
 export const ResetPasswordInput: z.ZodType<ResetPasswordInputType> = z.object({
-  token: z.string().min(1, "Token is required"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  token: z.string().min(1, "Token is required").meta({ pii: "redact" }),
+  password: z.string().min(8, "Password must be at least 8 characters").meta({ pii: "redact" }),
 });
 
 /**

@@ -63,7 +63,7 @@ export interface User {
 export const UserSchema: z.ZodType<User> = z.strictObject({
   uid: z.string(),
   email: Email,
-  password_hash: z.string().min(1),
+  password_hash: z.string().min(1).meta({ pii: "redact" }),
   email_verified: z.boolean().default(false),
   uid_customer: z.string().nullable().optional(),
   roles: z.array(z.string()).optional(),

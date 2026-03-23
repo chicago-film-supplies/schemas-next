@@ -14,7 +14,7 @@ export interface ContactOrganizationType {
 
 export const ContactOrganization: z.ZodType<ContactOrganizationType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Organization name is required").max(100),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
 });
 
 /**
@@ -37,7 +37,7 @@ export interface Contact {
 
 export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   crms_id: z.number().optional(),
   emails: z.array(Email).default([]),
   phones: z.array(Phone).default([]),
@@ -71,7 +71,7 @@ export interface CreateContactInputType {
 
 export const CreateContactInput: z.ZodType<CreateContactInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),
@@ -91,7 +91,7 @@ export interface UpdateContactInputType {
 
 export const UpdateContactInput: z.ZodType<UpdateContactInputType> = z.object({
   uid: z.string().optional(),
-  name: z.string().min(1, "Contact name is required").max(100).optional(),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }).optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),

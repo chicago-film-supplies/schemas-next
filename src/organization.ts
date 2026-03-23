@@ -25,7 +25,7 @@ export interface OrganizationContactType {
 
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   roles: z.array(z.string()).default([]),
 });
 
@@ -53,7 +53,7 @@ export interface Organization {
 
 export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Organization name is required").max(100),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
   crms_id: z.number(),
   xero_id: z.string().nullable(),
   tax_profile: TaxProfileEnum.default("tax_applied"),
@@ -90,7 +90,7 @@ export interface NewContactInputType {
 
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
@@ -112,7 +112,7 @@ export interface CreateOrganizationInputType {
 
 export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Organization name is required").max(100),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
   tax_profile: TaxProfileEnum,
   billing_address: Address,
   contacts: z.array(OrganizationContact).optional(),
@@ -139,7 +139,7 @@ export interface UpdateOrganizationInputType {
 
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
   uid: z.string().optional(),
-  name: z.string().min(1, "Organization name is required").max(100).optional(),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }).optional(),
   tax_profile: TaxProfileEnum.optional(),
   description: z.string().optional(),
   billing_address: Address.optional(),

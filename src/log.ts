@@ -32,7 +32,7 @@ export const LogRecordSchema: z.ZodType<LogRecord> = z.object({
   method: z.string().optional(),
   path: z.string().optional(),
   route: z.string().optional(),
-  user_id: z.string().optional(),
+  user_id: z.string().meta({ pii: "hash" }).optional(),
   trace_id: z.string().optional(),
   span_id: z.string().optional(),
   duration_ms: z.number().optional(),
