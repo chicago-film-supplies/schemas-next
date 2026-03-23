@@ -161,6 +161,7 @@ export {
   type LogLevelType,
   type PiiClassification,
   type PropagationLogRecord,
+  type PropagationModeType,
   type PropagationStatusType,
 } from "./log.ts";
 

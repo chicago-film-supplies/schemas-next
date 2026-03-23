@@ -44,8 +44,39 @@ const PROPAGATION_MODES = ["embed", "fan-out", "co-write", "derive", "reference"
 const PROPAGATION_STATUSES = ["completed", "skipped", "failed"] as const;
 
 export type PropagationStatusType = typeof PROPAGATION_STATUSES[number];
+export type PropagationModeType = typeof PROPAGATION_MODES[number];
 
-export const PropagationLogRecordSchema = z.object({
+export interface PropagationLogRecord {
+  level: LogLevelType;
+  msg: "propagation";
+  ts: string;
+  rule_id: string;
+  source: string;
+  target: string;
+  mode: PropagationModeType;
+  transaction?: string;
+  fields_mapped: number;
+  source_doc_id?: string;
+  target_doc_id?: string;
+  status: PropagationStatusType;
+  duration_ms?: number;
+  error?: string;
+  rules_fired?: string[];
+  rules_fired_count?: number;
+  rules_expected?: number;
+  target_counts?: Record<string, number>;
+  target_count?: number;
+  request_id?: string;
+  method?: string;
+  path?: string;
+  route?: string;
+  user_id?: string;
+  trace_id?: string;
+  span_id?: string;
+  [key: string]: unknown;
+}
+
+export const PropagationLogRecordSchema: z.ZodType<PropagationLogRecord> = z.object({
   level: z.enum(LOG_LEVELS),
   msg: z.literal("propagation"),
   ts: z.string(),
@@ -65,7 +96,6 @@ export const PropagationLogRecordSchema = z.object({
   rules_expected: z.number().optional(),
   target_counts: z.record(z.string(), z.number()).optional(),
   target_count: z.number().optional(),
-  // Envelope fields from request context
   request_id: z.string().optional(),
   method: z.string().optional(),
   path: z.string().optional(),
@@ -74,8 +104,6 @@ export const PropagationLogRecordSchema = z.object({
   trace_id: z.string().optional(),
   span_id: z.string().optional(),
 }).passthrough().meta({ title: "PropagationLogRecord" });
-
-export type PropagationLogRecord = z.infer<typeof PropagationLogRecordSchema>;
 
 // ── PII meta type ───────────────────────────────────────────────────
 

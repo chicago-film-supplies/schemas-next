@@ -45,17 +45,6 @@ const SENSITIVE_EXACT = new Set([
 /** Field names that require `pii` when they appear in contact/org/user-adjacent schemas. */
 const SENSITIVE_NAME_FIELD = "name";
 
-/** Schemas where a top-level or nested `name` field refers to a person/org and needs PII. */
-const NAME_SENSITIVE_SCHEMAS = new Set([
-  "ContactSchema",
-  "CreateContactInput",
-  "UpdateContactInput",
-  "OrganizationSchema",
-  "CreateOrganizationInput",
-  "UpdateOrganizationInput",
-  "NewContactInput",
-]);
-
 // ── Helpers ──────────────────────────────────────────────────────────
 
 /**
