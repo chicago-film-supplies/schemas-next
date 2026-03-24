@@ -157,12 +157,17 @@ export {
 export {
   LogRecordSchema,
   PropagationLogRecordSchema,
+  ClientLogEntrySchema,
+  ClientLogBatchSchema,
   type LogRecord,
   type LogLevelType,
   type PiiClassification,
   type PropagationLogRecord,
   type PropagationModeType,
   type PropagationStatusType,
+  type ClientLogEntry,
+  type ClientLogBatch,
+  type ClientAppType,
 } from "./log.ts";
 
 export {

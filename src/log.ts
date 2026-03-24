@@ -107,6 +107,39 @@ export const PropagationLogRecordSchema: z.ZodType<PropagationLogRecord> = z.obj
   span_id: z.string().optional(),
 }).passthrough().meta({ title: "PropagationLogRecord" });
 
+// ── Client log record ────────────────────────────────────────────────
+
+const CLIENT_APPS = ["manager"] as const;
+export type ClientAppType = typeof CLIENT_APPS[number];
+
+export interface ClientLogEntry {
+  level: LogLevelType;
+  msg: string;
+  ts: string;
+  app: ClientAppType;
+  page?: string;
+  request_id?: string;
+  data?: Record<string, unknown>;
+}
+
+export const ClientLogEntrySchema: z.ZodType<ClientLogEntry> = z.object({
+  level: z.enum(LOG_LEVELS),
+  msg: z.string().max(100),
+  ts: z.string().datetime(),
+  app: z.enum(CLIENT_APPS),
+  page: z.string().max(500).optional(),
+  request_id: z.string().max(100).optional(),
+  data: z.record(z.string(), z.unknown()).optional(),
+});
+
+export interface ClientLogBatch {
+  logs: ClientLogEntry[];
+}
+
+export const ClientLogBatchSchema: z.ZodType<ClientLogBatch> = z.object({
+  logs: z.array(ClientLogEntrySchema).min(1).max(50),
+});
+
 // ── PII meta type ───────────────────────────────────────────────────
 
 /**
