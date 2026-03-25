@@ -28,6 +28,7 @@ export interface Location {
   active: boolean;
   products: LocationProduct[];
   query_by_products: string[];
+  version: number;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -52,6 +53,7 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
     default: z.boolean(),
   })).default([]),
   query_by_products: z.array(z.string()).default([]),
+  version: z.int().min(0).default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({
@@ -80,10 +82,12 @@ export interface UpdateLocationInputType {
   uid_store: string;
   name?: string;
   active?: boolean;
+  version: number;
 }
 export const UpdateLocationInput: z.ZodType<UpdateLocationInputType> = z.object({
   uid: z.string(),
   uid_store: z.string(),
   name: z.string().min(1).max(100).optional(),
   active: z.boolean().optional(),
+  version: z.int().min(0),
 });

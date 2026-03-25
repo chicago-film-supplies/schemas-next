@@ -12,6 +12,7 @@ const validLocation = {
   query_by_product_capacities: ["p1"],
   products: [{ uid: "p1", name: "LED Panel", quantity: 10, default: true }],
   query_by_products: ["p1"],
+  version: 0,
   created_at: null,
   updated_at: null,
 };

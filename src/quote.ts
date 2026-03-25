@@ -24,7 +24,7 @@ export const QuoteSchema: z.ZodType<Quote> = z.strictObject({
   uid: z.string(),
   uid_order: z.string(),
   order_number: z.number(),
-  version: z.number().nullable(),
+  version: z.int().min(0).nullable(),
   is_draft: z.boolean(),
   uploadcare_uuid: z.string().nullable(),
   deleted_at: FirestoreTimestamp.nullable(),

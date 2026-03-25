@@ -283,7 +283,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
-  version: z.int(),
+  version: z.int().min(0),
 });
 
 // ── Full document schemas ────────────────────────────────────────
@@ -498,7 +498,7 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   notes: z.string().meta({ pii: "mask" }).default(""),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
-  version: z.int().default(0),
+  version: z.int().min(0).default(0),
   ...TimestampFields,
 }).meta({
   title: "Order",

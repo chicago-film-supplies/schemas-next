@@ -42,7 +42,7 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   collection_source: z.enum(TEMPLATE_SOURCE_COLLECTIONS),
   collection_target: z.enum(TEMPLATE_TARGET_COLLECTIONS),
   scope: z.enum(TEMPLATE_SCOPES),
-  version: z.number(),
+  version: z.int().min(0),
   source: z.string(),
   source_filename: z.string(),
   created_at: FirestoreTimestamp,

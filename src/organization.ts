@@ -64,7 +64,7 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   contacts: z.array(OrganizationContact).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   last_order: FirestoreTimestamp.nullable().optional(),
-  version: z.int().default(0),
+  version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
@@ -147,5 +147,5 @@ export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z
   newContacts: z.array(NewContactInput).nullable().optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
-  version: z.int(),
+  version: z.int().min(0),
 });

@@ -164,7 +164,7 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     stock_level_id: z.number().nullable(),
     transaction_id: z.number().nullable(),
   })).default({}),
-  version: z.int().default(0),
+  version: z.int().min(0).default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({
@@ -282,7 +282,7 @@ export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.o
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
-  version: z.int(),
+  version: z.int().min(0),
 });
 
 export interface CreateStoreTransferInputType {
@@ -342,5 +342,5 @@ export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> =
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
-  version: z.int(),
+  version: z.int().min(0),
 });

@@ -182,7 +182,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   images: z.array(z.string()).optional(),
   xero_id: z.string().nullable().optional(),
   xero_tracking_option_id: z.string().optional(),
-  version: z.int().default(0),
+  version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
@@ -381,6 +381,6 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     available: z.boolean(),
     description: z.string().nullable().optional(),
   }).optional(),
-  version: z.int(),
+  version: z.int().min(0),
   updated_by: z.string().optional(),
 });
