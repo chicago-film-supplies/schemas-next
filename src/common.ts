@@ -92,8 +92,8 @@ export interface UidNameRefType {
 }
 
 export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
-  uid: z.string(),
-  name: z.string(),
+  uid: z.string().min(1),
+  name: z.string().min(1).max(100).meta({ pii: "none" }),
 });
 
 /**

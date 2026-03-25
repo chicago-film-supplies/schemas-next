@@ -122,4 +122,15 @@ export const updateLocationRules: CollectionRule[] = [
       { source: ["name"], target: ["stores", "locations", "name"], transform: "updates name where uid_location matches within each store's location array" },
     ],
   },
+  {
+    id: "update-location:default-name-to-store",
+    source: "locations",
+    target: "stores",
+    mode: "fan-out",
+    invariant: "If the default location is renamed, Eventarc cascades the new name to the store's default_location",
+    trigger: "name change on default location — Eventarc on location write, only if location.default === true",
+    fields: [
+      { source: ["name"], target: ["default_location", "name"] },
+    ],
+  },
 ];

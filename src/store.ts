@@ -2,12 +2,13 @@
  * Store document schema — Firestore collection: stores
  */
 import { z } from "zod";
-import { type FirestoreTimestampType, TimestampFields } from "./common.ts";
+import { type FirestoreTimestampType, TimestampFields, UidNameRef, type UidNameRefType } from "./common.ts";
 
 export interface Store {
   uid: string;
   name: string;
   default: boolean;
+  default_location: UidNameRefType | null;
   crms_store_id: number;
   active: boolean;
   created_at?: FirestoreTimestampType;
@@ -18,6 +19,7 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100),
   default: z.boolean().default(false),
+  default_location: UidNameRef.nullable().default(null),
   crms_store_id: z.number(),
   active: z.boolean().default(true),
   ...TimestampFields,
