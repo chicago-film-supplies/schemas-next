@@ -31,6 +31,37 @@ export function getTransactionMultiplier(type: TransactionTypeType): 1 | -1 {
   throw new Error("Transaction type does not have a quantity multiplier: " + type);
 }
 
+/** Financial-only types that don't involve physical inventory movement. */
+const FINANCIAL_ONLY_TYPES: TransactionTypeType[] = [
+  "acquisition", "disposal", "partial_disposal",
+  "depreciation_tax", "depreciation_gaap",
+];
+
+/**
+ * Determines if a transaction type should track costs (total_cost / unit_cost).
+ * Returns false for transfers and financial-only types.
+ */
+export function hasCosts(type: TransactionTypeType): boolean {
+  if (FINANCIAL_ONLY_TYPES.includes(type)) return false;
+  if (type === "transfer_increase" || type === "transfer_decrease") return false;
+  return true;
+}
+
+/**
+ * Returns transaction types suitable for UI display in manual transaction forms.
+ * Excludes financial-only types (acquisition, disposal, depreciation) and transfers.
+ * When `increaseOnly` is true, returns only types that increase inventory
+ * (for first transactions / opening balance scenarios).
+ */
+export function getDisplayTransactionTypes(increaseOnly?: boolean): TransactionTypeType[] {
+  if (increaseOnly) {
+    return ["purchase", "make", "find"];
+  }
+  return TRANSACTION_TYPES.filter(
+    (t) => !FINANCIAL_ONLY_TYPES.includes(t) && t !== "transfer_increase" && t !== "transfer_decrease" && t !== "opening_balance",
+  );
+}
+
 const TRANSACTION_SOURCE_TYPES = ["manual", "order", "internal"] as const;
 type TransactionSourceTypeType = typeof TRANSACTION_SOURCE_TYPES[number];
 
@@ -81,6 +112,7 @@ export interface Transaction {
     stock_level_id: number | null;
     transaction_id: number | null;
   }>;
+  version: number;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -132,12 +164,18 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     stock_level_id: z.number().nullable(),
     transaction_id: z.number().nullable(),
   })).default({}),
+  version: z.int().min(0).default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({
   title: "Transaction",
   collection: "transactions",
-  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[]},
+  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[],"version":0},
+  displayDefaults: {
+    columns: ["date", "quantity", "source.type", "type", "reference"],
+    filters: {},
+    sort: { column: "date", direction: "desc" },
+  },
 });
 
 // ── Input schemas for manual transactions ────────────────────────
@@ -227,6 +265,7 @@ export interface UpdateTransactionInputType {
     asset_tags: string[];
     serial_numbers: string[];
   } | null;
+  version: number;
 }
 
 export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.object({
@@ -243,6 +282,7 @@ export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.o
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
+  version: z.int().min(0),
 });
 
 export interface CreateStoreTransferInputType {
@@ -286,6 +326,7 @@ export interface UpdateStoreTransferInputType {
     asset_tags: string[];
     serial_numbers: string[];
   } | null;
+  version: number;
 }
 
 export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> = z.object({
@@ -301,4 +342,5 @@ export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> =
     asset_tags: z.array(z.string()).default([]),
     serial_numbers: z.array(z.string()).default([]),
   }).nullable().optional(),
+  version: z.int().min(0),
 });

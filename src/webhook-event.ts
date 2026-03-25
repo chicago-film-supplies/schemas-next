@@ -15,4 +15,12 @@ export const WebhookEventSchema: z.ZodType<WebhookEvent> = z.strictObject({
   received: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
   payload: z.unknown(),
-}).meta({ title: "WebhookEvent", collection: "webhooks/{service}/events" });
+}).meta({
+  title: "WebhookEvent",
+  collection: "webhooks/{service}/events",
+  displayDefaults: {
+    columns: ["type", "status"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

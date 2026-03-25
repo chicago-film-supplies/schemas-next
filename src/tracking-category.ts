@@ -29,7 +29,15 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   xero_tracking_option_id: z.string().nullable(),
   updated_by: z.string(),
   ...TimestampFields,
-}).meta({ title: "Tracking Category", collection: "tracking-categories" });
+}).meta({
+  title: "Tracking Category",
+  collection: "tracking-categories",
+  displayDefaults: {
+    columns: ["name", "count"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
+});
 
 export interface CreateTrackingCategoryInputType {
   name: string;

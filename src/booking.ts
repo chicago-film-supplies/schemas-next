@@ -85,6 +85,7 @@ export interface Booking {
   };
   stores: BookingStore[];
   query_by_uid_store: string[];
+  query_by_uid_location: string[];
   uid_destination_delivery: string;
   uid_destination_collection: string;
   created_at: FirestoreTimestampType;
@@ -153,13 +154,22 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   }),
   organization: z.strictObject({
     uid: z.string().nullable(),
-    name: z.string(),
+    name: z.string().meta({ pii: "mask" }),
     crms_id: z.number().nullable(),
   }),
   stores: z.array(BookingStoreSchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
+  query_by_uid_location: z.array(z.string()).default([]),
   uid_destination_delivery: z.string(),
   uid_destination_collection: z.string(),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Booking", collection: "bookings" });
+}).meta({
+  title: "Booking",
+  collection: "bookings",
+  displayDefaults: {
+    columns: ["order_number", "status", "organization", "quantity", "date_start", "date_end"],
+    filters: {},
+    sort: { column: "order_number", direction: "desc" },
+  },
+});

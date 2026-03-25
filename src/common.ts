@@ -42,7 +42,7 @@ export const TimestampFields: {
 /**
  * Email string with format and length constraints.
  */
-export const Email: z.ZodType<string> = z.email("Must be a valid email address").min(5).max(254);
+export const Email: z.ZodType<string> = z.email("Must be a valid email address").min(5).max(254).meta({ pii: "mask" });
 
 /**
  * Phone string with length constraints.
@@ -50,7 +50,8 @@ export const Email: z.ZodType<string> = z.email("Must be a valid email address")
 export const Phone: z.ZodType<string> = z
   .string()
   .min(10, "Phone number must be at least 10 characters")
-  .max(20, "Phone number must not exceed 20 characters");
+  .max(20, "Phone number must not exceed 20 characters")
+  .meta({ pii: "mask" });
 
 /**
  * Coordinates object (latitude/longitude).
@@ -91,8 +92,8 @@ export interface UidNameRefType {
 }
 
 export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
-  uid: z.string(),
-  name: z.string(),
+  uid: z.string().min(1),
+  name: z.string().min(1).max(100).meta({ pii: "none" }),
 });
 
 /**
@@ -168,5 +169,6 @@ export const Address: z.ZodType<AddressType | null> = z.strictObject({
   address_coordinates: Coordinates.optional(),
   user_coordinates: Coordinates.optional(),
 }).nullable().meta({
+  pii: "mask",
   initial: {"city":"","address_coordinates":null,"user_coordinates":null,"country_name":"","full":"","name":"","postcode":"","region":"","street":"","street2":"","mapbox_id":""},
 });

@@ -17,4 +17,12 @@ export const PasswordResetSchema: z.ZodType<PasswordReset> = z.strictObject({
   email: z.string().email(),
   expiresAt: FirestoreTimestamp,
   created_at: z.number(),
-}).meta({ title: "Password Reset", collection: "password-resets" });
+}).meta({
+  title: "Password Reset",
+  collection: "password-resets",
+  displayDefaults: {
+    columns: ["email"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

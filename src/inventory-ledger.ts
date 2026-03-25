@@ -50,6 +50,7 @@ export interface InventoryLedger {
   };
   store_breakdown: InventoryLedgerStore[];
   query_by_uid_store: string[];
+  query_by_uid_location: string[];
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -90,6 +91,15 @@ export const InventoryLedgerSchema: z.ZodType<InventoryLedger> = z.strictObject(
   }),
   store_breakdown: z.array(InventoryLedgerStoreSchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
+  query_by_uid_location: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Inventory Ledger", collection: "inventory-ledgers" });
+}).meta({
+  title: "Inventory Ledger",
+  collection: "inventory-ledgers",
+  displayDefaults: {
+    columns: ["uid_product", "stores"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

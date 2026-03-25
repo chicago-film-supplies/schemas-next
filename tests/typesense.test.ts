@@ -11,8 +11,10 @@ import {
   products,
   stores,
   tags,
+  templates,
   trackingCategories,
   typesenseSchemas,
+  type TypesenseAlias,
   webshopProducts,
 } from "../src/typesense/mod.ts";
 
@@ -28,6 +30,7 @@ const allConfigs = [
   products,
   stores,
   tags,
+  templates,
   trackingCategories,
   webshopProducts,
 ];
@@ -46,7 +49,7 @@ Deno.test("all configs have required properties", () => {
 
 Deno.test("typesenseSchemas contains all aliases", () => {
   for (const config of allConfigs) {
-    assertEquals(typesenseSchemas[config.alias], config);
+    assertEquals(typesenseSchemas[config.alias as TypesenseAlias], config);
   }
   assertEquals(Object.keys(typesenseSchemas).length, allConfigs.length);
 });
@@ -54,6 +57,73 @@ Deno.test("typesenseSchemas contains all aliases", () => {
 Deno.test("schema.name matches collectionName", () => {
   for (const config of allConfigs) {
     assertEquals(config.schema.name, config.collectionName);
+  }
+});
+
+Deno.test("every config has displayDefaults with non-empty columns", () => {
+  for (const config of allConfigs) {
+    assertEquals(
+      config.displayDefaults !== undefined,
+      true,
+      `${config.alias}: missing displayDefaults`,
+    );
+    assertEquals(
+      config.displayDefaults.columns.length > 0,
+      true,
+      `${config.alias}: displayDefaults.columns is empty`,
+    );
+  }
+});
+
+Deno.test("displayDefaults.columns reference valid field names", () => {
+  for (const config of allConfigs) {
+    const fieldNames = new Set(config.schema.fields.map((f) => f.name));
+    for (const col of config.displayDefaults.columns) {
+      assertEquals(
+        fieldNames.has(col),
+        true,
+        `${config.alias}: displayDefaults column "${col}" not found in schema fields`,
+      );
+    }
+  }
+});
+
+Deno.test("displayDefaults.sort.column is null or a valid field name", () => {
+  for (const config of allConfigs) {
+    const { column } = config.displayDefaults.sort;
+    if (column !== null) {
+      const fieldNames = new Set(config.schema.fields.map((f) => f.name));
+      assertEquals(
+        fieldNames.has(column),
+        true,
+        `${config.alias}: sort column "${column}" not found in schema fields`,
+      );
+    }
+  }
+});
+
+Deno.test("displayDefaults.group is null for all configs", () => {
+  for (const config of allConfigs) {
+    assertEquals(
+      config.displayDefaults.group,
+      null,
+      `${config.alias}: group should be null`,
+    );
+  }
+});
+
+Deno.test("displayDefaults.facet entries reference fields with facet: true", () => {
+  for (const config of allConfigs) {
+    const facetFields = new Set(
+      config.schema.fields.filter((f) => f.facet === true).map((f) => f.name),
+    );
+    for (const f of config.displayDefaults.facet) {
+      assertEquals(
+        facetFields.has(f),
+        true,
+        `${config.alias}: facet entry "${f}" is not a faceted field`,
+      );
+    }
   }
 });
 

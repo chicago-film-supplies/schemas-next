@@ -17,4 +17,12 @@ export const RateLimitSchema: z.ZodType<RateLimit> = z.strictObject({
   attempt_count: z.number().int().min(1),
   first_attempt_at: z.number(),
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "RateLimit", collection: "rate-limits" });
+}).meta({
+  title: "RateLimit",
+  collection: "rate-limits",
+  displayDefaults: {
+    columns: ["key", "count"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

@@ -81,6 +81,6 @@ Deno.test("CreateOrganizationInput accepts valid input", () => {
 });
 
 Deno.test("UpdateOrganizationInput accepts partial update", () => {
-  const input = { name: "New Name" };
+  const input = { name: "New Name", version: 1 };
   assertEquals(UpdateOrganizationInput.safeParse(input).success, true);
 });

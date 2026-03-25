@@ -77,7 +77,7 @@ Deno.test("CreateContactInput accepts full input", () => {
 });
 
 Deno.test("UpdateContactInput accepts partial update", () => {
-  const input = { name: "Jane" };
+  const input = { name: "Jane", version: 1 };
   assertEquals(UpdateContactInput.safeParse(input).success, true);
 });
 

@@ -29,4 +29,12 @@ export const locations: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "created_at",
   },
+  synonyms: [],
+  displayDefaults: {
+    columns: ["name", "active", "default"],
+    filters: { active: [true] },
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

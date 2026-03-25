@@ -102,6 +102,66 @@ Deno.test("CreateOrderInput strips extra properties on destination endpoint", ()
   }
 });
 
+Deno.test("CreateOrderInput accepts destination with null contact", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: null },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput accepts destination with complete contact", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { uid: "c-1", name: "Jane", phones: ["312-555-0100"] } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput rejects destination contact missing name", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { uid: "c-1" } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput rejects destination contact missing uid", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [{
+      delivery: { uid: "dest-1", contact: { name: "Jane" } },
+      collection: { uid: "dest-2" },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
 Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {
   const input = {
     uid: "order-1",
@@ -170,12 +230,12 @@ Deno.test("CreateOrderInput rejects float quantity on items", () => {
 // ── UpdateOrderInput ─────────────────────────────────────────────
 
 Deno.test("UpdateOrderInput accepts partial update", () => {
-  const input = { status: "active" };
+  const input = { status: "active", version: 1 };
   assertEquals(UpdateOrderInput.safeParse(input).success, true);
 });
 
-Deno.test("UpdateOrderInput accepts empty object", () => {
-  assertEquals(UpdateOrderInput.safeParse({}).success, true);
+Deno.test("UpdateOrderInput rejects missing version", () => {
+  assertEquals(UpdateOrderInput.safeParse({}).success, false);
 });
 
 // ── OrderSchema (document) ───────────────────────────────────────
@@ -223,7 +283,7 @@ const minimalDoc = {
   totals: {
     discount_amount: 0,
     subtotal: 100,
-    taxes: {},
+    taxes: [],
     total: 100,
   },
 };
@@ -302,7 +362,7 @@ Deno.test("OrderSchema rejects additional properties on organization", () => {
 Deno.test("OrderSchema rejects additional properties on totals", () => {
   const doc = {
     ...minimalDoc,
-    totals: { discount_amount: 0, subtotal: 0, taxes: {}, total: 0, extra: 1 },
+    totals: { discount_amount: 0, subtotal: 0, taxes: [], total: 0, extra: 1 },
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -358,13 +418,21 @@ Deno.test("OrderSchema rejects line item with invalid type", () => {
 });
 
 Deno.test("OrderSchema accepts all doc line item types", () => {
-  for (const type of ["custom", "rental", "replacement", "sale", "service", "surcharge"]) {
+  for (const type of ["rental", "replacement", "sale", "service", "surcharge"]) {
     const doc = {
       ...minimalDoc,
       items: [{ uid: "prod-1", type, name: "Thing" }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `type "${type}" should be valid`);
   }
+});
+
+Deno.test("OrderSchema rejects custom line item type", () => {
+  const doc = {
+    ...minimalDoc,
+    items: [{ uid: "prod-1", type: "custom", name: "Thing" }],
+  };
+  assertEquals(OrderSchema.safeParse(doc).success, false);
 });
 
 Deno.test("OrderSchema rejects float chargeable_days in price", () => {

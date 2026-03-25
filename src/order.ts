@@ -32,7 +32,7 @@ type ItemTypeType = typeof ITEM_TYPES[number];
 
 /** Line item types in the full document (superset of input types). */
 const DOC_LINE_ITEM_TYPES = [
-  "custom", "rental", "replacement", "sale", "service", "surcharge",
+  "rental", "replacement", "sale", "service", "surcharge",
 ] as const;
 type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
 
@@ -61,16 +61,17 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
 
 /**
  * Contact reference embedded in a destination endpoint.
+ * When present (not null), uid and name are required.
  */
 export interface DestinationContactType {
-  uid?: string;
-  name?: string;
+  uid: string;
+  name: string;
   phones?: string[];
 }
 
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
-  uid: z.string().optional(),
-  name: z.string().optional(),
+  uid: z.string(),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   phones: z.array(Phone).optional(),
 });
 
@@ -85,7 +86,7 @@ export interface DocDestinationContactType {
 
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   phones: z.array(Phone).default([]),
 });
 
@@ -245,7 +246,7 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().optional(),
+  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
 });
@@ -266,6 +267,7 @@ export interface UpdateOrderInputType {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
+  version: number;
 }
 
 export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
@@ -278,9 +280,10 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   items: z.array(OrderItem).optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().optional(),
+  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
+  version: z.int().min(0),
 });
 
 // ── Full document schemas ────────────────────────────────────────
@@ -428,7 +431,7 @@ export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemTyp
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
   uid: z.string().nullable(),
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(100).meta({ pii: "mask" }),
   crms_id: z.number().nullable().optional(),
   xero_id: z.string().nullable().optional(),
   billing_address: Address.optional(),
@@ -438,7 +441,7 @@ const OrderDocOrganization = z.strictObject({
 const OrderDocTotals = z.strictObject({
   discount_amount: z.number().default(0),
   subtotal: z.number().default(0),
-  taxes: z.record(z.string(), z.number()).default({}),
+  taxes: z.array(z.strictObject({ name: z.string(), total: z.number() })).default([]),
   total: z.number().default(0),
 });
 
@@ -461,7 +464,7 @@ export interface Order {
   destinations: DocDestinationType[];
   items: OrderDocItemType[];
   tax_profile: TaxProfileType;
-  totals: { discount_amount: number; subtotal: number; taxes: Record<string, number>; total: number };
+  totals: { discount_amount: number; subtotal: number; taxes: Array<{ name: string; total: number }>; total: number };
   query_by_items: string[];
   query_by_contacts: string[];
   crms_id?: number | null;
@@ -471,6 +474,7 @@ export interface Order {
   notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
+  version: number;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -491,12 +495,18 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   crms_status: z.string().optional(),
   subject: z.string().default(""),
   reference: z.string().max(255).nullable().default(null),
-  notes: z.string().default(""),
+  notes: z.string().meta({ pii: "mask" }).default(""),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
+  version: z.int().min(0).default(0),
   ...TimestampFields,
 }).meta({
   title: "Order",
   collection: "orders",
-  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null},
+  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null,"version":0},
+  displayDefaults: {
+    columns: ["number", "organization.name", "subject", "status"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+  },
 }) as z.ZodType<Order>;

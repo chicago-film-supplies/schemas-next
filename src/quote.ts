@@ -24,14 +24,22 @@ export const QuoteSchema: z.ZodType<Quote> = z.strictObject({
   uid: z.string(),
   uid_order: z.string(),
   order_number: z.number(),
-  version: z.number().nullable(),
+  version: z.int().min(0).nullable(),
   is_draft: z.boolean(),
   uploadcare_uuid: z.string().nullable(),
   deleted_at: FirestoreTimestamp.nullable(),
   expires_at: FirestoreTimestamp.nullable(),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
-}).meta({ title: "Quote", collection: "quotes" });
+}).meta({
+  title: "Quote",
+  collection: "quotes",
+  displayDefaults: {
+    columns: ["uid_order", "version"],
+    filters: {},
+    sort: { column: "version", direction: "desc" },
+  },
+});
 
 /** Input for saving a new quote version. */
 export interface SaveQuoteVersionInputType {

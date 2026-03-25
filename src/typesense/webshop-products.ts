@@ -77,4 +77,12 @@ export const webshopProducts: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  synonyms: [],
+  displayDefaults: {
+    columns: ["name", "type", "active"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

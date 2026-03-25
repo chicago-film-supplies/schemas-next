@@ -45,4 +45,12 @@ export const organizations: TypesenseCollectionConfig = {
     ],
     default_sorting_field: "name",
   },
+  synonyms: [],
+  displayDefaults: {
+    columns: ["name", "contacts", "emails", "phones"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+    group: null,
+    facet: [],
+  },
 };

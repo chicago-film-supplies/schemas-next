@@ -25,7 +25,7 @@ export interface OrganizationContactType {
 
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   roles: z.array(z.string()).default([]),
 });
 
@@ -45,6 +45,7 @@ export interface Organization {
   contacts: OrganizationContactType[];
   query_by_contacts: string[];
   last_order?: FirestoreTimestampType | null;
+  version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -52,7 +53,7 @@ export interface Organization {
 
 export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Organization name is required").max(100),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
   crms_id: z.number(),
   xero_id: z.string().nullable(),
   tax_profile: TaxProfileEnum.default("tax_applied"),
@@ -63,12 +64,18 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   contacts: z.array(OrganizationContact).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   last_order: FirestoreTimestamp.nullable().optional(),
+  version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
   title: "Organization",
   collection: "organizations",
-  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[]},
+  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[],"version":0},
+  displayDefaults: {
+    columns: ["name", "emails", "phones"],
+    filters: {},
+    sort: { column: "name", direction: "asc" },
+  },
 });
 
 /**
@@ -83,7 +90,7 @@ export interface NewContactInputType {
 
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100),
+  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
@@ -105,7 +112,7 @@ export interface CreateOrganizationInputType {
 
 export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Organization name is required").max(100),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
   tax_profile: TaxProfileEnum,
   billing_address: Address,
   contacts: z.array(OrganizationContact).optional(),
@@ -127,11 +134,12 @@ export interface UpdateOrganizationInputType {
   newContacts?: NewContactInputType[] | null;
   emails?: string[];
   phones?: string[];
+  version: number;
 }
 
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
   uid: z.string().optional(),
-  name: z.string().min(1, "Organization name is required").max(100).optional(),
+  name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }).optional(),
   tax_profile: TaxProfileEnum.optional(),
   description: z.string().optional(),
   billing_address: Address.optional(),
@@ -139,4 +147,5 @@ export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z
   newContacts: z.array(NewContactInput).nullable().optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
+  version: z.int().min(0),
 });

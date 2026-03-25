@@ -105,6 +105,7 @@ export interface Product {
   images?: string[];
   xero_id?: string | null;
   xero_tracking_option_id?: string;
+  version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -181,12 +182,18 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   images: z.array(z.string()).optional(),
   xero_id: z.string().nullable().optional(),
   xero_tracking_option_id: z.string().optional(),
+  version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
   title: "Product",
   collection: "products",
-  initial: {"active":true,"alternates":{},"component_only":false,"components":{},"component_of":{},"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","tax_profile":"tax_chicago_rental_tax","formula":"five_day_week","discountable":true},"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"webshop":{"available":false,"description":null}},
+  initial: {"active":true,"alternates":{},"component_only":false,"components":{},"component_of":{},"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","tax_profile":"tax_chicago_rental_tax","formula":"five_day_week","discountable":true},"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
+  displayDefaults: {
+    columns: ["type", "name", "active"],
+    filters: { type: ["rental", "sale", "service"], active: [true] },
+    sort: { column: "name", direction: "asc" },
+  },
 });
 
 export interface CreateProductInputType {
@@ -331,9 +338,8 @@ export interface UpdateProductInputType {
     available: boolean;
     description?: string | null;
   };
+  version: number;
   updated_by?: string;
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any;
 }
 
 export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
@@ -375,5 +381,6 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     available: z.boolean(),
     description: z.string().nullable().optional(),
   }).optional(),
+  version: z.int().min(0),
   updated_by: z.string().optional(),
-}).passthrough();
+});

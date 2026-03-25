@@ -1,6 +1,6 @@
 {
   "name": "@cfs/schemas",
-  "version": "0.0.0",
+  "version": "1.14.0-beta.23",
   "license": "MIT",
   "exports": {
     ".": "./src/mod.ts",
@@ -33,7 +33,9 @@
     "./webshop-product": "./src/webshop-product.ts",
     "./typesense": "./src/typesense/mod.ts",
     "./quote": "./src/quote.ts",
-    "./webhook-event": "./src/webhook-event.ts"
+    "./template": "./src/template.ts",
+    "./webhook-event": "./src/webhook-event.ts",
+    "./log": "./src/log.ts"
   },
   "tasks": {
     "test": "deno test --allow-read tests/",
@@ -42,8 +44,8 @@
     "setup": "deno install && git config core.hooksPath .githooks"
   },
   "imports": {
-    "zod": "jsr:@zod/zod@^4",
-    "@std/assert": "jsr:@std/assert@^1"
+    "zod": "npm:zod@^4.3.6",
+    "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "compilerOptions": {
     "strict": true

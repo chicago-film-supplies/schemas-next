@@ -10,6 +10,7 @@ import {
   ProductTypeEnum,
   type ProductTypeType,
 } from "./common.ts";
+import { type Booking, BookingSchema } from "./booking.ts";
 
 const SUMMARY_TYPES = ["sale", "rental"] as const;
 type SummaryTypeType = typeof SUMMARY_TYPES[number];
@@ -43,7 +44,7 @@ export interface StockSummary {
     end: string | null;
     end_fs: FirestoreTimestampType | null;
   };
-  bookings: Record<string, unknown>[];
+  bookings: Booking[];
   bookings_breakdown: {
     quoted: number;
     reserved: number;
@@ -66,6 +67,7 @@ export interface StockSummary {
   quantity_out_of_service: number;
   store_breakdown: StockSummaryStore[];
   query_by_uid_store: string[];
+  query_by_uid_location: string[];
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
   expiresAt: FirestoreTimestampType;
@@ -100,7 +102,7 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
     end: z.string().nullable(),
     end_fs: FirestoreTimestamp.nullable(),
   }),
-  bookings: z.array(z.record(z.string(), z.unknown())),
+  bookings: z.array(BookingSchema),
   bookings_breakdown: z.strictObject({
     quoted: z.number(),
     reserved: z.number(),
@@ -123,7 +125,16 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
   quantity_out_of_service: z.number(),
   store_breakdown: z.array(StockSummaryStoreSchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
+  query_by_uid_location: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,
-}).meta({ title: "Stock Summary", collection: "stock-summaries" });
+}).meta({
+  title: "Stock Summary",
+  collection: "stock-summaries",
+  displayDefaults: {
+    columns: ["uid_product", "stores"],
+    filters: {},
+    sort: { column: null, direction: "desc" },
+  },
+});

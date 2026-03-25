@@ -2,11 +2,12 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 
 export const bookings: TypesenseCollectionConfig = {
   alias: "bookings",
-  version: 1,
+  version: 3,
   firestoreCollection: "bookings",
-  collectionName: "bookings_v1",
+  collectionName: "bookings_v3",
+  enabled: false,
   schema: {
-    name: "bookings_v1",
+    name: "bookings_v3",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -57,9 +58,23 @@ export const bookings: TypesenseCollectionConfig = {
       { name: "destinations.collection.address.full", type: "string", stem: true, optional: true },
       { name: "destinations.collection.address.city", type: "string", facet: true, optional: true },
       { name: "destinations.collection.address.region", type: "string", facet: true, optional: true },
+      { name: "stores", type: "object[]", optional: true },
+      { name: "stores.uid_store", type: "string[]", facet: false, optional: true },
+      { name: "stores.name", type: "string[]", stem: true, optional: true },
+      { name: "stores.quantity", type: "int32[]", optional: true },
+      { name: "uid_destination_delivery", type: "string", facet: false, optional: true },
+      { name: "uid_destination_collection", type: "string", facet: false, optional: true },
       { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
     ],
     default_sorting_field: "updated_at",
+  },
+  synonyms: [],
+  displayDefaults: {
+    columns: ["number", "name", "status", "organization.name", "quantity"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+    group: null,
+    facet: [],
   },
 };

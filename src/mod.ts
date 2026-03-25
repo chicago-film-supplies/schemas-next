@@ -30,8 +30,21 @@ export {
 
 export {
   UserSchema,
+  SaveFirestorePrefsInput,
+  SaveTypesensePrefsInput,
   type User,
+  type DisplaySort,
+  type FirestoreDisplayPrefs,
+  type TypesenseDisplayPrefs,
+  type SaveFirestorePrefsInputType,
+  type SaveTypesensePrefsInputType,
 } from "./user.ts";
+
+export {
+  typesenseDisplayDefaults,
+  getTypesenseDisplayDefaults,
+  type FirestoreDisplayDefaults,
+} from "./display-defaults.ts";
 
 export {
   SessionSchema,
@@ -140,6 +153,22 @@ export {
   type ErrorSync,
   type SyncServiceType,
 } from "./error-sync.ts";
+
+export {
+  LogRecordSchema,
+  PropagationLogRecordSchema,
+  ClientLogEntrySchema,
+  ClientLogBatchSchema,
+  type LogRecord,
+  type LogLevelType,
+  type PiiClassification,
+  type PropagationLogRecord,
+  type PropagationModeType,
+  type PropagationStatusType,
+  type ClientLogEntry,
+  type ClientLogBatch,
+  type ClientAppType,
+} from "./log.ts";
 
 export {
   StoreSchema,
@@ -269,6 +298,8 @@ export {
   TransactionStoreLocationSchema,
   TRANSACTION_TYPES,
   getTransactionMultiplier,
+  hasCosts,
+  getDisplayTransactionTypes,
   CreateTransactionInput,
   UpdateTransactionInput,
   CreateStoreTransferInput,
@@ -331,6 +362,119 @@ export {
   type RestoreQuoteInputType,
 } from "./quote.ts";
 
+export {
+  TemplateSchema,
+  TemplateInputSchema,
+  TemplateUpdateInputSchema,
+  type Template,
+  type TemplateInputType,
+  type TemplateUpdateInputType,
+  type TemplateContext,
+  type TemplateSourceCollectionType,
+  type TemplateTargetCollectionType,
+  type TemplateScopeType,
+} from "./template.ts";
+
+// ── Propagation ─────────────────────────────────────────────────────
+
+export type {
+  FieldPath,
+  PropagationMode,
+  FieldMapping,
+  CollectionRule,
+  TransactionDefinition,
+  AggregateDefinition,
+} from "./propagation/mod.ts";
+
+export {
+  aggregates,
+  rules,
+  transactions,
+  createOrderRules,
+  createOrderTransaction,
+  updateOrderRules,
+  updateOrderTransaction,
+  createTransactionRules,
+  createTransactionTransaction,
+  createProductRules,
+  createProductTransaction,
+  updateProductRules,
+  updateProductTransaction,
+  createOrganizationRules,
+  createOrganizationTransaction,
+  updateOrganizationRules,
+  updateOrganizationTransaction,
+  createContactRules,
+  createContactTransaction,
+  updateContactRules,
+  updateContactTransaction,
+  updateTagRules,
+  deleteTagRules,
+  updateTrackingCategoryRules,
+  updateLocationTypeRules,
+  updateLocationRules,
+  createLocationRules,
+  createLocationTransaction,
+  updateLocationTransactionalRules,
+  updateLocationTransaction,
+} from "./propagation/mod.ts";
+
+// ── Domain events ───────────────────────────────────────────────────
+
+export type {
+  EventEnvelope,
+  // Order aggregate
+  OrderCreated,
+  OrderUpdated,
+  OrderStatusChanged,
+  OrderCanceled,
+  BookingCreated,
+  BookingUpdated,
+  BookingStatusChanged,
+  StockSummaryRecalculated,
+  PublicStockSummaryRecalculated,
+  QuoteCreated,
+  QuoteRestored,
+  QuoteDeleted,
+  // Product aggregate
+  ProductCreated,
+  ProductUpdated,
+  WebshopProductUpdated,
+  InventoryLedgerRecalculated,
+  // Invoice aggregate
+  InvoiceCreated,
+  InvoiceUpdated,
+  // Organization aggregate
+  OrganizationCreated,
+  OrganizationUpdated,
+  // Contact aggregate
+  ContactCreated,
+  ContactUpdated,
+  // Store aggregate
+  StoreCreated,
+  StoreUpdated,
+  LocationCreated,
+  LocationUpdated,
+  LocationTypeCreated,
+  LocationTypeUpdated,
+  // Transaction aggregate
+  TransactionCreated,
+  TransactionUpdated,
+  OutOfServiceRecordCreated,
+  OutOfServiceRecordUpdated,
+  // Reference data
+  TagCreated,
+  TagUpdated,
+  TagDeleted,
+  TrackingCategoryCreated,
+  TrackingCategoryUpdated,
+  TemplateCreated,
+  TemplateUpdated,
+  HolidayDatesAdded,
+  HolidayDatesDeleted,
+  ChartOfAccountsUpdated,
+} from "./events/mod.ts";
+
 // ── Union of all Firestore document types ───────────────────────────
 
 import type { Booking } from "./booking.ts";
@@ -351,6 +495,7 @@ import type { OutOfServiceRecord } from "./out-of-service-record.ts";
 import type { PasswordReset } from "./password-reset.ts";
 import type { Product } from "./product.ts";
 import type { Quote } from "./quote.ts";
+import type { Template } from "./template.ts";
 import type { PublicStockSummary } from "./public-stock-summary.ts";
 import type { RateLimit } from "./rate-limit.ts";
 import type { Session } from "./session.ts";
@@ -369,13 +514,13 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
   | EmailVerification | ErrorSync | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary
+  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
 // ── Schema record keyed by collection name ─────────────────────────
 
-import type { z } from "zod";
+import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
@@ -395,6 +540,7 @@ import { OutOfServiceRecordSchema } from "./out-of-service-record.ts";
 import { PasswordResetSchema } from "./password-reset.ts";
 import { ProductSchema } from "./product.ts";
 import { QuoteSchema as QuoteSchema_ } from "./quote.ts";
+import { TemplateSchema as TemplateSchema_ } from "./template.ts";
 import { RateLimitSchema } from "./rate-limit.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
@@ -428,6 +574,7 @@ export const schemas: Record<string, z.ZodType> = {
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
   "product": ProductSchema, "products": ProductSchema,
   "quote": QuoteSchema_, "quotes": QuoteSchema_,
+  "template": TemplateSchema_, "templates": TemplateSchema_,
   "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,
@@ -441,3 +588,22 @@ export const schemas: Record<string, z.ZodType> = {
   "webshop-product": WebshopProductSchema, "webshop-products": WebshopProductSchema,
   "typesense-config": TypesenseConfigSchema, "typesense": TypesenseConfigSchema,
 };
+
+// Defined here (not in display-defaults.ts) to avoid a circular dependency.
+// Firestore display defaults live in Zod's .meta() registry, so we need the
+// `schemas` record above to extract them. display-defaults.ts is re-exported
+// by this file, so importing `schemas` from there would hit a TDZ error.
+import type { FirestoreDisplayDefaults } from "./display-defaults.ts";
+
+/** Display defaults for every Firestore collection, derived from schema meta. */
+export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> =
+  Object.fromEntries(
+    Object.entries(schemas)
+      .map(([key, schema]) => {
+        const meta = z.globalRegistry.get(schema) as
+          | { displayDefaults?: FirestoreDisplayDefaults }
+          | undefined;
+        return [key, meta?.displayDefaults] as const;
+      })
+      .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
+  );

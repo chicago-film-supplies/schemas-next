@@ -110,11 +110,11 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   due_date_fs: FirestoreTimestamp,
   subject: z.string().nullable().optional(),
   reference: z.string().nullable().optional(),
-  external_notes: z.string().nullable().optional(),
-  internal_notes: z.string().nullable().optional(),
+  external_notes: z.string().meta({ pii: "mask" }).nullable().optional(),
+  internal_notes: z.string().meta({ pii: "mask" }).nullable().optional(),
   organization: z.strictObject({
     uid: z.string().nullable(),
-    name: z.string(),
+    name: z.string().meta({ pii: "mask" }),
     crms_id: z.number().nullable(),
     tax_profile: TaxProfileEnum,
     xero_id: z.string().nullable(),
@@ -125,4 +125,12 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   xero_id: z.string().nullable(),
   updated_by: z.string(),
   ...TimestampFields,
-}).meta({ title: "Invoice", collection: "invoices" });
+}).meta({
+  title: "Invoice",
+  collection: "invoices",
+  displayDefaults: {
+    columns: ["number", "organization.name", "status", "subject"],
+    filters: { status: [] },
+    sort: { column: "number", direction: "desc" },
+  },
+});
