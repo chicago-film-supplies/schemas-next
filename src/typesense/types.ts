@@ -117,6 +117,8 @@ export interface TypesenseCollectionConfig {
   schema: TypesenseSchema;
   synonyms: TypesenseSynonym[];
   displayDefaults: TypesenseDisplayDefaults;
+  /** Whether this collection is actively synced to Typesense. Defaults to true. */
+  enabled?: boolean;
 }
 
 export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfig> = z.strictObject({
@@ -127,4 +129,5 @@ export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfi
   schema: TypesenseSchemaSchema,
   synonyms: z.array(TypesenseSynonymSchema),
   displayDefaults: TypesenseDisplayDefaultsSchema,
+  enabled: z.boolean().optional(),
 });

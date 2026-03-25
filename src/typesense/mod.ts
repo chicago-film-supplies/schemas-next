@@ -115,3 +115,10 @@ export type TypesenseAlias =
 /** All Typesense collection configs keyed by alias. */
 export const typesenseSchemas: Record<TypesenseAlias, TypesenseCollectionConfig> =
   Object.fromEntries(allSchemas.map((s) => [s.alias, s])) as Record<TypesenseAlias, TypesenseCollectionConfig>;
+
+/** Firestore collection names that are actively synced to Typesense (enabled !== false). */
+export const typesenseEnabledCollections: Set<string> = new Set(
+  allSchemas
+    .filter((s) => s.enabled !== false && s.firestoreCollection !== "")
+    .map((s) => s.firestoreCollection),
+);
