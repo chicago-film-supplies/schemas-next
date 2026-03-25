@@ -85,6 +85,7 @@ export interface Booking {
   };
   stores: BookingStore[];
   query_by_uid_store: string[];
+  query_by_uid_location: string[];
   uid_destination_delivery: string;
   uid_destination_collection: string;
   created_at: FirestoreTimestampType;
@@ -158,6 +159,7 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   }),
   stores: z.array(BookingStoreSchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
+  query_by_uid_location: z.array(z.string()).default([]),
   uid_destination_delivery: z.string(),
   uid_destination_collection: z.string(),
   created_at: FirestoreTimestamp,

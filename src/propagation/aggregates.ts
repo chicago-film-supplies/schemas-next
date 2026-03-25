@@ -43,7 +43,7 @@ export const aggregates: AggregateDefinition[] = [
   {
     id: "transaction",
     root: "transactions",
-    members: ["out-of-service-record"],
+    members: ["out-of-service"],
     description: "Inventory movements (purchase, sale, adjustment, transfer) that modify ledger quantities",
   },
   {

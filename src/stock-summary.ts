@@ -67,6 +67,7 @@ export interface StockSummary {
   quantity_out_of_service: number;
   store_breakdown: StockSummaryStore[];
   query_by_uid_store: string[];
+  query_by_uid_location: string[];
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
   expiresAt: FirestoreTimestampType;
@@ -124,6 +125,7 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
   quantity_out_of_service: z.number(),
   store_breakdown: z.array(StockSummaryStoreSchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
+  query_by_uid_location: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
   expiresAt: FirestoreTimestamp,

@@ -66,6 +66,7 @@ export interface OutOfServiceRecord {
   stock_level_id?: string | null;
   stores?: OOSStore[];
   query_by_uid_store?: string[];
+  query_by_uid_location?: string[];
   notes?: NoteEntryType[];
   transactions?: OOSTransaction[];
   created_at?: FirestoreTimestampType;
@@ -123,12 +124,13 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
   stock_level_id: z.string().nullable().optional(),
   stores: z.array(OOSStoreSchema).default([]).optional(),
   query_by_uid_store: z.array(z.string()).default([]).optional(),
+  query_by_uid_location: z.array(z.string()).default([]).optional(),
   notes: z.array(NoteEntry).optional(),
   transactions: z.array(OOSTransactionSchema).optional(),
   ...TimestampFields,
 }).meta({
   title: "Out of Service Record",
-  collection: "products/{product_id}/out-of-service-records",
+  collection: "out-of-service",
   displayDefaults: {
     columns: ["source.type", "reason", "quantity", "date_start", "date_end"],
     filters: {},

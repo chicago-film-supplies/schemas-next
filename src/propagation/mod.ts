@@ -70,6 +70,7 @@ export {
   deleteTagRules,
   updateTrackingCategoryRules,
   updateLocationTypeRules,
+  updateLocationRules,
 } from "./reference-data.ts";
 
 // ── Convenience arrays ───────────────────────────────────────────────
@@ -81,7 +82,7 @@ import { createTransactionRules, createTransactionTransaction } from "./transact
 import { createProductRules, createProductTransaction, updateProductRules, updateProductTransaction } from "./products.ts";
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
-import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules } from "./reference-data.ts";
+import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
 
 export const transactions: TransactionDefinition[] = [
   createOrderTransaction,
@@ -110,4 +111,5 @@ export const rules: CollectionRule[] = [
   ...deleteTagRules,
   ...updateTrackingCategoryRules,
   ...updateLocationTypeRules,
+  ...updateLocationRules,
 ];

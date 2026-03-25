@@ -74,3 +74,52 @@ export const updateLocationTypeRules: CollectionRule[] = [
     ],
   },
 ];
+
+// ── Location cascades ───────────────────────────────────────────
+
+export const updateLocationRules: CollectionRule[] = [
+  {
+    id: "update-location:name-to-inventory-ledgers",
+    source: "locations",
+    target: "inventory-ledgers",
+    mode: "fan-out",
+    invariant: "Inventory ledgers embed location names in store_breakdown — a location rename must cascade to all ledgers containing that location",
+    trigger: "name change — Eventarc on location write, BulkWriter with lastUpdateTime precondition",
+    fields: [
+      { source: ["name"], target: ["store_breakdown", "locations", "name"], transform: "updates name where uid_location matches within each store's location array" },
+    ],
+  },
+  {
+    id: "update-location:name-to-stock-summaries",
+    source: "locations",
+    target: "stock-summaries",
+    mode: "fan-out",
+    invariant: "Stock summaries embed location names in store_breakdown — a location rename must cascade to all stock summaries containing that location",
+    trigger: "name change — Eventarc on location write, BulkWriter with lastUpdateTime precondition",
+    fields: [
+      { source: ["name"], target: ["store_breakdown", "locations", "name"], transform: "updates name where uid_location matches within each store's location array" },
+    ],
+  },
+  {
+    id: "update-location:name-to-bookings",
+    source: "locations",
+    target: "bookings",
+    mode: "fan-out",
+    invariant: "Bookings embed location names in stores — a location rename must cascade to all non-complete bookings containing that location",
+    trigger: "name change — Eventarc on location write, BulkWriter with lastUpdateTime precondition, filtered to status != 'complete'",
+    fields: [
+      { source: ["name"], target: ["stores", "locations", "name"], transform: "updates name where uid_location matches within each store's location array" },
+    ],
+  },
+  {
+    id: "update-location:name-to-out-of-service",
+    source: "locations",
+    target: "out-of-service",
+    mode: "fan-out",
+    invariant: "Out-of-service records embed location names in stores — a location rename must cascade to all incomplete OOS records containing that location",
+    trigger: "name change — Eventarc on location write, BulkWriter with lastUpdateTime precondition, filtered to complete != true",
+    fields: [
+      { source: ["name"], target: ["stores", "locations", "name"], transform: "updates name where uid_location matches within each store's location array" },
+    ],
+  },
+];
