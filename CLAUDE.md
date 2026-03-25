@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shared Zod schemas for CFS Firestore collections and Typesense collections published to JSR as `@cfs/schemas`. Also includes programatically enforceable propagation rules and shared ts types and interfaces.
+Shared Zod 4 schemas for CFS Firestore collections and Typesense collections published to JSR as `@cfs/schemas`. Also includes programatically enforceable propagation rules and shared ts types and interfaces.
 
 ## Setup
 
