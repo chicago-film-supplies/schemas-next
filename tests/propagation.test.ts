@@ -17,6 +17,10 @@ import {
   updateTrackingCategoryRules,
   updateLocationTypeRules,
   updateLocationRules,
+  createLocationRules,
+  updateLocationTransactionalRules,
+  createLocationTransaction,
+  updateLocationTransaction,
   createOrderTransaction,
   updateOrderTransaction,
   createTransactionTransaction,
@@ -52,6 +56,8 @@ Deno.test("rules array contains all individual rule sets", () => {
     ...deleteTagRules,
     ...updateTrackingCategoryRules,
     ...updateLocationTypeRules,
+    ...createLocationRules,
+    ...updateLocationTransactionalRules,
     ...updateLocationRules,
   ];
   assertEquals(rules.length, allRuleSets.length);
@@ -86,6 +92,8 @@ Deno.test("transactions array contains all individual transactions", () => {
     updateOrganizationTransaction,
     createContactTransaction,
     updateContactTransaction,
+    createLocationTransaction,
+    updateLocationTransaction,
   ];
   assertEquals(transactions.length, allTransactions.length);
   for (const txn of allTransactions) {

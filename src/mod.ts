@@ -412,6 +412,11 @@ export {
   deleteTagRules,
   updateTrackingCategoryRules,
   updateLocationTypeRules,
+  updateLocationRules,
+  createLocationRules,
+  createLocationTransaction,
+  updateLocationTransactionalRules,
+  updateLocationTransaction,
 } from "./propagation/mod.ts";
 
 // ── Domain events ───────────────────────────────────────────────────

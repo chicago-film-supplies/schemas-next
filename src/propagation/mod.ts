@@ -63,6 +63,15 @@ export {
   updateContactTransaction,
 } from "./contacts.ts";
 
+// ── Location rules ──────────────────────────────────────────────────
+
+export {
+  createLocationRules,
+  createLocationTransaction,
+  updateLocationTransactionalRules,
+  updateLocationTransaction,
+} from "./locations.ts";
+
 // ── Reference data rules ─────────────────────────────────────────────
 
 export {
@@ -82,6 +91,7 @@ import { createTransactionRules, createTransactionTransaction } from "./transact
 import { createProductRules, createProductTransaction, updateProductRules, updateProductTransaction } from "./products.ts";
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
+import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
 import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
 
 export const transactions: TransactionDefinition[] = [
@@ -94,6 +104,8 @@ export const transactions: TransactionDefinition[] = [
   updateOrganizationTransaction,
   createContactTransaction,
   updateContactTransaction,
+  createLocationTransaction,
+  updateLocationTransaction,
 ];
 
 /** All propagation rules across all transactions and cascades. */
@@ -111,5 +123,7 @@ export const rules: CollectionRule[] = [
   ...deleteTagRules,
   ...updateTrackingCategoryRules,
   ...updateLocationTypeRules,
+  ...createLocationRules,
+  ...updateLocationTransactionalRules,
   ...updateLocationRules,
 ];
