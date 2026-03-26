@@ -113,7 +113,11 @@ export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
 
 // ── Shared enums ────────────────────────────────────────────────────
 
-const PRODUCT_TYPES = ["rental", "sale", "service", "surcharge", "replacement"] as const;
+const RATE_TYPES = ["percent", "flat"] as const;
+export type RateType = typeof RATE_TYPES[number];
+export const RateTypeEnum: z.ZodType<RateType> = z.enum(RATE_TYPES);
+
+const PRODUCT_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "transaction_fee"] as const;
 export type ProductTypeType = typeof PRODUCT_TYPES[number];
 export const ProductTypeEnum: z.ZodType<ProductTypeType> = z.enum(PRODUCT_TYPES);
 

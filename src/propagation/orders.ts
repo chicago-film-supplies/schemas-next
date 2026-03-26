@@ -34,7 +34,7 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["type"], target: ["items", "type"] },
       { source: ["stock_method"], target: ["items", "stock_method"] },
       { source: ["price", "base"], target: ["items", "price", "base"], transform: "fallback — used only when input omits price" },
-      { source: ["price", "tax_profile"], target: ["items", "price", "tax_profile"], transform: "fallback — used only when input omits price" },
+      { source: ["price", "tax_profile"], target: ["items", "price", "taxes"], transform: "fallback — tax_profile mapped to uid_tax via TAX_PROFILE_TO_UID until products store uid_tax directly" },
       { source: ["name"], target: ["items", "name"], transform: "fallback — input name takes precedence" },
     ],
   },
@@ -46,7 +46,7 @@ export const createOrderRules: CollectionRule[] = [
     invariant: "Totals, query arrays, and order number are computed server-side to prevent client tampering",
     transaction: "create-order",
     fields: [
-      { source: ["items"], target: ["totals"], transform: "calculateOrderTotals(items) → {subtotal, tax_amount, discount_amount, total, taxes}" },
+      { source: ["items"], target: ["totals"], transform: "calculateOrderTotals(items, taxes) → {subtotal, subtotal_discounted, discount_amount, taxes, transaction_fees, total}. Two-pass: computes pre-tax items first, then transaction fees from subtotal_discounted. transaction_fee items excluded from bookings/stock." },
       { source: ["items"], target: ["query_by_items"], transform: "consolidateItems(items) → product uids for search" },
       { source: ["destinations"], target: ["query_by_contacts"], transform: "flatten all contact uids from delivery/collection endpoints" },
       { source: [], target: ["number"], transform: "atomic increment of counters/orders.count" },
@@ -189,7 +189,7 @@ export const updateOrderRules: CollectionRule[] = [
     invariant: "Totals, query arrays, and date timestamps recomputed on every update",
     transaction: "update-order",
     fields: [
-      { source: ["items"], target: ["totals"], transform: "calculateOrderTotals(items)" },
+      { source: ["items"], target: ["totals"], transform: "calculateOrderTotals(items, taxes) → {subtotal, subtotal_discounted, discount_amount, taxes, transaction_fees, total}" },
       { source: ["items"], target: ["query_by_items"], transform: "consolidateItems(items) → product uids" },
       { source: ["destinations"], target: ["query_by_contacts"], transform: "flatten contact uids" },
       { source: ["dates"], target: ["dates"], transform: "Timestamp.fromDate() for each date field" },

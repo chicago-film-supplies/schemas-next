@@ -201,7 +201,7 @@ Deno.test("CreateOrderInput rejects invalid item price formula", () => {
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
-Deno.test("CreateOrderInput rejects invalid item price tax_profile", () => {
+Deno.test("CreateOrderInput rejects invalid item discount type", () => {
   const input = {
     uid: "order-1",
     organization: { uid: "org-1" },
@@ -209,9 +209,43 @@ Deno.test("CreateOrderInput rejects invalid item price tax_profile", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", price: { tax_profile: "invalid" } }],
+    items: [{ uid: "item-1", type: "rental", price: { discount: { rate: 10, type: "invalid" } } }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput accepts item with discount and taxes", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [{
+      uid: "item-1",
+      type: "rental",
+      price: {
+        base: 100,
+        discount: { rate: 20, type: "percent" },
+        taxes: [{ uid: "chi-rental-tax" }],
+      },
+    }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput accepts item with null discount", () => {
+  const input = {
+    uid: "order-1",
+    organization: { uid: "org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [{ uid: "item-1", type: "rental", price: { discount: null } }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
 
 Deno.test("CreateOrderInput rejects float quantity on items", () => {
@@ -283,7 +317,9 @@ const minimalDoc = {
   totals: {
     discount_amount: 0,
     subtotal: 100,
+    subtotal_discounted: 100,
     taxes: [],
+    transaction_fees: [],
     total: 100,
   },
 };
@@ -305,13 +341,18 @@ Deno.test("OrderSchema validates a complete document", () => {
         price: {
           base: 100,
           chargeable_days: 5,
-          discount_amount: 0,
-          discount_percent: 0,
           formula: "five_day_week",
           subtotal: 200,
-          tax_amount: 20,
-          tax_profile: "tax_chicago_rental_tax",
-          total: 220,
+          subtotal_discounted: 200,
+          discount: null,
+          taxes: [{
+            uid: "chi-rental-tax",
+            name: "Chicago Rental Tax",
+            rate: 15,
+            type: "percent",
+            amount: 30,
+          }],
+          total: 230,
         },
         stock_method: "bulk",
       },
@@ -362,7 +403,7 @@ Deno.test("OrderSchema rejects additional properties on organization", () => {
 Deno.test("OrderSchema rejects additional properties on totals", () => {
   const doc = {
     ...minimalDoc,
-    totals: { discount_amount: 0, subtotal: 0, taxes: [], total: 0, extra: 1 },
+    totals: { discount_amount: 0, subtotal: 0, subtotal_discounted: 0, taxes: [], transaction_fees: [], total: 0, extra: 1 },
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -445,12 +486,11 @@ Deno.test("OrderSchema rejects float chargeable_days in price", () => {
       price: {
         base: 100,
         chargeable_days: 3.5,
-        discount_amount: 0,
-        discount_percent: 0,
         formula: "five_day_week",
         subtotal: 100,
-        tax_amount: 0,
-        tax_profile: "tax_none",
+        subtotal_discounted: 100,
+        discount: null,
+        taxes: [],
         total: 100,
       },
     }],
@@ -468,12 +508,11 @@ Deno.test("OrderSchema rejects invalid price formula", () => {
       price: {
         base: 100,
         chargeable_days: null,
-        discount_amount: 0,
-        discount_percent: 0,
         formula: "daily",
         subtotal: 100,
-        tax_amount: 0,
-        tax_profile: "tax_none",
+        subtotal_discounted: 100,
+        discount: null,
+        taxes: [],
         total: 100,
       },
     }],
@@ -481,7 +520,7 @@ Deno.test("OrderSchema rejects invalid price formula", () => {
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
 
-Deno.test("OrderSchema rejects invalid price tax_profile", () => {
+Deno.test("OrderSchema rejects invalid discount type", () => {
   const doc = {
     ...minimalDoc,
     items: [{
@@ -491,13 +530,12 @@ Deno.test("OrderSchema rejects invalid price tax_profile", () => {
       price: {
         base: 100,
         chargeable_days: null,
-        discount_amount: 0,
-        discount_percent: 0,
         formula: "fixed",
         subtotal: 100,
-        tax_amount: 0,
-        tax_profile: "invalid_tax",
-        total: 100,
+        subtotal_discounted: 90,
+        discount: { rate: 10, type: "invalid", amount: 10 },
+        taxes: [],
+        total: 90,
       },
     }],
   };
@@ -603,12 +641,11 @@ Deno.test("OrderSchema rejects extra properties on line item price", () => {
       price: {
         base: 100,
         chargeable_days: null,
-        discount_amount: 0,
-        discount_percent: 0,
         formula: "fixed",
         subtotal: 100,
-        tax_amount: 0,
-        tax_profile: "tax_none",
+        subtotal_discounted: 100,
+        discount: null,
+        taxes: [],
         total: 100,
         extra: true,
       },

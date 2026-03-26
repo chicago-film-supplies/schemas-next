@@ -32,6 +32,7 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
 }).meta({
   title: "Tracking Category",
   collection: "tracking-categories",
+  initial: {"uid":null,"name":"","crms_product_group_name":"","products":{},"xero_tracking_option_id":null,"updated_by":""},
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},

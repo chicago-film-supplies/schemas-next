@@ -2,7 +2,7 @@
 
 ## Overview
 
-Shared Zod schemas for CFS Firestore collections, published to JSR as `@cfs/schemas`.
+Shared Zod 4 schemas for CFS Firestore collections and Typesense collections published to JSR as `@cfs/schemas`. Also includes programatically enforceable propagation rules and shared ts types and interfaces.
 
 ## Setup
 
@@ -14,6 +14,9 @@ Shared Zod schemas for CFS Firestore collections, published to JSR as `@cfs/sche
 - `deno task check` — type-check (`deno check src/mod.ts`)
 - `deno task lint` — lint (includes JSR `no-slow-types` validation)
 - `deno task test` — run tests
+
+## Publish
+- git commit, git push to beta branch, gh action will trigger semantic release and publish
 
 ## Conventions
 
