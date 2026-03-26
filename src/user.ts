@@ -73,6 +73,7 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
 }).meta({
   title: "User",
   collection: "users",
+  initial: {"uid":null,"email":"","password_hash":"","email_verified":false,"uid_customer":null,"roles":[],"prefs_firestore":{},"prefs_typesense":{}},
   displayDefaults: {
     columns: ["email", "roles"],
     filters: {},

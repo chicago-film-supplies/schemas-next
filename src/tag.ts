@@ -26,6 +26,7 @@ export const TagSchema: z.ZodType<Tag> = z.strictObject({
 }).meta({
   title: "Tag",
   collection: "tags",
+  initial: {"uid":null,"name":"","products":[],"query_by_products":[]},
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},

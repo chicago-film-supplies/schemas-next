@@ -50,6 +50,7 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
 }).meta({
   title: "Template",
   collection: "templates",
+  initial: {"uid":null,"uid_template":"","name":"","collection_source":"orders","collection_target":"quotes","scope":"single","version":0,"source":"","source_filename":""},
   displayDefaults: {
     columns: ["name", "version"],
     filters: {},
