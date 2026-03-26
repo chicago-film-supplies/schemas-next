@@ -74,3 +74,27 @@ export const createTransactionTransaction: TransactionDefinition = {
     "create-transaction:stock-to-public-stock",
   ],
 };
+
+// ── Update transaction (name-only changes) ──────────────────────
+
+export const updateTransactionRules: CollectionRule[] = [
+  {
+    id: "update-transaction:names-to-locations",
+    source: "transactions",
+    target: "locations",
+    mode: "co-write",
+    invariant: "When a transaction update only changes store/location names (no quantity changes), the names are written directly to location docs — skipping the full ledger reverse/reapply path. Eventarc afterLocationWrite then cascades to ledgers, stock summaries, bookings, and OOS records.",
+    transaction: "update-transaction",
+    fields: [
+      { source: ["stores", "locations", "name"], target: ["name"] },
+    ],
+  },
+];
+
+export const updateTransactionTransaction: TransactionDefinition = {
+  id: "update-transaction",
+  description: "Updates an inventory transaction. If only store/location names changed (no quantity delta), writes names directly to location docs without ledger recalc. Full stock updates reuse create-transaction rules.",
+  steps: [
+    "update-transaction:names-to-locations",
+  ],
+};
