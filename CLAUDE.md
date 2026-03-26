@@ -15,6 +15,9 @@ Shared Zod 4 schemas for CFS Firestore collections and Typesense collections pub
 - `deno task lint` — lint (includes JSR `no-slow-types` validation)
 - `deno task test` — run tests
 
+## Publish
+- git commit, git push to beta branch, gh action will trigger semantic release and publish
+
 ## Conventions
 
 ### JSR imports over npm
