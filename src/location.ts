@@ -79,7 +79,6 @@ export const CreateLocationInput: z.ZodType<CreateLocationInputType> = z.object(
 
 export interface UpdateLocationInputType {
   uid: string;
-  uid_store: string;
   name?: string;
   default?: boolean;
   active?: boolean;
@@ -87,7 +86,6 @@ export interface UpdateLocationInputType {
 }
 export const UpdateLocationInput: z.ZodType<UpdateLocationInputType> = z.object({
   uid: z.string(),
-  uid_store: z.string(),
   name: z.string().min(1).max(100).optional(),
   default: z.boolean().optional(),
   active: z.boolean().optional(),
