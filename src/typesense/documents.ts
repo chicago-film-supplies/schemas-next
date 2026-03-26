@@ -276,7 +276,9 @@ export interface OrderDocument {
   totals: {
     discount_amount?: number;
     subtotal?: number;
-    taxes?: Record<string, unknown>;
+    subtotal_discounted?: number;
+    taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
+    transaction_fees?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
     total?: number;
   };
   items?: Array<{
@@ -297,13 +299,12 @@ export interface OrderDocument {
     price?: {
       base?: number;
       subtotal?: number;
+      subtotal_discounted?: number;
       total?: number;
-      tax_amount?: number;
-      discount_amount?: number;
-      discount_percent?: number;
+      discount?: { rate?: number; type?: string; amount?: number };
+      taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
       chargeable_days?: number;
       formula?: string;
-      tax_profile?: string;
     };
   }>;
   created_at?: number;

@@ -9,11 +9,11 @@ import {
   type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
-  ItemTaxProfileEnum,
-  type ItemTaxProfileType,
   Phone,
   PriceFormulaEnum,
   type PriceFormulaType,
+  RateTypeEnum,
+  type RateType,
   StockMethodEnum,
   type StockMethodType,
   TaxProfileEnum,
@@ -27,12 +27,12 @@ const ORDER_STATUSES = [
 type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-const ITEM_TYPES = ["destination", "group", "rental", "replacement", "sale", "service", "surcharge"] as const;
+const ITEM_TYPES = ["destination", "group", "rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
 type ItemTypeType = typeof ITEM_TYPES[number];
 
 /** Line item types in the full document (superset of input types). */
 const DOC_LINE_ITEM_TYPES = [
-  "rental", "replacement", "sale", "service", "surcharge",
+  "rental", "replacement", "sale", "service", "surcharge", "transaction_fee",
 ] as const;
 type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
 
@@ -152,30 +152,69 @@ export const DocDestination: z.ZodType<DocDestinationType> = z.strictObject({
   collection: DocDestinationEndpoint,
 });
 
+// ── Shared modifier types ─────────────────────────────────────────
+
 /**
- * Price breakdown for an order item.
+ * A rate-based charge applied to an item or order (tax or transaction fee).
+ * uid references a tax doc (for taxes) or a product doc (for transaction fees).
+ */
+export interface PriceModifierType {
+  uid: string;
+  name: string;
+  rate: number;
+  type: RateType;
+  amount: number;
+}
+
+export const PriceModifier: z.ZodType<PriceModifierType> = z.strictObject({
+  uid: z.string(),
+  name: z.string(),
+  rate: z.number(),
+  type: RateTypeEnum,
+  amount: z.number(),
+});
+
+/**
+ * Discount applied to an item price. Nullable — null means no discount.
+ * rate is per-unit for flat discounts (rate × quantity × days_factor = amount).
+ */
+export interface DiscountType {
+  rate: number;
+  type: RateType;
+  amount: number;
+}
+
+export const Discount: z.ZodType<DiscountType> = z.strictObject({
+  rate: z.number(),
+  type: RateTypeEnum,
+  amount: z.number(),
+});
+
+// ── Input schemas ─────────────────────────────────────────────────
+
+/**
+ * Price breakdown for an order item (input — client sends partial data, server computes the rest).
  */
 export interface ItemPriceType {
   base?: number;
   chargeable_days?: number | null;
-  discount_percent?: number;
   formula?: PriceFormulaType;
-  tax_profile?: ItemTaxProfileType;
   subtotal?: number;
-  tax_amount?: number;
-  discount_amount?: number;
+  discount?: { rate: number; type: RateType } | null;
+  taxes?: Array<{ uid: string }>;
   total?: number;
 }
 
 export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   base: z.number().optional(),
   chargeable_days: z.int().nullable().optional(),
-  discount_percent: z.number().optional(),
   formula: PriceFormulaEnum.optional(),
-  tax_profile: ItemTaxProfileEnum.optional(),
   subtotal: z.number().optional(),
-  tax_amount: z.number().optional(),
-  discount_amount: z.number().optional(),
+  discount: z.strictObject({
+    rate: z.number(),
+    type: RateTypeEnum,
+  }).nullable().optional(),
+  taxes: z.array(z.object({ uid: z.string() })).optional(),
   total: z.number().optional(),
 });
 
@@ -215,7 +254,7 @@ export const OrderItem: z.ZodType<OrderItemType> = z.object({
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
 }).meta({
-  initial: {"description":"","name":"","order_number":0,"price":{"base":0,"chargeable_days":null,"discount_amount":0,"discount_percent":0,"formula":"five_day_week","subtotal":0,"tax_amount":0,"tax_profile":"tax_none","total":0},"quantity":0,"type":"rental","stock_method":"bulk","uid":"","uid_order":"","uid_component_of":null,"inclusion_type":null,"zero_priced":null},
+  initial: {"description":"","name":"","order_number":0,"price":{"base":0,"chargeable_days":null,"formula":"five_day_week","subtotal":0,"discount":null,"taxes":[],"total":0},"quantity":0,"type":"rental","stock_method":"bulk","uid":"","uid_order":"","uid_component_of":null,"inclusion_type":null,"zero_priced":null},
 });
 
 /**
@@ -290,28 +329,29 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
 
 /**
  * Line item price in the full order document (all fields required after server compute).
+ * subtotal = pre-discount (base × qty × days_factor).
+ * subtotal_discounted = post-discount.
+ * total = subtotal_discounted + sum(taxes[].amount).
  */
 export interface OrderDocItemPriceType {
   base: number;
   chargeable_days: number | null;
-  discount_amount: number;
-  discount_percent: number;
   formula: PriceFormulaType;
   subtotal: number;
-  tax_amount: number;
-  tax_profile: ItemTaxProfileType;
+  subtotal_discounted: number;
+  discount: DiscountType | null;
+  taxes: PriceModifierType[];
   total: number;
 }
 
 const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
   base: z.number().default(0),
   chargeable_days: z.number().int().nullable().default(null),
-  discount_amount: z.number().default(0),
-  discount_percent: z.number().default(0),
   formula: PriceFormulaEnum.default("five_day_week"),
   subtotal: z.number().default(0),
-  tax_amount: z.number().default(0),
-  tax_profile: ItemTaxProfileEnum.default("tax_none"),
+  subtotal_discounted: z.number().default(0),
+  discount: Discount.nullable().default(null),
+  taxes: z.array(PriceModifier).default([]),
   total: z.number().default(0),
 });
 
@@ -388,11 +428,35 @@ const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
   description: z.string().default(""),
 });
 
+/** Transaction fee line item in the full order document. */
+export interface OrderDocTransactionFeeItemType {
+  uid: string;
+  type: "transaction_fee";
+  name: string;
+  description: string;
+  quantity: number;
+  price: PriceModifierType;
+  order_number?: number;
+  uid_order?: string;
+}
+
+export const OrderDocTransactionFeeItem: z.ZodType<OrderDocTransactionFeeItemType> = z.strictObject({
+  uid: z.string(),
+  type: z.literal("transaction_fee"),
+  name: z.string().min(1).max(100),
+  description: z.string().default(""),
+  quantity: z.number().int().min(0).default(0),
+  price: PriceModifier,
+  order_number: z.number().optional(),
+  uid_order: z.string().optional(),
+});
+
 /** Union of all item types in the document. */
-export const OrderDocItem: z.ZodType<OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType> = z.union([
+export const OrderDocItem: z.ZodType<OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType> = z.union([
   OrderDocLineItem,
   OrderDocDestinationItem,
   OrderDocGroupItem,
+  OrderDocTransactionFeeItem,
 ]);
 
 /** Order dates with Firestore timestamp companions. */
@@ -426,7 +490,7 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   charge_end_fs: FirestoreTimestamp,
 });
 
-export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType;
+export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;
 
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
@@ -438,10 +502,21 @@ const OrderDocOrganization = z.strictObject({
 });
 
 /** Order totals. */
-const OrderDocTotals = z.strictObject({
+export interface OrderDocTotalsType {
+  discount_amount: number;
+  subtotal: number;
+  subtotal_discounted: number;
+  taxes: PriceModifierType[];
+  transaction_fees: PriceModifierType[];
+  total: number;
+}
+
+const OrderDocTotals: z.ZodType<OrderDocTotalsType> = z.strictObject({
   discount_amount: z.number().default(0),
   subtotal: z.number().default(0),
-  taxes: z.array(z.strictObject({ name: z.string(), total: z.number() })).default([]),
+  subtotal_discounted: z.number().default(0),
+  taxes: z.array(PriceModifier).default([]),
+  transaction_fees: z.array(PriceModifier).default([]),
   total: z.number().default(0),
 });
 
@@ -464,7 +539,7 @@ export interface Order {
   destinations: DocDestinationType[];
   items: OrderDocItemType[];
   tax_profile: TaxProfileType;
-  totals: { discount_amount: number; subtotal: number; taxes: Array<{ name: string; total: number }>; total: number };
+  totals: OrderDocTotalsType;
   query_by_items: string[];
   query_by_contacts: string[];
   crms_id?: number | null;
@@ -503,7 +578,7 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
 }).meta({
   title: "Order",
   collection: "orders",
-  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"taxes":{},"total":0},"uid":null,"version":0},
+  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"subtotal_discounted":0,"taxes":[],"transaction_fees":[],"total":0},"uid":null,"version":0},
   displayDefaults: {
     columns: ["number", "organization.name", "subject", "status"],
     filters: { status: [] },

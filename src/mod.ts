@@ -79,7 +79,10 @@ export {
   DocDestinationContact,
   OrderItem,
   OrderDocDestinationItem,
+  OrderDocTransactionFeeItem,
   ItemPrice,
+  PriceModifier,
+  Discount,
   type Order,
   type CreateOrderInputType,
   type UpdateOrderInputType,
@@ -92,6 +95,10 @@ export {
   type DocDestinationContactType,
   type OrderItemType,
   type ItemPriceType,
+  type PriceModifierType,
+  type DiscountType,
+  type OrderDocTotalsType,
+  type OrderDocTransactionFeeItemType,
   OrderDocDates,
   OrderDocItem,
   type OrderDocDatesType,
@@ -130,6 +137,7 @@ export {
   ComponentTypeEnum,
   COARevenueEnum,
   OOSReasonEnum,
+  RateTypeEnum,
   type AddressType,
   type CoordinatesType,
   type FirestoreTimestampType,
@@ -146,6 +154,7 @@ export {
   type ComponentTypeType,
   type COARevenueType,
   type OOSReasonType,
+  type RateType,
 } from "./common.ts";
 
 export {
@@ -284,6 +293,15 @@ export {
   type InvoiceItemTypeType,
   type InvoiceStatusType,
 } from "./invoice.ts";
+
+export {
+  TaxSchema,
+  CreateTaxInput,
+  UpdateTaxInput,
+  type Tax,
+  type CreateTaxInputType,
+  type UpdateTaxInputType,
+} from "./tax.ts";
 
 export {
   InventoryLedgerSchema,
@@ -502,6 +520,7 @@ import type { Session } from "./session.ts";
 import type { StockSummary } from "./stock-summary.ts";
 import type { Store } from "./store.ts";
 import type { Tag } from "./tag.ts";
+import type { Tax } from "./tax.ts";
 import type { TrackingCategory } from "./tracking-category.ts";
 import type { Transaction } from "./transaction.ts";
 import type { TypesenseConfig } from "./typesense-config.ts";
@@ -514,7 +533,7 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
   | EmailVerification | ErrorSync | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Template
+  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Tax | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
@@ -547,6 +566,7 @@ import { SessionSchema } from "./session.ts";
 import { StockSummarySchema } from "./stock-summary.ts";
 import { StoreSchema } from "./store.ts";
 import { TagSchema } from "./tag.ts";
+import { TaxSchema as TaxSchema_ } from "./tax.ts";
 import { TrackingCategorySchema } from "./tracking-category.ts";
 import { TransactionSchema } from "./transaction.ts";
 import { UserSchema } from "./user.ts";
@@ -581,6 +601,7 @@ export const schemas: Record<string, z.ZodType> = {
   "stock-summary": StockSummarySchema, "stock-summaries": StockSummarySchema,
   "store": StoreSchema, "stores": StoreSchema,
   "tag": TagSchema, "tags": TagSchema,
+  "tax": TaxSchema_, "taxes": TaxSchema_,
   "tracking-category": TrackingCategorySchema, "tracking-categories": TrackingCategorySchema,
   "transaction": TransactionSchema, "transactions": TransactionSchema,
   "user": UserSchema, "users": UserSchema,

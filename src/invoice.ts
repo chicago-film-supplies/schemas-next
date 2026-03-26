@@ -19,7 +19,7 @@ const INVOICE_STATUSES = ["draft", "issued", "paid", "voided"] as const;
 export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
-const INVOICE_ITEM_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "group"] as const;
+const INVOICE_ITEM_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "group", "transaction_fee"] as const;
 export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
 
 export interface InvoiceItemPrice {
