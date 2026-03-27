@@ -74,6 +74,10 @@ export {
   updateLocationTransaction,
 } from "./locations.ts";
 
+// ── Tax rules ───────────────────────────────────────────────────────
+
+export { updateTaxRules } from "./taxes.ts";
+
 // ── Reference data rules ─────────────────────────────────────────────
 
 export {
@@ -94,6 +98,7 @@ import { createProductRules, createProductTransaction, updateProductRules, updat
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
 import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
+import { updateTaxRules } from "./taxes.ts";
 import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
 
 export const transactions: TransactionDefinition[] = [
@@ -123,6 +128,7 @@ export const rules: CollectionRule[] = [
   ...updateOrganizationRules,
   ...createContactRules,
   ...updateContactRules,
+  ...updateTaxRules,
   ...updateTagRules,
   ...deleteTagRules,
   ...updateTrackingCategoryRules,
