@@ -2,9 +2,9 @@ import { assertEquals } from "@std/assert";
 import { BookingSchema } from "../src/booking.ts";
 
 const validBooking = {
-  uid: "b-1",
-  uid_order: "order-1",
-  uid_product: "prod-1",
+  uid: "test-booking-1",
+  uid_order: "test-order-1",
+  uid_product: "test-prod-1",
   name: "LED Panel",
   number: 1,
   type: "rental",
@@ -37,11 +37,11 @@ const validBooking = {
     delivery: null,
     collection: null,
   },
-  organization: { uid: "org-1", name: "Acme Corp", crms_id: null },
+  organization: { uid: "test-org-1", name: "Test Acme Corp", crms_id: null },
   stores: [],
   query_by_uid_store: [],
-  uid_destination_delivery: "dest-1",
-  uid_destination_collection: "dest-2",
+  uid_destination_delivery: "test-dest-1",
+  uid_destination_collection: "test-dest-2",
   created_at: null,
   updated_at: null,
 };
@@ -54,19 +54,19 @@ Deno.test("BookingSchema validates with stores", () => {
   const doc = {
     ...validBooking,
     stores: [{
-      uid_store: "store-1",
+      uid_store: "test-store-1",
       name: "Main",
       default: true,
       quantity: 5,
       locations: [{
-        uid_location: "loc-1",
+        uid_location: "test-loc-1",
         name: "Shelf A",
         quantity: 5,
         default: true,
         notes: [{ note: "Handle with care" }],
       }],
     }],
-    query_by_uid_store: ["store-1"],
+    query_by_uid_store: ["test-store-1"],
   };
   assertEquals(BookingSchema.safeParse(doc).success, true);
 });
@@ -75,7 +75,7 @@ Deno.test("BookingSchema validates with destination refs", () => {
   const doc = {
     ...validBooking,
     destinations: {
-      delivery: { uid: "dest-1", address: null },
+      delivery: { uid: "test-dest-1", address: null },
       collection: null,
     },
   };

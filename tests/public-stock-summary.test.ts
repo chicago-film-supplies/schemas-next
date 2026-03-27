@@ -2,8 +2,8 @@ import { assertEquals } from "@std/assert";
 import { PublicStockSummarySchema } from "../src/public-stock-summary.ts";
 
 const validSummary = {
-  uid: "pss-1",
-  uid_product: "prod-1",
+  uid: "test-pss-1",
+  uid_product: "test-prod-1",
   summary_type: "rental",
   type: "rental",
   dates: {
@@ -13,8 +13,8 @@ const validSummary = {
     end_fs: null,
   },
   quantity_available: 10,
-  store_breakdown: [{ uid_store: "store-1", quantity: 10 }],
-  query_by_uid_store: ["store-1"],
+  store_breakdown: [{ uid_store: "test-store-1", quantity: 10 }],
+  query_by_uid_store: ["test-store-1"],
   created_at: null,
   updated_at: null,
   expiresAt: null,

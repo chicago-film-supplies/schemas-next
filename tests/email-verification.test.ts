@@ -3,7 +3,7 @@ import { EmailVerificationSchema } from "../src/email-verification.ts";
 
 Deno.test("EmailVerificationSchema validates a complete token document", () => {
   const result = EmailVerificationSchema.safeParse({
-    user_id: "user123",
+    user_id: "test-user-1",
     email: "test@example.com",
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,
@@ -32,7 +32,7 @@ Deno.test("EmailVerificationSchema rejects empty user_id", () => {
 
 Deno.test("EmailVerificationSchema rejects invalid email", () => {
   const result = EmailVerificationSchema.safeParse({
-    user_id: "user123",
+    user_id: "test-user-1",
     email: "not-an-email",
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,
@@ -42,7 +42,7 @@ Deno.test("EmailVerificationSchema rejects invalid email", () => {
 
 Deno.test("EmailVerificationSchema rejects additional properties", () => {
   const result = EmailVerificationSchema.safeParse({
-    user_id: "user123",
+    user_id: "test-user-1",
     email: "test@example.com",
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,

@@ -2,8 +2,8 @@ import { assertEquals } from "@std/assert";
 import { StockSummarySchema } from "../src/stock-summary.ts";
 
 const validSummary = {
-  uid: "ss-1",
-  uid_product: "prod-1",
+  uid: "test-ss-1",
+  uid_product: "test-prod-1",
   summary_type: "rental",
   type: "rental",
   dates: {
@@ -34,13 +34,13 @@ const validSummary = {
   quantity_in_service: 18,
   quantity_out_of_service: 2,
   store_breakdown: [{
-    uid_store: "store-1",
+    uid_store: "test-store-1",
     name: "Main",
     default: true,
     crms_stock_level_id: null,
     quantity: 20,
     locations: [{
-      uid_location: "loc-1",
+      uid_location: "test-loc-1",
       name: "Shelf A",
       quantity: 20,
       default: true,
@@ -48,7 +48,7 @@ const validSummary = {
       notes: [],
     }],
   }],
-  query_by_uid_store: ["store-1"],
+  query_by_uid_store: ["test-store-1"],
   created_at: null,
   updated_at: null,
   expiresAt: null,

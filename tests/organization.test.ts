@@ -17,27 +17,27 @@ const validAddress = {
 
 Deno.test("OrganizationSchema validates a complete document", () => {
   const doc = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme Corp",
     crms_id: 100,
-    xero_id: "xero-1",
+    xero_id: "test-xero-1",
     tax_profile: "tax_applied",
     emails: ["info@acme.com"],
     phones: ["1234567890"],
     billing_address: validAddress,
-    contacts: [{ uid: "c1", name: "John", roles: ["admin"] }],
-    query_by_contacts: ["c1"],
+    contacts: [{ uid: "test-c1", name: "John", roles: ["admin"] }],
+    query_by_contacts: ["test-c1"],
   };
   assertEquals(OrganizationSchema.safeParse(doc).success, true);
 });
 
 Deno.test("OrganizationSchema rejects missing required fields", () => {
-  assertEquals(OrganizationSchema.safeParse({ uid: "org-1" }).success, false);
+  assertEquals(OrganizationSchema.safeParse({ uid: "test-org-1" }).success, false);
 });
 
 Deno.test("OrganizationSchema accepts null billing_address", () => {
   const doc = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme",
     crms_id: 1,
     xero_id: null,
@@ -48,7 +48,7 @@ Deno.test("OrganizationSchema accepts null billing_address", () => {
 
 Deno.test("OrganizationSchema rejects invalid tax_profile", () => {
   const doc = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme",
     crms_id: 1,
     xero_id: null,
@@ -60,7 +60,7 @@ Deno.test("OrganizationSchema rejects invalid tax_profile", () => {
 
 Deno.test("OrganizationSchema rejects additional properties", () => {
   const doc = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme",
     crms_id: 1,
     xero_id: null,
@@ -72,7 +72,7 @@ Deno.test("OrganizationSchema rejects additional properties", () => {
 
 Deno.test("CreateOrganizationInput accepts valid input", () => {
   const input = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme",
     tax_profile: "tax_applied",
     billing_address: validAddress,

@@ -11,21 +11,21 @@ const validDates = {
 };
 
 const validDestination = {
-  delivery: { uid: "dest-1" },
-  collection: { uid: "dest-2" },
+  delivery: { uid: "test-dest-1" },
+  collection: { uid: "test-dest-2" },
 };
 
 // ── CreateOrderInput ─────────────────────────────────────────────
 
 Deno.test("CreateOrderInput validates a complete input", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", name: "Camera", quantity: 2 }],
+    items: [{ uid: "test-item-1", type: "rental", name: "Camera", quantity: 2 }],
     subject: "Film shoot",
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
@@ -33,8 +33,8 @@ Deno.test("CreateOrderInput validates a complete input", () => {
 
 Deno.test("CreateOrderInput rejects empty destinations", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
@@ -45,8 +45,8 @@ Deno.test("CreateOrderInput rejects empty destinations", () => {
 
 Deno.test("CreateOrderInput rejects invalid status", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "invalid",
     dates: validDates,
     tax_profile: "tax_applied",
@@ -57,8 +57,8 @@ Deno.test("CreateOrderInput rejects invalid status", () => {
 
 Deno.test("CreateOrderInput rejects invalid tax_profile", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "invalid",
@@ -69,8 +69,8 @@ Deno.test("CreateOrderInput rejects invalid tax_profile", () => {
 
 Deno.test("CreateOrderInput strips extra properties on dates", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: { ...validDates, extra_field: "nope" },
     tax_profile: "tax_applied",
@@ -85,14 +85,14 @@ Deno.test("CreateOrderInput strips extra properties on dates", () => {
 
 Deno.test("CreateOrderInput strips extra properties on destination endpoint", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "dest-1", bonus: true },
-      collection: { uid: "dest-2" },
+      delivery: { uid: "test-dest-1", bonus: true },
+      collection: { uid: "test-dest-2" },
     }],
   };
   const result = CreateOrderInput.safeParse(input);
@@ -104,14 +104,14 @@ Deno.test("CreateOrderInput strips extra properties on destination endpoint", ()
 
 Deno.test("CreateOrderInput accepts destination with null contact", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "dest-1", contact: null },
-      collection: { uid: "dest-2" },
+      delivery: { uid: "test-dest-1", contact: null },
+      collection: { uid: "test-dest-2" },
     }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
@@ -119,14 +119,14 @@ Deno.test("CreateOrderInput accepts destination with null contact", () => {
 
 Deno.test("CreateOrderInput accepts destination with complete contact", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "dest-1", contact: { uid: "c-1", name: "Jane", phones: ["312-555-0100"] } },
-      collection: { uid: "dest-2" },
+      delivery: { uid: "test-dest-1", contact: { uid: "test-contact-1", name: "Jane", phones: ["312-555-0100"] } },
+      collection: { uid: "test-dest-2" },
     }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
@@ -134,14 +134,14 @@ Deno.test("CreateOrderInput accepts destination with complete contact", () => {
 
 Deno.test("CreateOrderInput rejects destination contact missing name", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "dest-1", contact: { uid: "c-1" } },
-      collection: { uid: "dest-2" },
+      delivery: { uid: "test-dest-1", contact: { uid: "test-contact-1" } },
+      collection: { uid: "test-dest-2" },
     }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
@@ -149,14 +149,14 @@ Deno.test("CreateOrderInput rejects destination contact missing name", () => {
 
 Deno.test("CreateOrderInput rejects destination contact missing uid", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "dest-1", contact: { name: "Jane" } },
-      collection: { uid: "dest-2" },
+      delivery: { uid: "test-dest-1", contact: { name: "Jane" } },
+      collection: { uid: "test-dest-2" },
     }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
@@ -164,71 +164,71 @@ Deno.test("CreateOrderInput rejects destination contact missing uid", () => {
 
 Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", inclusion_type: "invalid" }],
+    items: [{ uid: "test-item-1", type: "rental", inclusion_type: "invalid" }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
 Deno.test("CreateOrderInput accepts null inclusion_type", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", inclusion_type: null }],
+    items: [{ uid: "test-item-1", type: "rental", inclusion_type: null }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
 
 Deno.test("CreateOrderInput rejects invalid item price formula", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", price: { formula: "daily" } }],
+    items: [{ uid: "test-item-1", type: "rental", price: { formula: "daily" } }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
 Deno.test("CreateOrderInput rejects invalid item discount type", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", price: { discount: { rate: 10, type: "invalid" } } }],
+    items: [{ uid: "test-item-1", type: "rental", price: { discount: { rate: 10, type: "invalid" } } }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
 Deno.test("CreateOrderInput accepts item with discount and taxes", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
     items: [{
-      uid: "item-1",
+      uid: "test-item-1",
       type: "rental",
       price: {
         base: 100,
         discount: { rate: 20, type: "percent" },
-        taxes: [{ uid: "chi-rental-tax" }],
+        taxes: [{ uid: "test-chi-rental-tax" }],
       },
     }],
   };
@@ -237,26 +237,26 @@ Deno.test("CreateOrderInput accepts item with discount and taxes", () => {
 
 Deno.test("CreateOrderInput accepts item with null discount", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", price: { discount: null } }],
+    items: [{ uid: "test-item-1", type: "rental", price: { discount: null } }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
 
 Deno.test("CreateOrderInput rejects float quantity on items", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "item-1", type: "rental", quantity: 1.5 }],
+    items: [{ uid: "test-item-1", type: "rental", quantity: 1.5 }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
@@ -305,12 +305,12 @@ const validDocDates = {
 };
 
 const minimalDoc = {
-  uid: "order-1",
+  uid: "test-order-1",
   number: 1001,
   status: "draft",
   organization: {
     uid: null,
-    name: "Acme Corp",
+    name: "Test Acme Corp",
   },
   dates: validDocDates,
   destinations: [validDocDestination],
@@ -334,7 +334,7 @@ Deno.test("OrderSchema validates a complete document", () => {
     tax_profile: "tax_applied",
     items: [
       {
-        uid: "prod-1",
+        uid: "test-prod-1",
         type: "rental",
         name: "Camera",
         quantity: 2,
@@ -346,7 +346,7 @@ Deno.test("OrderSchema validates a complete document", () => {
           subtotal_discounted: 200,
           discount: null,
           taxes: [{
-            uid: "chi-rental-tax",
+            uid: "test-chi-rental-tax",
             name: "Chicago Rental Tax",
             rate: 15,
             type: "percent",
@@ -359,18 +359,18 @@ Deno.test("OrderSchema validates a complete document", () => {
       {
         uid: "550e8400-e29b-41d4-a716-446655440000",
         type: "destination",
-        name: "Chicago Office",
-        uid_delivery: "dest-1",
-        uid_collection: "dest-2",
+        name: "Test Chicago Office",
+        uid_delivery: "test-dest-1",
+        uid_collection: "test-dest-2",
       },
       {
         uid: "550e8400-e29b-41d4-a716-446655440001",
         type: "group",
-        name: "Lighting",
+        name: "Test Lighting",
       },
     ],
-    query_by_items: ["prod-1"],
-    query_by_contacts: ["contact-1"],
+    query_by_items: ["test-prod-1"],
+    query_by_contacts: ["test-contact-1"],
     crms_id: 12345,
     crms_status: "active",
     subject: "Film shoot",
@@ -453,7 +453,7 @@ Deno.test("OrderSchema rejects group item with non-uuid uid", () => {
 Deno.test("OrderSchema rejects line item with invalid type", () => {
   const doc = {
     ...minimalDoc,
-    items: [{ uid: "prod-1", type: "invalid", name: "Thing" }],
+    items: [{ uid: "test-prod-1", type: "invalid", name: "Thing" }],
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -462,7 +462,7 @@ Deno.test("OrderSchema accepts all doc line item types", () => {
   for (const type of ["rental", "replacement", "sale", "service", "surcharge"]) {
     const doc = {
       ...minimalDoc,
-      items: [{ uid: "prod-1", type, name: "Thing" }],
+      items: [{ uid: "test-prod-1", type, name: "Thing" }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `type "${type}" should be valid`);
   }
@@ -471,7 +471,7 @@ Deno.test("OrderSchema accepts all doc line item types", () => {
 Deno.test("OrderSchema rejects custom line item type", () => {
   const doc = {
     ...minimalDoc,
-    items: [{ uid: "prod-1", type: "custom", name: "Thing" }],
+    items: [{ uid: "test-prod-1", type: "custom", name: "Thing" }],
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -480,7 +480,7 @@ Deno.test("OrderSchema rejects float chargeable_days in price", () => {
   const doc = {
     ...minimalDoc,
     items: [{
-      uid: "prod-1",
+      uid: "test-prod-1",
       type: "rental",
       name: "Camera",
       price: {
@@ -502,7 +502,7 @@ Deno.test("OrderSchema rejects invalid price formula", () => {
   const doc = {
     ...minimalDoc,
     items: [{
-      uid: "prod-1",
+      uid: "test-prod-1",
       type: "rental",
       name: "Camera",
       price: {
@@ -524,7 +524,7 @@ Deno.test("OrderSchema rejects invalid discount type", () => {
   const doc = {
     ...minimalDoc,
     items: [{
-      uid: "prod-1",
+      uid: "test-prod-1",
       type: "rental",
       name: "Camera",
       price: {
@@ -547,7 +547,7 @@ Deno.test("OrderSchema validates destination with contact", () => {
     ...minimalDoc,
     destinations: [{
       delivery: {
-        uid: "dest-1",
+        uid: "test-dest-1",
         address: {
           city: "Chicago",
           country_name: "US",
@@ -559,7 +559,7 @@ Deno.test("OrderSchema validates destination with contact", () => {
         },
         instructions: "Ring bell",
         contact: {
-          uid: "contact-1",
+          uid: "test-contact-1",
           name: "John Doe",
           phones: ["1234567890"],
         },
@@ -580,10 +580,10 @@ Deno.test("OrderSchema rejects doc destination contact missing name", () => {
     ...minimalDoc,
     destinations: [{
       delivery: {
-        uid: "dest-1",
+        uid: "test-dest-1",
         address: null,
         instructions: null,
-        contact: { uid: "contact-1" },
+        contact: { uid: "test-contact-1" },
       },
       collection: {
         uid: null,
@@ -601,11 +601,11 @@ Deno.test("OrderSchema rejects doc destination contact with short phone", () => 
     ...minimalDoc,
     destinations: [{
       delivery: {
-        uid: "dest-1",
+        uid: "test-dest-1",
         address: null,
         instructions: null,
         contact: {
-          uid: "contact-1",
+          uid: "test-contact-1",
           name: "John Doe",
           phones: ["123"],
         },
@@ -635,7 +635,7 @@ Deno.test("OrderSchema rejects extra properties on line item price", () => {
   const doc = {
     ...minimalDoc,
     items: [{
-      uid: "prod-1",
+      uid: "test-prod-1",
       type: "rental",
       name: "Camera",
       price: {
@@ -657,7 +657,7 @@ Deno.test("OrderSchema rejects extra properties on line item price", () => {
 Deno.test("OrderSchema rejects float quantity on line items", () => {
   const doc = {
     ...minimalDoc,
-    items: [{ uid: "prod-1", type: "rental", name: "Camera", quantity: 1.5 }],
+    items: [{ uid: "test-prod-1", type: "rental", name: "Camera", quantity: 1.5 }],
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -665,7 +665,7 @@ Deno.test("OrderSchema rejects float quantity on line items", () => {
 Deno.test("OrderSchema rejects negative quantity on line items", () => {
   const doc = {
     ...minimalDoc,
-    items: [{ uid: "prod-1", type: "rental", name: "Camera", quantity: -1 }],
+    items: [{ uid: "test-prod-1", type: "rental", name: "Camera", quantity: -1 }],
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
@@ -674,7 +674,7 @@ Deno.test("OrderSchema accepts valid inclusion_type values", () => {
   for (const val of ["default", "mandatory", "optional", null]) {
     const doc = {
       ...minimalDoc,
-      items: [{ uid: "prod-1", type: "rental", name: "Camera", inclusion_type: val }],
+      items: [{ uid: "test-prod-1", type: "rental", name: "Camera", inclusion_type: val }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `inclusion_type "${val}" should be valid`);
   }
