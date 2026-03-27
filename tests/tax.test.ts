@@ -8,8 +8,10 @@ const validTax = {
   type: "percent" as const,
   active: true,
   crms_id: null,
-  valid_from: null,
+  valid_from: "2026-01-01T00:00:00.000Z",
+  valid_from_fs: null,
   valid_to: null,
+  valid_to_fs: null,
   created_by: "test-user-1",
   updated_by: "test-user-1",
   created_at: null,
@@ -45,7 +47,7 @@ Deno.test("CreateTaxInput accepts valid input", () => {
     name: "Sales Tax",
     rate: 10.25,
     type: "percent" as const,
-    valid_from: null,
+    valid_from: "2026-01-01T00:00:00.000Z",
   };
   assertEquals(CreateTaxInput.safeParse(input).success, true);
 });

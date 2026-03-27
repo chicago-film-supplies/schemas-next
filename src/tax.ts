@@ -19,8 +19,10 @@ export interface Tax {
   type: RateType;
   active: boolean;
   crms_id: number | null;
-  valid_from: FirestoreTimestampType;
-  valid_to: FirestoreTimestampType | null;
+  valid_from: string;
+  valid_from_fs: FirestoreTimestampType;
+  valid_to: string | null;
+  valid_to_fs: FirestoreTimestampType | null;
   version: number;
   created_by: string;
   updated_by: string;
@@ -35,8 +37,10 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   type: RateTypeEnum,
   active: z.boolean().default(true),
   crms_id: z.int().nullable().default(null),
-  valid_from: FirestoreTimestamp,
-  valid_to: FirestoreTimestamp.nullable().default(null),
+  valid_from: z.string().default(""),
+  valid_from_fs: FirestoreTimestamp,
+  valid_to: z.string().nullable().default(null),
+  valid_to_fs: FirestoreTimestamp.nullable().default(null),
   version: z.int().min(0).default(0),
   created_by: z.string(),
   updated_by: z.string(),
@@ -52,8 +56,10 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
     type: "percent",
     active: true,
     crms_id: null,
-    valid_from: null,
+    valid_from: "",
+    valid_from_fs: null,
     valid_to: null,
+    valid_to_fs: null,
     version: 0,
     created_by: "",
     updated_by: "",
@@ -70,8 +76,8 @@ export interface CreateTaxInputType {
   rate: number;
   type: RateType;
   active?: boolean;
-  valid_from: FirestoreTimestampType;
-  valid_to?: FirestoreTimestampType | null;
+  valid_from: string;
+  valid_to?: string | null;
 }
 
 export const CreateTaxInput: z.ZodType<CreateTaxInputType> = z.object({
@@ -79,8 +85,8 @@ export const CreateTaxInput: z.ZodType<CreateTaxInputType> = z.object({
   rate: z.number(),
   type: RateTypeEnum,
   active: z.boolean().optional(),
-  valid_from: FirestoreTimestamp,
-  valid_to: FirestoreTimestamp.nullable().optional(),
+  valid_from: z.string(),
+  valid_to: z.string().nullable().optional(),
 });
 
 export interface UpdateTaxInputType {
@@ -89,8 +95,8 @@ export interface UpdateTaxInputType {
   rate?: number;
   type?: RateType;
   active?: boolean;
-  valid_from?: FirestoreTimestampType;
-  valid_to?: FirestoreTimestampType | null;
+  valid_from?: string;
+  valid_to?: string | null;
   version: number;
 }
 
@@ -100,7 +106,7 @@ export const UpdateTaxInput: z.ZodType<UpdateTaxInputType> = z.object({
   rate: z.number().optional(),
   type: RateTypeEnum.optional(),
   active: z.boolean().optional(),
-  valid_from: FirestoreTimestamp.optional(),
-  valid_to: FirestoreTimestamp.nullable().optional(),
+  valid_from: z.string().optional(),
+  valid_to: z.string().nullable().optional(),
   version: z.int().min(0),
 });
