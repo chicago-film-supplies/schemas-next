@@ -95,7 +95,7 @@ This package uses Zod 4 (`jsr:@zod/zod@^4`), not Zod 3. Key differences from v3:
 - `z.email()` instead of `z.string().email()` (top-level string formats)
 - `z.infer<>` still works as a type utility but we define interfaces explicitly for JSR
 
-For the full Zod 4 API reference, read `.claude/zod-llms.txt` (auto-fetched from zod.dev/llms.txt). Run `deno task fetch-zod-docs` to refresh manually.
+For the full Zod 4 API reference, read `.claude/zod-llms.txt` (auto-fetched from zod.dev/llms.txt). For Deno runtime/API reference, read `.claude/deno-llms.txt` (auto-fetched from docs.deno.com). Run `deno task fetch-llms-docs` to refresh manually.
 
 ### Schema structure
 
