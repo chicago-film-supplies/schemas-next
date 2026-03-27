@@ -18,6 +18,46 @@ Shared Zod 4 schemas for CFS Firestore collections and Typesense collections pub
 ## Publish
 - git commit, git push to beta branch, gh action will trigger semantic release and publish
 
+## Commit conventions
+
+This repo uses [semantic-release](https://github.com/semantic-release/semantic-release) with the **Conventional Commits** preset. The commit message determines the version bump automatically.
+
+### Format
+
+```
+<type>(<optional scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+| Type | Version bump | When to use |
+|------|-------------|-------------|
+| `fix` | Patch (1.0.x) | Bug fixes |
+| `feat` | Minor (1.x.0) | New schemas, fields, or features |
+| `feat!` / `fix!` / `BREAKING CHANGE:` footer | Major (x.0.0) | Removing/renaming fields, changing validation rules, any change that breaks existing consumers |
+| `chore` | No release | Tooling, CI, deps, docs |
+| `refactor` | No release | Code restructuring with no behavior change |
+| `test` | No release | Adding or updating tests |
+| `docs` | No release | Documentation only |
+
+### Scopes
+
+Use the schema/module name as the scope when the change is limited to one area:
+
+```
+feat(contact): add middle_name field
+fix(order): correct line_items default
+feat!: remove deprecated AddressV1 schema
+```
+
+### Breaking changes
+
+Any commit that removes a field, renames an export, or changes validation in a way that could break consumers **must** be marked as breaking — either with `!` after the type or a `BREAKING CHANGE:` footer.
+
 ## Conventions
 
 ### JSR imports over npm
@@ -80,6 +120,8 @@ When adding or changing a field, always consider whether it needs a `.meta({ pii
 
 - **Document schemas** (`ContactSchema`, `OrganizationSchema`) — full Firestore document shape, use `z.strictObject()`
 - **Input schemas** (`CreateContactInput`, `UpdateContactInput`) — what API endpoints accept, use `z.object()` (no strict)
+
+This applies to nested objects too — if a field inside an input schema contains an object, use `z.object()` so extra properties are silently stripped rather than rejected.
 
 ## API Reference
 
