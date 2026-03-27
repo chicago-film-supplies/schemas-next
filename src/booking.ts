@@ -88,6 +88,7 @@ export interface Booking {
   query_by_uid_location: string[];
   uid_destination_delivery: string;
   uid_destination_collection: string;
+  version: number;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -162,6 +163,7 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   query_by_uid_location: z.array(z.string()).default([]),
   uid_destination_delivery: z.string(),
   uid_destination_collection: z.string(),
+  version: z.int().min(0).default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({

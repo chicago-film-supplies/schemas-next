@@ -13,6 +13,7 @@ export interface TrackingCategory {
   crms_product_group_name: string;
   products: Record<string, UidNameRefType>;
   xero_tracking_option_id: string | null;
+  version: number;
   updated_by: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -27,12 +28,13 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   crms_product_group_name: z.string(),
   products: z.record(z.string(), UidNameRef),
   xero_tracking_option_id: z.string().nullable(),
+  version: z.int().min(0).default(0),
   updated_by: z.string(),
   ...TimestampFields,
 }).meta({
   title: "Tracking Category",
   collection: "tracking-categories",
-  initial: {"uid":null,"name":"","crms_product_group_name":"","products":{},"xero_tracking_option_id":null,"updated_by":""},
+  initial: {"uid":null,"name":"","crms_product_group_name":"","products":{},"xero_tracking_option_id":null,"version":0,"updated_by":""},
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},
@@ -54,8 +56,10 @@ export const CreateTrackingCategoryInput: z.ZodType<CreateTrackingCategoryInputT
 export interface UpdateTrackingCategoryInputType {
   uid: string;
   name: string;
+  version: number;
 }
 export const UpdateTrackingCategoryInput: z.ZodType<UpdateTrackingCategoryInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100),
+  version: z.int().min(0),
 });

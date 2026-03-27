@@ -21,6 +21,7 @@ export interface Destination {
   query_by_products?: string[];
   contacts?: UidNameRefType[];
   query_by_contacts?: string[];
+  version: number;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -35,11 +36,12 @@ export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
   query_by_products: z.array(z.string()).default([]).optional(),
   contacts: z.array(UidNameRef).default([]).optional(),
   query_by_contacts: z.array(z.string()).default([]).optional(),
+  version: z.int().min(0).default(0),
   ...TimestampFields,
 }).meta({
   title: "Destination",
   collection: "destinations",
-  initial: {"uid":null,"address":null,"mapbox_ids":[],"organizations":[],"query_by_organizations":[],"products":[],"query_by_products":[],"contacts":[],"query_by_contacts":[]},
+  initial: {"uid":null,"address":null,"mapbox_ids":[],"organizations":[],"query_by_organizations":[],"products":[],"query_by_products":[],"contacts":[],"query_by_contacts":[],"version":0},
   displayDefaults: {
     columns: ["address.full", "address.city", "address.region"],
     filters: {},
