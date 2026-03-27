@@ -228,7 +228,7 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   chargeable_days: z.int().nullable().optional(),
   formula: PriceFormulaEnum.optional(),
   subtotal: z.number().optional(),
-  discount: z.strictObject({
+  discount: z.object({
     rate: z.number(),
     type: RateTypeEnum,
   }).nullable().optional(),
