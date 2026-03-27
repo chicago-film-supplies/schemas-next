@@ -175,6 +175,24 @@ export const PriceModifier: z.ZodType<PriceModifierType> = z.strictObject({
 });
 
 /**
+ * Denormalized tax snapshot without computed amount — used on product catalog entries.
+ * PriceModifier extends this shape with `amount` for order-time computation.
+ */
+export interface TaxRefType {
+  uid: string;
+  name: string;
+  rate: number;
+  type: RateType;
+}
+
+export const TaxRef: z.ZodType<TaxRefType> = z.strictObject({
+  uid: z.string(),
+  name: z.string(),
+  rate: z.number(),
+  type: RateTypeEnum,
+});
+
+/**
  * Discount applied to an item price. Nullable — null means no discount.
  * rate is per-unit for flat discounts (rate × quantity × days_factor = amount).
  */

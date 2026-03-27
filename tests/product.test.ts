@@ -11,7 +11,7 @@ const validProduct = {
   crms_id: 100,
   price: {
     base: 500,
-    tax_profile: "tax_chicago_rental_tax",
+    taxes: [{ uid: "chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }],
     formula: "five_day_week",
     discountable: true,
   },
@@ -53,7 +53,7 @@ Deno.test("ProductSchema validates with components", () => {
         type: "rental",
         price: {
           base: 0,
-          tax_profile: "tax_none",
+          taxes: [{ uid: "tax-none", name: "No Tax", rate: 0, type: "percent" }],
           formula: "fixed",
           discountable: false,
         },

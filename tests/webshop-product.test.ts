@@ -8,7 +8,7 @@ const validWebshopProduct = {
   type: "rental",
   price: {
     base: 500,
-    tax_profile: "tax_chicago_rental_tax",
+    taxes: [{ uid: "chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }],
     formula: "five_day_week",
     discountable: true,
   },
