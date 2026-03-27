@@ -7,6 +7,7 @@ const validTax = {
   rate: 15,
   type: "percent" as const,
   active: true,
+  crms_id: null,
   valid_from: null,
   valid_to: null,
   created_by: "test-user-1",

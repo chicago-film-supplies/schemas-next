@@ -18,6 +18,7 @@ export interface Tax {
   rate: number;
   type: RateType;
   active: boolean;
+  crms_id: number | null;
   valid_from: FirestoreTimestampType;
   valid_to: FirestoreTimestampType | null;
   created_by: string;
@@ -32,6 +33,7 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   rate: z.number(),
   type: RateTypeEnum,
   active: z.boolean().default(true),
+  crms_id: z.int().nullable().default(null),
   valid_from: FirestoreTimestamp,
   valid_to: FirestoreTimestamp.nullable().default(null),
   created_by: z.string(),
@@ -47,6 +49,7 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
     rate: 0,
     type: "percent",
     active: true,
+    crms_id: null,
     valid_from: null,
     valid_to: null,
     created_by: "",
