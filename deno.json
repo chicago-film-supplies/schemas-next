@@ -40,7 +40,8 @@
     "test": "deno test --allow-read tests/",
     "lint": "deno lint",
     "check": "deno check src/mod.ts src/typesense/mod.ts",
-    "setup": "deno install && git config core.hooksPath .githooks"
+    "setup": "deno install && git config core.hooksPath .githooks && deno task fetch-zod-docs",
+    "fetch-zod-docs": "deno run --allow-net=zod.dev --allow-read --allow-write scripts/fetch-zod-llms.ts"
   },
   "imports": {
     "zod": "npm:zod@^4.3.6",
