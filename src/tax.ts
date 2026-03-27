@@ -21,6 +21,7 @@ export interface Tax {
   crms_id: number | null;
   valid_from: FirestoreTimestampType;
   valid_to: FirestoreTimestampType | null;
+  version: number;
   created_by: string;
   updated_by: string;
   created_at: FirestoreTimestampType;
@@ -36,6 +37,7 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   crms_id: z.int().nullable().default(null),
   valid_from: FirestoreTimestamp,
   valid_to: FirestoreTimestamp.nullable().default(null),
+  version: z.int().min(0).default(0),
   created_by: z.string(),
   updated_by: z.string(),
   created_at: FirestoreTimestamp,
@@ -52,6 +54,7 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
     crms_id: null,
     valid_from: null,
     valid_to: null,
+    version: 0,
     created_by: "",
     updated_by: "",
   },

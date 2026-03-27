@@ -107,7 +107,7 @@ export interface NoteEntryType {
 
 export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
   note: z.string(),
-  updated_at: FirestoreTimestamp,
+  updated_at: FirestoreTimestamp.optional(),
   updated_by: z.string().optional(),
 });
 
