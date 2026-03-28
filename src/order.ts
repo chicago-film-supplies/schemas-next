@@ -175,6 +175,24 @@ export const PriceModifier: z.ZodType<PriceModifierType> = z.strictObject({
 });
 
 /**
+ * Denormalized tax snapshot without computed amount — used on product catalog entries.
+ * PriceModifier extends this shape with `amount` for order-time computation.
+ */
+export interface TaxRefType {
+  uid: string;
+  name: string;
+  rate: number;
+  type: RateType;
+}
+
+export const TaxRef: z.ZodType<TaxRefType> = z.strictObject({
+  uid: z.string(),
+  name: z.string(),
+  rate: z.number(),
+  type: RateTypeEnum,
+});
+
+/**
  * Discount applied to an item price. Nullable — null means no discount.
  * rate is per-unit for flat discounts (rate × quantity × days_factor = amount).
  */
@@ -210,7 +228,7 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   chargeable_days: z.int().nullable().optional(),
   formula: PriceFormulaEnum.optional(),
   subtotal: z.number().optional(),
-  discount: z.strictObject({
+  discount: z.object({
     rate: z.number(),
     type: RateTypeEnum,
   }).nullable().optional(),
@@ -473,6 +491,8 @@ export interface OrderDocDatesType {
   charge_start_fs: FirestoreTimestampType;
   charge_end: string;
   charge_end_fs: FirestoreTimestampType;
+  days_active: number | null;
+  days_charged: number | null;
 }
 
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
@@ -488,6 +508,8 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   charge_start_fs: FirestoreTimestamp,
   charge_end: z.string().default(""),
   charge_end_fs: FirestoreTimestamp,
+  days_active: z.int().nullable().default(null),
+  days_charged: z.int().nullable().default(null),
 });
 
 export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;

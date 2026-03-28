@@ -71,6 +71,7 @@ export interface Invoice {
   items: InvoiceItem[];
   items_consolidated: Record<string, InvoiceItem>;
   xero_id: string | null;
+  version: number;
   updated_by: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -123,6 +124,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   items: z.array(InvoiceItemSchema),
   items_consolidated: z.record(z.string(), InvoiceItemSchema),
   xero_id: z.string().nullable(),
+  version: z.int().min(0).default(0),
   updated_by: z.string(),
   ...TimestampFields,
 }).meta({

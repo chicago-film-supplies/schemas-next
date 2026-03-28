@@ -10,6 +10,7 @@ export interface Tag {
   count?: Record<string, FirestoreFieldValue> | number;
   products?: UidNameRefType[];
   query_by_products?: string[];
+  version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -21,12 +22,13 @@ export const TagSchema: z.ZodType<Tag> = z.strictObject({
   count: z.union([z.record(z.string(), z.custom<FirestoreFieldValue>()), z.number()]).optional(),
   products: z.array(UidNameRef).default([]).optional(),
   query_by_products: z.array(z.string()).default([]).optional(),
+  version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
 }).meta({
   title: "Tag",
   collection: "tags",
-  initial: {"uid":null,"name":"","products":[],"query_by_products":[]},
+  initial: {"uid":null,"name":"","products":[],"query_by_products":[],"version":0},
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},
@@ -46,10 +48,12 @@ export const CreateTagInput: z.ZodType<CreateTagInputType> = z.object({
 export interface UpdateTagInputType {
   uid: string;
   name: string;
+  version: number;
 }
 export const UpdateTagInput: z.ZodType<UpdateTagInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100),
+  version: z.int().min(0),
 });
 
 export interface DeleteTagInputType {

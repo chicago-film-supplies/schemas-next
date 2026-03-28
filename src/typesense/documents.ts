@@ -370,7 +370,7 @@ export interface ProductDocumentComponent {
     base?: number;
     replacement?: number;
     coa_revenue?: string;
-    tax_profile?: string;
+    taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
   };
@@ -394,7 +394,7 @@ export interface ProductDocument {
     base?: number;
     replacement?: number;
     coa_revenue?: string;
-    tax_profile?: string;
+    taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
   };
@@ -519,7 +519,7 @@ export interface WebshopProductDocumentComponent {
   price?: {
     base?: number;
     replacement?: number;
-    tax_profile?: string;
+    taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
   };
@@ -540,7 +540,7 @@ export interface WebshopProductDocument {
   price: {
     base?: number;
     replacement?: number;
-    tax_profile?: string;
+    taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
   };

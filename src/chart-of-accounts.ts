@@ -31,6 +31,7 @@ export interface ChartOfAccounts {
   type: COATypeType;
   description?: string;
   default_tax_profile: string;
+  version: number;
   updated_by: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -43,6 +44,7 @@ export const ChartOfAccountsSchema: z.ZodType<ChartOfAccounts> = z.strictObject(
   type: COAType,
   description: z.string().optional(),
   default_tax_profile: z.string(),
+  version: z.int().min(0).default(0),
   updated_by: z.string(),
   ...TimestampFields,
 }).meta({

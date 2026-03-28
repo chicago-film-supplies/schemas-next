@@ -11,7 +11,6 @@
     "./contact": "./src/contact.ts",
     "./destination": "./src/destination.ts",
     "./email-verification": "./src/email-verification.ts",
-    "./error-sync": "./src/error-sync.ts",
     "./holiday-dates": "./src/holiday-dates.ts",
     "./inventory-ledger": "./src/inventory-ledger.ts",
     "./invoice": "./src/invoice.ts",
@@ -41,7 +40,8 @@
     "test": "deno test --allow-read tests/",
     "lint": "deno lint",
     "check": "deno check src/mod.ts src/typesense/mod.ts",
-    "setup": "deno install && git config core.hooksPath .githooks"
+    "setup": "deno install && git config core.hooksPath .githooks && deno task fetch-llms-docs",
+    "fetch-llms-docs": "deno run --allow-net=zod.dev,docs.deno.com --allow-read --allow-write scripts/fetch-llms-docs.ts"
   },
   "imports": {
     "zod": "npm:zod@^4.3.6",

@@ -2,7 +2,7 @@ import { assertEquals } from "@std/assert";
 import { ProductSchema } from "../src/product.ts";
 
 const validProduct = {
-  uid: "p-1",
+  uid: "test-product-1",
   name: "Canon C300",
   active: true,
   type: "rental",
@@ -11,14 +11,14 @@ const validProduct = {
   crms_id: 100,
   price: {
     base: 500,
-    tax_profile: "tax_chicago_rental_tax",
+    taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }],
     formula: "five_day_week",
     discountable: true,
   },
   alternates: {},
   components: {},
   component_of: {},
-  tags: [{ uid: "t1", name: "Camera" }],
+  tags: [{ uid: "test-t1", name: "Camera" }],
   webshop: { available: true },
 };
 
@@ -45,15 +45,15 @@ Deno.test("ProductSchema validates with components", () => {
   const doc = {
     ...validProduct,
     components: {
-      "comp-1": {
-        uid: "comp-1",
+      "test-comp-1": {
+        uid: "test-comp-1",
         name: "Battery",
         crms_id: 200,
         quantity: 2,
         type: "rental",
         price: {
           base: 0,
-          tax_profile: "tax_none",
+          taxes: [{ uid: "test-tax-none", name: "No Tax", rate: 0, type: "percent" }],
           formula: "fixed",
           discountable: false,
         },
@@ -74,7 +74,7 @@ Deno.test("ProductSchema rejects invalid stock_method", () => {
 });
 
 Deno.test("ProductSchema rejects missing required fields", () => {
-  assertEquals(ProductSchema.safeParse({ uid: "p-1", name: "Test" }).success, false);
+  assertEquals(ProductSchema.safeParse({ uid: "test-product-1", name: "Test" }).success, false);
 });
 
 Deno.test("ProductSchema rejects additional properties", () => {

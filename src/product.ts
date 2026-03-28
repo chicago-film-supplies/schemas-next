@@ -10,8 +10,6 @@ import {
   type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
-  ItemTaxProfileEnum,
-  type ItemTaxProfileType,
   PriceFormulaEnum,
   type PriceFormulaType,
   ProductTypeEnum,
@@ -22,6 +20,7 @@ import {
   UidNameRef,
   type UidNameRefType,
 } from "./common.ts";
+import { TaxRef, type TaxRefType } from "./order.ts";
 
 export interface ProductAlternate {
   uid: string;
@@ -43,7 +42,7 @@ export interface ProductComponent {
     base: number;
     replacement?: number | null;
     coa_revenue?: string;
-    tax_profile: string;
+    taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
   };
@@ -53,7 +52,7 @@ export interface ProductPrice {
   base: number;
   replacement?: number | null;
   coa_revenue?: string;
-  tax_profile: ItemTaxProfileType;
+  taxes: TaxRefType[];
   formula: PriceFormulaType;
   discountable: boolean;
 }
@@ -126,7 +125,7 @@ const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
     coa_revenue: z.string().optional(),
-    tax_profile: z.string(),
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),
@@ -154,7 +153,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
     coa_revenue: COARevenueEnum.optional(),
-    tax_profile: ItemTaxProfileEnum,
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),
@@ -188,7 +187,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
 }).meta({
   title: "Product",
   collection: "products",
-  initial: {"active":true,"alternates":{},"component_only":false,"components":{},"component_of":{},"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","tax_profile":"tax_chicago_rental_tax","formula":"five_day_week","discountable":true},"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
+  initial: {"active":true,"alternates":{},"component_only":false,"components":{},"component_of":{},"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","taxes":[],"formula":"five_day_week","discountable":true},"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
   displayDefaults: {
     columns: ["type", "name", "active"],
     filters: { type: ["rental", "sale", "service"], active: [true] },
@@ -212,7 +211,7 @@ export interface CreateProductInputType {
     base: number;
     replacement?: number | null;
     coa_revenue?: string;
-    tax_profile: ItemTaxProfileType;
+    taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
   };
@@ -264,7 +263,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     base: z.number(),
     replacement: z.number().nullable().optional(),
     coa_revenue: COARevenueEnum.optional(),
-    tax_profile: ItemTaxProfileEnum,
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),
@@ -315,7 +314,7 @@ export interface UpdateProductInputType {
     base: number;
     replacement?: number | null;
     coa_revenue?: string;
-    tax_profile: ItemTaxProfileType;
+    taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
   };
@@ -358,7 +357,7 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     base: z.number(),
     replacement: z.number().nullable().optional(),
     coa_revenue: COARevenueEnum.optional(),
-    tax_profile: ItemTaxProfileEnum,
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }).optional(),

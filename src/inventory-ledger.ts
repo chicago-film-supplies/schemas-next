@@ -5,8 +5,8 @@ import { z } from "zod";
 import {
   FirestoreTimestamp,
   type FirestoreTimestampType,
-  NoteEntry,
-  type NoteEntryType,
+  StoreBreakdownEntrySchema,
+  type StoreBreakdownEntry,
   ProductTypeEnum,
   type ProductTypeType,
 } from "./common.ts";
@@ -14,23 +14,6 @@ import {
 const INVENTORY_STOCK_METHODS = ["bulk", "serialized"] as const;
 type InventoryStockMethodType = typeof INVENTORY_STOCK_METHODS[number];
 
-export interface InventoryLedgerLocation {
-  uid_location: string;
-  name: string;
-  quantity: number;
-  default: boolean;
-  max: number | null;
-  notes: NoteEntryType[];
-}
-
-export interface InventoryLedgerStore {
-  uid_store: string;
-  name: string;
-  default: boolean;
-  crms_stock_level_id: number | null;
-  quantity: number;
-  locations: InventoryLedgerLocation[];
-}
 
 export interface InventoryLedger {
   uid: string;
@@ -48,30 +31,12 @@ export interface InventoryLedger {
     maintenance: number;
     lost: number;
   };
-  store_breakdown: InventoryLedgerStore[];
+  store_breakdown: StoreBreakdownEntry[];
   query_by_uid_store: string[];
   query_by_uid_location: string[];
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
-
-const InventoryLedgerLocationSchema: z.ZodType<InventoryLedgerLocation> = z.strictObject({
-  uid_location: z.string(),
-  name: z.string(),
-  quantity: z.number(),
-  default: z.boolean(),
-  max: z.number().nullable(),
-  notes: z.array(NoteEntry).default([]),
-});
-
-const InventoryLedgerStoreSchema: z.ZodType<InventoryLedgerStore> = z.strictObject({
-  uid_store: z.string(),
-  name: z.string(),
-  default: z.boolean(),
-  crms_stock_level_id: z.number().nullable(),
-  quantity: z.number(),
-  locations: z.array(InventoryLedgerLocationSchema).default([]),
-});
 
 export const InventoryLedgerSchema: z.ZodType<InventoryLedger> = z.strictObject({
   uid: z.string(),
@@ -89,7 +54,7 @@ export const InventoryLedgerSchema: z.ZodType<InventoryLedger> = z.strictObject(
     maintenance: z.number(),
     lost: z.number(),
   }),
-  store_breakdown: z.array(InventoryLedgerStoreSchema).default([]),
+  store_breakdown: z.array(StoreBreakdownEntrySchema).default([]),
   query_by_uid_store: z.array(z.string()).default([]),
   query_by_uid_location: z.array(z.string()).default([]),
   created_at: FirestoreTimestamp,

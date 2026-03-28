@@ -35,7 +35,7 @@ Deno.test("Phone shows custom error for too-long value", () => {
 
 Deno.test("ContactSchema shows custom error for empty name", () => {
   const doc = {
-    uid: "abc-123",
+    uid: "test-abc-123",
     name: "",
     emails: [],
     phones: [],
@@ -50,7 +50,7 @@ Deno.test("ContactSchema shows custom error for empty name", () => {
 });
 
 Deno.test("CreateContactInput shows custom error for empty name", () => {
-  const input = { uid: "abc-123", name: "" };
+  const input = { uid: "test-abc-123", name: "" };
   const result = CreateContactInput.safeParse(input);
   assertEquals(result.success, false);
   if (!result.success) {
@@ -60,7 +60,7 @@ Deno.test("CreateContactInput shows custom error for empty name", () => {
 
 Deno.test("OrganizationSchema shows custom error for empty name", () => {
   const doc = {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "",
     crms_id: 1,
     xero_id: null,
@@ -80,8 +80,8 @@ Deno.test("OrganizationSchema shows custom error for empty name", () => {
 
 Deno.test("CreateOrderInput shows custom error for empty destinations", () => {
   const input = {
-    uid: "order-1",
-    organization: { uid: "org-1" },
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
     status: "draft",
     dates: {
       delivery_start: "2026-01-01",

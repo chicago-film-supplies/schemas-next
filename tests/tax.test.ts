@@ -2,15 +2,18 @@ import { assertEquals } from "@std/assert";
 import { TaxSchema, CreateTaxInput, UpdateTaxInput } from "../src/tax.ts";
 
 const validTax = {
-  uid: "chi-rental-tax",
+  uid: "test-chi-rental-tax",
   name: "Chicago Rental Tax",
   rate: 15,
   type: "percent" as const,
   active: true,
-  valid_from: null,
+  crms_id: null,
+  valid_from: "2026-01-01T00:00:00.000Z",
+  valid_from_fs: null,
   valid_to: null,
-  created_by: "user-1",
-  updated_by: "user-1",
+  valid_to_fs: null,
+  created_by: "test-user-1",
+  updated_by: "test-user-1",
   created_at: null,
   updated_at: null,
 };
@@ -44,7 +47,7 @@ Deno.test("CreateTaxInput accepts valid input", () => {
     name: "Sales Tax",
     rate: 10.25,
     type: "percent" as const,
-    valid_from: null,
+    valid_from: "2026-01-01T00:00:00.000Z",
   };
   assertEquals(CreateTaxInput.safeParse(input).success, true);
 });
@@ -55,11 +58,11 @@ Deno.test("CreateTaxInput rejects missing name", () => {
 });
 
 Deno.test("UpdateTaxInput accepts partial update", () => {
-  const input = { uid: "chi-rental-tax", rate: 16, version: 1 };
+  const input = { uid: "test-chi-rental-tax", rate: 16, version: 1 };
   assertEquals(UpdateTaxInput.safeParse(input).success, true);
 });
 
 Deno.test("UpdateTaxInput rejects missing version", () => {
-  const input = { uid: "chi-rental-tax", rate: 16 };
+  const input = { uid: "test-chi-rental-tax", rate: 16 };
   assertEquals(UpdateTaxInput.safeParse(input).success, false);
 });

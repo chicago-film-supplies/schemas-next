@@ -10,6 +10,7 @@ export interface Store {
   default: boolean;
   default_location: UidNameRefType | null;
   crms_store_id: number;
+  version: number;
   active: boolean;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -21,6 +22,7 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
   default: z.boolean().default(false),
   default_location: UidNameRef.nullable().default(null),
   crms_store_id: z.number(),
+  version: z.int().min(0).default(0),
   active: z.boolean().default(true),
   ...TimestampFields,
 }).meta({
@@ -50,6 +52,7 @@ export interface UpdateStoreInputType {
   crms_store_id?: number;
   default?: boolean;
   active?: boolean;
+  version: number;
 }
 export const UpdateStoreInput: z.ZodType<UpdateStoreInputType> = z.object({
   uid: z.string(),
@@ -57,4 +60,5 @@ export const UpdateStoreInput: z.ZodType<UpdateStoreInputType> = z.object({
   crms_store_id: z.number().optional(),
   default: z.boolean().optional(),
   active: z.boolean().optional(),
+  version: z.int().min(0),
 });

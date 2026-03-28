@@ -2,14 +2,14 @@ import { assertEquals } from "@std/assert";
 import { InvoiceSchema } from "../src/invoice.ts";
 
 const validInvoice = {
-  uid: "inv-1",
+  uid: "test-inv-1",
   number: 1001,
   crms_id: 500,
   status: "draft",
   tax_profile: "tax_applied",
   date: "2026-03-01",
   organization: {
-    uid: "org-1",
+    uid: "test-org-1",
     name: "Acme Corp",
     crms_id: 100,
     tax_profile: "tax_applied",
@@ -31,7 +31,7 @@ const validInvoice = {
   }],
   items_consolidated: {},
   xero_id: null,
-  updated_by: "user-1",
+  updated_by: "test-user-1",
 };
 
 Deno.test("InvoiceSchema validates a complete document", () => {

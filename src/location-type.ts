@@ -22,6 +22,7 @@ export interface LocationType {
   product_capacities: LocationTypeProductCapacity[];
   query_by_product_capacities?: string[];
   dimensions?: LocationTypeDimensions | null;
+  version: number;
   active: boolean;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -41,6 +42,7 @@ export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({
     height: z.number().optional(),
     weight_capacity: z.number().optional(),
   }).nullable().optional(),
+  version: z.int().min(0).default(0),
   active: z.boolean().default(true),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
@@ -76,6 +78,7 @@ export interface UpdateLocationTypeInputType {
   product_capacities?: Record<string, { max: number | null }>;
   dimensions?: { width?: number; depth?: number; height?: number; weight_capacity?: number } | null;
   active?: boolean;
+  version: number;
 }
 export const UpdateLocationTypeInput: z.ZodType<UpdateLocationTypeInputType> = z.object({
   uid: z.string(),
@@ -88,4 +91,5 @@ export const UpdateLocationTypeInput: z.ZodType<UpdateLocationTypeInputType> = z
     weight_capacity: z.number().optional(),
   }).nullable().optional(),
   active: z.boolean().optional(),
+  version: z.int().min(0),
 });

@@ -2,8 +2,8 @@ import { assertEquals } from "@std/assert";
 import { InventoryLedgerSchema } from "../src/inventory-ledger.ts";
 
 const validLedger = {
-  uid: "il-1",
-  uid_product: "prod-1",
+  uid: "test-il-1",
+  uid_product: "test-prod-1",
   type: "rental",
   stock_method: "bulk",
   quantity_held: 20,
@@ -18,13 +18,13 @@ const validLedger = {
     lost: 0,
   },
   store_breakdown: [{
-    uid_store: "store-1",
+    uid_store: "test-store-1",
     name: "Main",
     default: true,
     crms_stock_level_id: null,
     quantity: 20,
     locations: [{
-      uid_location: "loc-1",
+      uid_location: "test-loc-1",
       name: "Shelf A",
       quantity: 20,
       default: true,
@@ -32,7 +32,7 @@ const validLedger = {
       notes: [],
     }],
   }],
-  query_by_uid_store: ["store-1"],
+  query_by_uid_store: ["test-store-1"],
   created_at: null,
   updated_at: null,
 };

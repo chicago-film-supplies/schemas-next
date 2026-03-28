@@ -55,7 +55,7 @@ export const aggregates: AggregateDefinition[] = [
   {
     id: "infrastructure",
     root: "",
-    members: ["sessions", "email-verifications", "password-resets", "rate-limits", "error-sync", "typesense-config", "cache-geocodes", "webhook-events"],
-    description: "System plumbing — auth, caching, sync error tracking, search config",
+    members: ["sessions", "email-verifications", "password-resets", "rate-limits", "typesense-config", "cache-geocodes", "webhook-events"],
+    description: "System plumbing — auth, caching, search config",
   },
 ];

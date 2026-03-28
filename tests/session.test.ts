@@ -4,7 +4,7 @@ import { SessionSchema } from "../src/session.ts";
 Deno.test("SessionSchema validates a complete session document", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    user_id: "user123",
+    user_id: "test-user-1",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,
@@ -28,7 +28,7 @@ Deno.test("SessionSchema validates an anonymous session", () => {
 Deno.test("SessionSchema rejects session ID with wrong length", () => {
   const result = SessionSchema.safeParse({
     id: "tooshort",
-    user_id: "user123",
+    user_id: "test-user-1",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,
@@ -45,7 +45,7 @@ Deno.test("SessionSchema rejects missing required fields", () => {
 Deno.test("SessionSchema rejects additional properties", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    user_id: "user123",
+    user_id: "test-user-1",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: 1700000000000,
@@ -58,7 +58,7 @@ Deno.test("SessionSchema rejects additional properties", () => {
 Deno.test("SessionSchema rejects non-number created_at", () => {
   const result = SessionSchema.safeParse({
     id: "a".repeat(40),
-    user_id: "user123",
+    user_id: "test-user-1",
     anonymous: false,
     expiresAt: { _seconds: 1700000000, _nanoseconds: 0 },
     created_at: "not a number",

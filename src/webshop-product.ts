@@ -16,6 +16,7 @@ import {
   UidNameRef,
   type UidNameRefType,
 } from "./common.ts";
+import { TaxRef, type TaxRefType } from "./order.ts";
 
 export interface WebshopProductAlternate {
   uid: string;
@@ -35,7 +36,7 @@ export interface WebshopProductComponent {
   price: {
     base: number;
     replacement?: number | null;
-    tax_profile: string;
+    taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
   };
@@ -68,7 +69,7 @@ export interface WebshopProduct {
   price: {
     base: number;
     replacement?: number | null;
-    tax_profile: string;
+    taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
   };
@@ -98,7 +99,7 @@ const WebshopComponentSchema: z.ZodType<WebshopProductComponent> = z.strictObjec
   price: z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
-    tax_profile: z.string(),
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),
@@ -119,7 +120,7 @@ export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
   price: z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
-    tax_profile: z.string(),
+    taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),

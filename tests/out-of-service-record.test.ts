@@ -2,14 +2,14 @@ import { assertEquals } from "@std/assert";
 import { OutOfServiceRecordSchema } from "../src/out-of-service-record.ts";
 
 const validOOS = {
-  uid: "oos-1",
-  uid_product: "prod-1",
+  uid: "test-oos-1",
+  uid_product: "test-prod-1",
   reason: "damaged",
   quantity: 2,
   quantity_return_to_service: 1,
   quantity_write_off: 1,
   date_start: "2026-03-01",
-  source: { type: "order", number: 1001, uid: "order-1" },
+  source: { type: "order", number: 1001, uid: "test-order-1" },
 };
 
 Deno.test("OutOfServiceRecordSchema validates a complete document", () => {
@@ -36,10 +36,10 @@ Deno.test("OutOfServiceRecordSchema validates with stores and transactions", () 
     complete: true,
     date_end: "2026-03-15",
     stores: [{
-      uid_store: "store-1",
+      uid_store: "test-store-1",
       name: "Main",
       locations: [{
-        uid_location: "loc-1",
+        uid_location: "test-loc-1",
         name: "Shelf A",
         transactionQuantity: 2,
         default: true,
@@ -47,7 +47,7 @@ Deno.test("OutOfServiceRecordSchema validates with stores and transactions", () 
     }],
     transactions: [{
       date: "2026-03-01",
-      out_of_service_uid: "oos-1",
+      out_of_service_uid: "test-oos-1",
       quantity: 2,
       type: "quarantine",
     }],

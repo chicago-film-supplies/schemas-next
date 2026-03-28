@@ -2,8 +2,8 @@ import { assertEquals, assertThrows } from "@std/assert";
 import { TransactionSchema, getTransactionMultiplier } from "../src/transaction.ts";
 
 const validTransaction = {
-  uid: "txn-1",
-  uid_product: "prod-1",
+  uid: "test-txn-1",
+  uid_product: "test-prod-1",
   type: "purchase",
   quantity: 10,
   total_cost: 2500,
@@ -48,7 +48,7 @@ Deno.test("TransactionSchema rejects invalid type", () => {
 Deno.test("TransactionSchema validates with source", () => {
   const doc = {
     ...validTransaction,
-    source: { type: "order", number: 1001, uid: "order-1" },
+    source: { type: "order", number: 1001, uid: "test-order-1" },
   };
   assertEquals(TransactionSchema.safeParse(doc).success, true);
 });
@@ -57,12 +57,12 @@ Deno.test("TransactionSchema validates with stores", () => {
   const doc = {
     ...validTransaction,
     stores: [{
-      uid_store: "store-1",
+      uid_store: "test-store-1",
       name: "Main",
       default: true,
       quantity: 10,
       locations: [{
-        uid_location: "loc-1",
+        uid_location: "test-loc-1",
         name: "Shelf A",
         quantity: 20,
         transactionQuantity: 10,
@@ -90,7 +90,7 @@ Deno.test("TransactionSchema validates with crms_sync", () => {
   const doc = {
     ...validTransaction,
     crms_sync: {
-      "store-1": { stock_level_id: 100, transaction_id: 200 },
+      "test-store-1": { stock_level_id: 100, transaction_id: 200 },
     },
   };
   assertEquals(TransactionSchema.safeParse(doc).success, true);

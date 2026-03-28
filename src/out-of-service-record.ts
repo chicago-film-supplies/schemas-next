@@ -69,6 +69,7 @@ export interface OutOfServiceRecord {
   query_by_uid_location?: string[];
   notes?: NoteEntryType[];
   transactions?: OOSTransaction[];
+  version: number;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -127,6 +128,7 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
   query_by_uid_location: z.array(z.string()).default([]).optional(),
   notes: z.array(NoteEntry).optional(),
   transactions: z.array(OOSTransactionSchema).optional(),
+  version: z.int().min(0).default(0),
   ...TimestampFields,
 }).meta({
   title: "Out of Service Record",
