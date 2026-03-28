@@ -12,15 +12,19 @@ import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 /** Collections that can serve as data sources for templates. */
 const TEMPLATE_SOURCE_COLLECTIONS = ["orders", "invoices"] as const;
+/** Firestore collection that provides data to a template. */
 export type TemplateSourceCollectionType = typeof TEMPLATE_SOURCE_COLLECTIONS[number];
 
 /** Collections that templates can produce documents for. */
 const TEMPLATE_TARGET_COLLECTIONS = ["quotes", "packing_lists", "invoices"] as const;
+/** Firestore collection that a template produces documents for. */
 export type TemplateTargetCollectionType = typeof TEMPLATE_TARGET_COLLECTIONS[number];
 
 const TEMPLATE_SCOPES = ["single", "multiple"] as const;
+/** Whether a template targets a single document or multiple. */
 export type TemplateScopeType = typeof TEMPLATE_SCOPES[number];
 
+/** An Eta HTML template used for generating PDFs. */
 export interface Template {
   uid: string;
   uid_template: string;
@@ -35,6 +39,7 @@ export interface Template {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for Template. */
 export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   uid: z.string(),
   uid_template: z.string(),
@@ -66,6 +71,7 @@ export interface TemplateInputType {
   scope: TemplateScopeType;
 }
 
+/** Zod schema for TemplateInput. */
 export const TemplateInputSchema: z.ZodType<TemplateInputType> = z.object({
   name: z.string().min(1).max(200),
   collection_source: z.enum(TEMPLATE_SOURCE_COLLECTIONS),
@@ -80,6 +86,7 @@ export interface TemplateUpdateInputType {
   source_filename?: string;
 }
 
+/** Zod schema for TemplateUpdateInput. */
 export const TemplateUpdateInputSchema: z.ZodType<TemplateUpdateInputType> = z.object({
   name: z.string().min(1).max(200).optional(),
   source: z.string().optional(),

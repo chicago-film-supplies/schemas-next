@@ -22,6 +22,7 @@ export interface Session {
   user_agent: string;
 }
 
+/** Zod schema for Session. */
 export const SessionSchema: z.ZodType<Session> = z.strictObject({
   id: z.string().length(40),
   user_id: z.string(),

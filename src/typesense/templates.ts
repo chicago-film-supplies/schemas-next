@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for templates. */
 export const templates: TypesenseCollectionConfig = {
   alias: "templates",
   version: 1,

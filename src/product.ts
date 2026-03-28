@@ -22,11 +22,13 @@ import {
 } from "./common.ts";
 import { TaxRef, type TaxRefType } from "./order.ts";
 
+/** An alternate product reference. */
 export interface ProductAlternate {
   uid: string;
   name: string;
 }
 
+/** A component product within a parent product. */
 export interface ProductComponent {
   uid: string;
   name: string;
@@ -48,6 +50,7 @@ export interface ProductComponent {
   };
 }
 
+/** Pricing details for a product. */
 export interface ProductPrice {
   base: number;
   replacement?: number | null;
@@ -57,6 +60,7 @@ export interface ProductPrice {
   discountable: boolean;
 }
 
+/** Shipping dimensions and hazard classification for a product. */
 export interface ProductShipping {
   weight: number;
   height: number;
@@ -66,11 +70,13 @@ export interface ProductShipping {
   air_un: number | null;
 }
 
+/** Webshop availability and description for a product. */
 export interface ProductWebshop {
   available: boolean;
   description?: string | null;
 }
 
+/** A product document in the products Firestore collection. */
 export interface Product {
   uid: string;
   name: string;
@@ -131,6 +137,7 @@ const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
   }),
 });
 
+/** Zod schema for a Product document. */
 export const ProductSchema: z.ZodType<Product> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(200),
@@ -195,6 +202,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   },
 });
 
+/** Input type for creating a product. */
 export interface CreateProductInputType {
   uid: string;
   name: string;
@@ -247,6 +255,7 @@ export interface CreateProductInputType {
   updated_by?: string;
 }
 
+/** Input schema for creating a product. */
 export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(200),
@@ -298,6 +307,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   }).optional(),
   updated_by: z.string().optional(),
 });
+/** Input type for updating a product. */
 export interface UpdateProductInputType {
   uid: string;
   name?: string;
@@ -341,6 +351,7 @@ export interface UpdateProductInputType {
   updated_by?: string;
 }
 
+/** Input schema for updating a product. */
 export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(200).optional(),

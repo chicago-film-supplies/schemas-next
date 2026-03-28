@@ -50,6 +50,7 @@ export interface OrderDatesType {
   charge_end: string;
 }
 
+/** Zod schema for order dates. */
 export const OrderDates: z.ZodType<OrderDatesType> = z.object({
   delivery_start: z.string(),
   delivery_end: z.string(),
@@ -69,6 +70,7 @@ export interface DestinationContactType {
   phones?: string[];
 }
 
+/** Zod schema for destination contact reference. */
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100).meta({ pii: "mask" }),
@@ -84,6 +86,7 @@ export interface DocDestinationContactType {
   phones?: string[];
 }
 
+/** Zod schema for destination contact reference (document version). */
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100).meta({ pii: "mask" }),
@@ -100,6 +103,7 @@ export interface DestinationEndpointType {
   contact?: DestinationContactType | null;
 }
 
+/** Zod schema for a destination endpoint. */
 export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.object({
   uid: z.string().nullable().optional(),
   address: Address.optional(),
@@ -119,6 +123,7 @@ export interface DocDestinationEndpointType {
   contact: DocDestinationContactType | null;
 }
 
+/** Zod schema for a destination endpoint (document version). */
 export const DocDestinationEndpoint: z.ZodType<DocDestinationEndpointType> = z.strictObject({
   uid: z.string().nullable(),
   address: Address,
@@ -134,6 +139,7 @@ export interface DestinationType {
   collection: DestinationEndpointType;
 }
 
+/** Zod schema for a destination pair. */
 export const Destination: z.ZodType<DestinationType> = z.object({
   delivery: DestinationEndpoint,
   collection: DestinationEndpoint,
@@ -147,6 +153,7 @@ export interface DocDestinationType {
   collection: DocDestinationEndpointType;
 }
 
+/** Zod schema for a document-level destination pair. */
 export const DocDestination: z.ZodType<DocDestinationType> = z.strictObject({
   delivery: DocDestinationEndpoint,
   collection: DocDestinationEndpoint,
@@ -166,6 +173,7 @@ export interface PriceModifierType {
   amount: number;
 }
 
+/** Zod schema for a rate-based price modifier (tax or transaction fee). */
 export const PriceModifier: z.ZodType<PriceModifierType> = z.strictObject({
   uid: z.string(),
   name: z.string(),
@@ -185,6 +193,7 @@ export interface TaxRefType {
   type: RateType;
 }
 
+/** Zod schema for a denormalized tax snapshot without computed amount. */
 export const TaxRef: z.ZodType<TaxRefType> = z.strictObject({
   uid: z.string(),
   name: z.string(),
@@ -202,6 +211,7 @@ export interface DiscountType {
   amount: number;
 }
 
+/** Zod schema for an item discount. */
 export const Discount: z.ZodType<DiscountType> = z.strictObject({
   rate: z.number(),
   type: RateTypeEnum,
@@ -223,6 +233,7 @@ export interface ItemPriceType {
   total?: number;
 }
 
+/** Zod schema for item price breakdown (input). */
 export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   base: z.number().optional(),
   chargeable_days: z.int().nullable().optional(),
@@ -256,6 +267,7 @@ export interface OrderItemType {
   uid_order?: string;
 }
 
+/** Zod schema for an individual order item (input). */
 export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
   type: z.enum(ITEM_TYPES).optional(),
@@ -293,6 +305,7 @@ export interface CreateOrderInputType {
   customer_returning?: boolean;
 }
 
+/** Input schema for creating an order. */
 export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   uid: z.string(),
   organization: z.object({ uid: z.string() }),
@@ -327,6 +340,7 @@ export interface UpdateOrderInputType {
   version: number;
 }
 
+/** Input schema for updating an order. */
 export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   uid: z.string().optional(),
   organization: z.object({ uid: z.string() }).optional(),
@@ -410,6 +424,7 @@ const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid_collection: z.string().nullable().optional(),
 });
 
+/** Destination divider item in the order document items array. */
 export interface OrderDocDestinationItemType {
   uid: string;
   type: "destination";
@@ -458,6 +473,7 @@ export interface OrderDocTransactionFeeItemType {
   uid_order?: string;
 }
 
+/** Zod schema for a transaction fee line item in the order document. */
 export const OrderDocTransactionFeeItem: z.ZodType<OrderDocTransactionFeeItemType> = z.strictObject({
   uid: z.string(),
   type: z.literal("transaction_fee"),
@@ -495,6 +511,7 @@ export interface OrderDocDatesType {
   days_charged: number | null;
 }
 
+/** Zod schema for order dates with Firestore timestamp companions. */
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   delivery_start: z.string().default(""),
   delivery_start_fs: FirestoreTimestamp,
@@ -512,6 +529,7 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   days_charged: z.int().nullable().default(null),
 });
 
+/** Union of all item types stored in the order document. */
 export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;
 
 /** Denormalized organization snapshot on the order document. */
@@ -576,6 +594,7 @@ export interface Order {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for the full order Firestore document. */
 export const OrderSchema: z.ZodType<Order> = z.strictObject({
   uid: z.string(),
   number: z.int(),

@@ -16,12 +16,15 @@ import {
 } from "./common.ts";
 
 const INVOICE_STATUSES = ["draft", "issued", "paid", "voided"] as const;
+/** Possible invoice statuses: draft, issued, paid, or voided. */
 export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
 const INVOICE_ITEM_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "group", "transaction_fee"] as const;
+/** Possible invoice item types (rental, sale, service, etc.). */
 export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
 
+/** Pricing breakdown for a single invoice line item. */
 export interface InvoiceItemPrice {
   base: number;
   chargeable_days: number | null;
@@ -31,6 +34,7 @@ export interface InvoiceItemPrice {
   total: number;
 }
 
+/** A line item on an invoice. */
 export interface InvoiceItem {
   name: string;
   quantity: number;
@@ -45,6 +49,7 @@ export interface InvoiceItem {
   xero_tracking_option_id?: string | null;
 }
 
+/** An invoice document in the invoices Firestore collection. */
 export interface Invoice {
   uid: string;
   number: number;
@@ -98,6 +103,7 @@ const InvoiceItemSchema: z.ZodType<InvoiceItem> = z.strictObject({
   xero_tracking_option_id: z.string().nullable().optional(),
 });
 
+/** Zod schema for an Invoice document. */
 export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   uid: z.string(),
   number: z.number(),

@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { Coordinates, type CoordinatesType, FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Parsed address fields returned from a geocode lookup. */
 export interface CacheGeocodesAddress {
   street?: string;
   city?: string;
@@ -14,6 +15,7 @@ export interface CacheGeocodesAddress {
   name?: string;
 }
 
+/** Full Firestore document for a cached geocode result. */
 export interface CacheGeocodes {
   query: string;
   coordinates: CoordinatesType | null;
@@ -23,6 +25,7 @@ export interface CacheGeocodes {
   expiresAt?: FirestoreTimestampType;
 }
 
+/** Zod schema for CacheGeocodes. */
 export const CacheGeocodesSchema: z.ZodType<CacheGeocodes> = z.strictObject({
   query: z.string(),
   coordinates: Coordinates,

@@ -11,6 +11,7 @@ import {
   type UidNameRefType,
 } from "./common.ts";
 
+/** Full Firestore document for a destination (a physical address used in orders). */
 export interface Destination {
   uid: string;
   address: AddressType | null;
@@ -26,6 +27,7 @@ export interface Destination {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for Destination. */
 export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
   uid: z.string(),
   address: Address,

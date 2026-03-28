@@ -23,6 +23,7 @@ export interface OrganizationContactType {
   roles: string[];
 }
 
+/** Zod schema for a contact reference embedded in an organization. */
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
@@ -51,6 +52,7 @@ export interface Organization {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for a full organization Firestore document. */
 export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
@@ -88,6 +90,7 @@ export interface NewContactInputType {
   phones?: string[];
 }
 
+/** Zod schema for new contact data submitted inline with an organization. */
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
@@ -110,6 +113,7 @@ export interface CreateOrganizationInputType {
   phones?: string[];
 }
 
+/** Input schema for creating an organization. */
 export const CreateOrganizationInput: z.ZodType<CreateOrganizationInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }),
@@ -137,6 +141,7 @@ export interface UpdateOrganizationInputType {
   version: number;
 }
 
+/** Input schema for updating an organization. */
 export const UpdateOrganizationInput: z.ZodType<UpdateOrganizationInputType> = z.object({
   uid: z.string().optional(),
   name: z.string().min(1, "Organization name is required").max(100).meta({ pii: "mask" }).optional(),

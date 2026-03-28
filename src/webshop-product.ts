@@ -18,12 +18,14 @@ import {
 } from "./common.ts";
 import { TaxRef, type TaxRefType } from "./order.ts";
 
+/** An alternate product reference in the webshop. */
 export interface WebshopProductAlternate {
   uid: string;
   name: string;
   description?: string;
 }
 
+/** A component product within a webshop parent product. */
 export interface WebshopProductComponent {
   uid: string;
   name: string;
@@ -42,6 +44,7 @@ export interface WebshopProductComponent {
   };
 }
 
+/** Shipping dimensions and hazard classification for a webshop product. */
 export interface WebshopProductShipping {
   weight?: number;
   height?: number;
@@ -54,6 +57,7 @@ export interface WebshopProductShipping {
 const WEBSHOP_PRODUCT_TYPES = ["rental", "sale", "service", "surcharge"] as const;
 type WebshopProductTypeType = typeof WEBSHOP_PRODUCT_TYPES[number];
 
+/** A webshop product document in the webshop-products Firestore collection. */
 export interface WebshopProduct {
   uid: string;
   name: string;
@@ -105,6 +109,7 @@ const WebshopComponentSchema: z.ZodType<WebshopProductComponent> = z.strictObjec
   }),
 });
 
+/** Zod schema for a WebshopProduct document. */
 export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(200),

@@ -18,12 +18,17 @@ const COA_TYPES = [
   "Other Income", "Revenue", "Sales",
 ] as const;
 
+/** Valid chart of accounts code values. */
 export type COACodeType = typeof COA_CODES[number];
+/** Valid chart of accounts type values. */
 export type COATypeType = typeof COA_TYPES[number];
 
+/** Zod schema for COACode. */
 export const COACode: z.ZodType<COACodeType> = z.enum(COA_CODES);
+/** Zod schema for COAType. */
 export const COAType: z.ZodType<COATypeType> = z.enum(COA_TYPES);
 
+/** A chart of accounts document in Firestore. */
 export interface ChartOfAccounts {
   uid: string;
   code: COACodeType;
@@ -37,6 +42,7 @@ export interface ChartOfAccounts {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for ChartOfAccounts. */
 export const ChartOfAccountsSchema: z.ZodType<ChartOfAccounts> = z.strictObject({
   uid: z.string(),
   code: COACode,

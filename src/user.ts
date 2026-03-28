@@ -6,6 +6,7 @@ import { Email, type FirestoreTimestampType, TimestampFields } from "./common.ts
 
 // ── Preference sub-schemas ──────────────────────────────────────────
 
+/** Sort configuration for a display preference (column + direction). */
 export interface DisplaySort {
   column: string | null;
   direction: "asc" | "desc";
@@ -16,6 +17,7 @@ const DisplaySortSchema: z.ZodType<DisplaySort> = z.strictObject({
   direction: z.enum(["asc", "desc"]),
 });
 
+/** User display preferences for a Firestore-backed collection view. */
 export interface FirestoreDisplayPrefs {
   columns: string[];
   filters: Record<string, (string | boolean)[]>;
@@ -28,6 +30,7 @@ const FirestoreDisplayPrefsSchema: z.ZodType<FirestoreDisplayPrefs> = z.strictOb
   sort: DisplaySortSchema,
 });
 
+/** User display preferences for a Typesense-backed collection view. */
 export interface TypesenseDisplayPrefs {
   columns: string[];
   filters: Record<string, (string | boolean)[]>;
@@ -60,6 +63,7 @@ export interface User {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for a full user Firestore document. */
 export const UserSchema: z.ZodType<User> = z.strictObject({
   uid: z.string(),
   email: Email,
@@ -83,21 +87,25 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
 
 // ── Input schemas for preference endpoints ──────────────────────────
 
+/** Payload for saving Firestore display preferences. */
 export interface SaveFirestorePrefsInputType {
   context: string;
   prefs: FirestoreDisplayPrefs;
 }
 
+/** Input schema for saving Firestore display preferences. */
 export const SaveFirestorePrefsInput: z.ZodType<SaveFirestorePrefsInputType> = z.object({
   context: z.string().min(1),
   prefs: FirestoreDisplayPrefsSchema,
 });
 
+/** Payload for saving Typesense display preferences. */
 export interface SaveTypesensePrefsInputType {
   collection: string;
   prefs: TypesenseDisplayPrefs;
 }
 
+/** Input schema for saving Typesense display preferences. */
 export const SaveTypesensePrefsInput: z.ZodType<SaveTypesensePrefsInputType> = z.object({
   collection: z.string().min(1),
   prefs: TypesenseDisplayPrefsSchema,

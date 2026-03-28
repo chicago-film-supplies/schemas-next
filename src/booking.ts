@@ -19,11 +19,13 @@ const BOOKING_STATUSES = [
 type BookingStatusType = typeof BOOKING_STATUSES[number];
 const BookingStatus: z.ZodType<BookingStatusType> = z.enum(BOOKING_STATUSES);
 
+/** A reference to a destination with its address, used in booking delivery/collection. */
 export interface BookingDestinationRef {
   uid: string;
   address: AddressType | null;
 }
 
+/** A specific location within a store allocated for a booking. */
 export interface BookingStoreLocation {
   uid_location: string;
   name: string;
@@ -32,6 +34,7 @@ export interface BookingStoreLocation {
   notes: NoteEntryType[];
 }
 
+/** A store and its locations assigned to a booking. */
 export interface BookingStore {
   uid_store: string;
   name: string;
@@ -40,6 +43,7 @@ export interface BookingStore {
   locations: BookingStoreLocation[];
 }
 
+/** Full Firestore document for a booking (a single product line within an order). */
 export interface Booking {
   uid: string;
   uid_order: string;
@@ -114,6 +118,7 @@ const BookingStoreSchema: z.ZodType<BookingStore> = z.strictObject({
   locations: z.array(BookingStoreLocationSchema).default([]),
 });
 
+/** Zod schema for Booking. */
 export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   uid: z.string(),
   uid_order: z.string(),

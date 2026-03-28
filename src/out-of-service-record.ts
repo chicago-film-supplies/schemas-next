@@ -15,6 +15,7 @@ import {
 const OOS_SOURCE_TYPES = ["manual", "order"] as const;
 type OOSSourceTypeType = typeof OOS_SOURCE_TYPES[number];
 
+/** A location within a store affected by an out-of-service record. */
 export interface OOSStoreLocation {
   uid_location: string;
   name: string;
@@ -23,12 +24,14 @@ export interface OOSStoreLocation {
   max?: number | null;
 }
 
+/** A store affected by an out-of-service record. */
 export interface OOSStore {
   uid_store: string;
   name: string;
   locations: OOSStoreLocation[];
 }
 
+/** A transaction entry within an out-of-service record. */
 export interface OOSTransaction {
   crms_id?: number | null;
   crms_quarantine_id?: number | null;
@@ -42,12 +45,14 @@ export interface OOSTransaction {
   type: string;
 }
 
+/** The origin source of an out-of-service record (manual or order). */
 export interface OOSSource {
   type: OOSSourceTypeType;
   number?: string | number | null;
   uid?: string | null;
 }
 
+/** An out-of-service record tracking inventory removed from active service. */
 export interface OutOfServiceRecord {
   uid: string;
   uid_product: string;
@@ -107,6 +112,7 @@ const OOSSourceSchema: z.ZodType<OOSSource> = z.strictObject({
   uid: z.string().nullable().optional(),
 });
 
+/** Zod schema for OutOfServiceRecord. */
 export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictObject({
   uid: z.string(),
   uid_product: z.string(),

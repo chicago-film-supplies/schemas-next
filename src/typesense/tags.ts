@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for tags. */
 export const tags: TypesenseCollectionConfig = {
   alias: "tags",
   version: 5,

@@ -4,11 +4,13 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Product capacity constraint for a location type. */
 export interface LocationTypeProductCapacity {
   uid: string;
   max: number | null;
 }
 
+/** Physical dimensions for a location type. */
 export interface LocationTypeDimensions {
   width?: number;
   depth?: number;
@@ -16,6 +18,7 @@ export interface LocationTypeDimensions {
   weight_capacity?: number;
 }
 
+/** A location type document in Firestore. */
 export interface LocationType {
   uid: string;
   name: string;
@@ -28,6 +31,7 @@ export interface LocationType {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for LocationType. */
 export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100),
@@ -56,11 +60,13 @@ export const LocationTypeSchema: z.ZodType<LocationType> = z.strictObject({
   },
 });
 
+/** Input type for creating a location type. */
 export interface CreateLocationTypeInputType {
   name: string;
   product_capacities?: Record<string, { max: number }>;
   dimensions?: { width?: number; depth?: number; height?: number; weight_capacity?: number } | null;
 }
+/** Input schema for creating a location type. */
 export const CreateLocationTypeInput: z.ZodType<CreateLocationTypeInputType> = z.object({
   name: z.string().min(1).max(100),
   product_capacities: z.record(z.string(), z.object({ max: z.number() })).optional(),
@@ -72,6 +78,7 @@ export const CreateLocationTypeInput: z.ZodType<CreateLocationTypeInputType> = z
   }).nullable().optional(),
 });
 
+/** Input type for updating a location type. */
 export interface UpdateLocationTypeInputType {
   uid: string;
   name?: string;
@@ -80,6 +87,7 @@ export interface UpdateLocationTypeInputType {
   active?: boolean;
   version: number;
 }
+/** Input schema for updating a location type. */
 export const UpdateLocationTypeInput: z.ZodType<UpdateLocationTypeInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100).optional(),

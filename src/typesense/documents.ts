@@ -7,6 +7,7 @@
 
 // ── Bookings ────────────────────────────────────────────────────────
 
+/** Typesense document type for bookings. */
 export interface BookingDocument {
   id: string;
   uid: string;
@@ -78,6 +79,7 @@ export interface BookingDocument {
 
 // ── Chart of Accounts ───────────────────────────────────────────────
 
+/** Typesense document type for chart of accounts. */
 export interface ChartOfAccountsDocument {
   id: string;
   uid: string;
@@ -93,6 +95,7 @@ export interface ChartOfAccountsDocument {
 
 // ── Contacts ────────────────────────────────────────────────────────
 
+/** Typesense document type for contacts. */
 export interface ContactDocument {
   id: string;
   uid: string;
@@ -112,6 +115,7 @@ export interface ContactDocument {
 
 // ── Destinations ────────────────────────────────────────────────────
 
+/** Typesense document type for destinations. */
 export interface DestinationDocument {
   id: string;
   uid: string;
@@ -143,6 +147,7 @@ export interface DestinationDocument {
 
 // ── Invoices ────────────────────────────────────────────────────────
 
+/** Typesense document type for invoices. */
 export interface InvoiceDocument {
   id: string;
   uid: string;
@@ -191,6 +196,7 @@ export interface InvoiceDocument {
 
 // ── Locations ───────────────────────────────────────────────────────
 
+/** Typesense document type for locations. */
 export interface LocationDocument {
   id: string;
   uid: string;
@@ -216,6 +222,7 @@ export interface LocationDocument {
 
 // ── Orders ──────────────────────────────────────────────────────────
 
+/** Typesense document type for orders. */
 export interface OrderDocument {
   id: string;
   uid: string;
@@ -313,6 +320,7 @@ export interface OrderDocument {
 
 // ── Organizations ───────────────────────────────────────────────────
 
+/** Typesense document type for organizations. */
 export interface OrganizationDocument {
   id: string;
   uid: string;
@@ -355,6 +363,7 @@ export interface OrganizationDocument {
 
 // ── Products ────────────────────────────────────────────────────────
 
+/** Typesense document type for a product component entry. */
 export interface ProductDocumentComponent {
   uid?: string;
   name?: string;
@@ -376,6 +385,7 @@ export interface ProductDocumentComponent {
   };
 }
 
+/** Typesense document type for products. */
 export interface ProductDocument {
   id: string;
   uid: string;
@@ -440,6 +450,7 @@ export interface ProductDocument {
 
 // ── Stores ──────────────────────────────────────────────────────────
 
+/** Typesense document type for stores. */
 export interface StoreDocument {
   id: string;
   uid: string;
@@ -454,6 +465,7 @@ export interface StoreDocument {
 
 // ── Tags ────────────────────────────────────────────────────────────
 
+/** Typesense document type for tags. */
 export interface TagDocument {
   id: string;
   uid: string;
@@ -469,6 +481,7 @@ export interface TagDocument {
 
 // ── Templates ───────────────────────────────────────────────────────
 
+/** Typesense document type for templates. */
 export interface TemplateDocument {
   id: string;
   uid: string;
@@ -486,6 +499,7 @@ export interface TemplateDocument {
 
 // ── Tracking Categories ─────────────────────────────────────────────
 
+/** Typesense document type for tracking categories. */
 export interface TrackingCategoryDocument {
   id: string;
   uid: string;
@@ -507,6 +521,7 @@ export interface TrackingCategoryDocument {
 
 // ── Webshop Products ────────────────────────────────────────────────
 
+/** Typesense document type for a webshop product component entry. */
 export interface WebshopProductDocumentComponent {
   uid?: string;
   name?: string;
@@ -525,6 +540,7 @@ export interface WebshopProductDocumentComponent {
   };
 }
 
+/** Typesense document type for webshop products. */
 export interface WebshopProductDocument {
   id: string;
   uid: string;

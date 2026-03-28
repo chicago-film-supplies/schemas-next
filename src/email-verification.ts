@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Full Firestore document for a single-use email verification token. */
 export interface EmailVerification {
   user_id: string;
   email: string;
@@ -12,6 +13,7 @@ export interface EmailVerification {
   created_at: number;
 }
 
+/** Zod schema for EmailVerification. */
 export const EmailVerificationSchema: z.ZodType<EmailVerification> = z.strictObject({
   user_id: z.string().min(1),
   email: z.string().email(),

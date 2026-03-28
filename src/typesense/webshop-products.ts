@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for webshop products. */
 export const webshopProducts: TypesenseCollectionConfig = {
   alias: "webshop-products",
   version: 4,

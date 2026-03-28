@@ -15,6 +15,7 @@ const TYPESENSE_FIELD_TYPES = [
 /** Field type in a Typesense collection schema. */
 export type TypesenseFieldType = typeof TYPESENSE_FIELD_TYPES[number];
 
+/** Zod schema for TypesenseFieldType. */
 export const TypesenseFieldTypeEnum: z.ZodType<TypesenseFieldType> =
   z.enum(TYPESENSE_FIELD_TYPES);
 
@@ -29,6 +30,7 @@ export interface TypesenseField {
   optional?: boolean;
 }
 
+/** Zod schema for TypesenseField. */
 export const TypesenseFieldSchema: z.ZodType<TypesenseField> = z.strictObject({
   name: z.string(),
   type: TypesenseFieldTypeEnum,
@@ -48,6 +50,7 @@ export interface TypesenseSchema {
   default_sorting_field?: string;
 }
 
+/** Zod schema for TypesenseSchema. */
 export const TypesenseSchemaSchema: z.ZodType<TypesenseSchema> = z.strictObject({
   name: z.string(),
   enable_nested_fields: z.boolean().optional(),
@@ -72,17 +75,20 @@ export interface TypesenseOneWaySynonym {
 /** A synonym rule for a Typesense collection. */
 export type TypesenseSynonym = TypesenseMultiWaySynonym | TypesenseOneWaySynonym;
 
+/** Zod schema for TypesenseMultiWaySynonym. */
 export const TypesenseMultiWaySynonymSchema: z.ZodType<TypesenseMultiWaySynonym> = z.strictObject({
   id: z.string(),
   synonyms: z.array(z.string()).min(2),
 });
 
+/** Zod schema for TypesenseOneWaySynonym. */
 export const TypesenseOneWaySynonymSchema: z.ZodType<TypesenseOneWaySynonym> = z.strictObject({
   id: z.string(),
   root: z.string(),
   synonyms: z.array(z.string()).min(1),
 });
 
+/** Zod schema for TypesenseSynonym. */
 export const TypesenseSynonymSchema: z.ZodType<TypesenseSynonym> = z.union([
   TypesenseOneWaySynonymSchema,
   TypesenseMultiWaySynonymSchema,
@@ -97,6 +103,7 @@ export interface TypesenseDisplayDefaults {
   facet: string[];
 }
 
+/** Zod schema for TypesenseDisplayDefaults. */
 export const TypesenseDisplayDefaultsSchema: z.ZodType<TypesenseDisplayDefaults> = z.strictObject({
   columns: z.array(z.string()),
   filters: z.record(z.string(), z.array(z.union([z.string(), z.boolean()]))),
@@ -121,6 +128,7 @@ export interface TypesenseCollectionConfig {
   enabled?: boolean;
 }
 
+/** Zod schema for TypesenseCollectionConfig. */
 export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfig> = z.strictObject({
   alias: z.string(),
   version: z.number(),

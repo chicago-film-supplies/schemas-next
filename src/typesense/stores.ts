@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for stores. */
 export const stores: TypesenseCollectionConfig = {
   alias: "stores",
   version: 2,

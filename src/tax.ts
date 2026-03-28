@@ -12,6 +12,7 @@ import {
   type RateType,
 } from "./common.ts";
 
+/** A tax definition used for computing item-level and order-level tax amounts. */
 export interface Tax {
   uid: string;
   name: string;
@@ -30,6 +31,7 @@ export interface Tax {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for Tax. */
 export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100),
@@ -71,6 +73,7 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   },
 });
 
+/** Input for creating a new tax definition. */
 export interface CreateTaxInputType {
   name: string;
   rate: number;
@@ -80,6 +83,7 @@ export interface CreateTaxInputType {
   valid_to?: string | null;
 }
 
+/** Zod schema for CreateTaxInput. */
 export const CreateTaxInput: z.ZodType<CreateTaxInputType> = z.object({
   name: z.string().min(1).max(100),
   rate: z.number(),
@@ -89,6 +93,7 @@ export const CreateTaxInput: z.ZodType<CreateTaxInputType> = z.object({
   valid_to: z.string().nullable().optional(),
 });
 
+/** Input for updating an existing tax definition. */
 export interface UpdateTaxInputType {
   uid: string;
   name?: string;
@@ -100,6 +105,7 @@ export interface UpdateTaxInputType {
   version: number;
 }
 
+/** Zod schema for UpdateTaxInput. */
 export const UpdateTaxInput: z.ZodType<UpdateTaxInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100).optional(),

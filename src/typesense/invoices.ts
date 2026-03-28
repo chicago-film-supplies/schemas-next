@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for invoices. */
 export const invoices: TypesenseCollectionConfig = {
   alias: "invoices",
   version: 4,

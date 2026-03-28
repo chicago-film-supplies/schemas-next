@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Full Firestore document for a single-use password reset token. */
 export interface PasswordReset {
   user_id: string;
   email: string;
@@ -12,6 +13,7 @@ export interface PasswordReset {
   created_at: number;
 }
 
+/** Zod schema for PasswordReset. */
 export const PasswordResetSchema: z.ZodType<PasswordReset> = z.strictObject({
   user_id: z.string().min(1),
   email: z.string().email(),
