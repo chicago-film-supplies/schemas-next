@@ -33,7 +33,7 @@ export interface ProductComponent {
   uid: string;
   name: string;
   active?: boolean;
-  crms_id: number;
+  crms_id: number | null;
   crms_accessory_id?: number | null;
   description?: string;
   inclusion_type?: InclusionTypeType;
@@ -120,7 +120,7 @@ const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
   uid: z.string(),
   name: z.string(),
   active: z.boolean().optional(),
-  crms_id: z.number(),
+  crms_id: z.number().nullable(),
   crms_accessory_id: z.number().nullable().optional(),
   description: z.string().optional(),
   inclusion_type: InclusionTypeEnum.optional(),

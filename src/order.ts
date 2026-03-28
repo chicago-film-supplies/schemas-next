@@ -218,6 +218,18 @@ export const Discount: z.ZodType<DiscountType> = z.strictObject({
   amount: z.number(),
 });
 
+/** Discount input — rate and type only. Amount is computed by calculateItemPrice. */
+export interface DiscountInputType {
+  rate: number;
+  type: RateType;
+}
+
+/** Zod schema for a discount input (without computed amount). */
+export const DiscountInput: z.ZodType<DiscountInputType> = z.object({
+  rate: z.number(),
+  type: RateTypeEnum,
+});
+
 // ── Input schemas ─────────────────────────────────────────────────
 
 /**
@@ -228,7 +240,7 @@ export interface ItemPriceType {
   chargeable_days?: number | null;
   formula?: PriceFormulaType;
   subtotal?: number;
-  discount?: { rate: number; type: RateType } | null;
+  discount?: DiscountInputType | null;
   taxes?: Array<{ uid: string }>;
   total?: number;
 }
@@ -239,10 +251,7 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   chargeable_days: z.int().nullable().optional(),
   formula: PriceFormulaEnum.optional(),
   subtotal: z.number().optional(),
-  discount: z.object({
-    rate: z.number(),
-    type: RateTypeEnum,
-  }).nullable().optional(),
+  discount: DiscountInput.nullable().optional(),
   taxes: z.array(z.object({ uid: z.string() })).optional(),
   total: z.number().optional(),
 });
