@@ -491,6 +491,8 @@ export interface OrderDocDatesType {
   charge_start_fs: FirestoreTimestampType;
   charge_end: string;
   charge_end_fs: FirestoreTimestampType;
+  days_active: number | null;
+  days_charged: number | null;
 }
 
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
@@ -506,6 +508,8 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   charge_start_fs: FirestoreTimestamp,
   charge_end: z.string().default(""),
   charge_end_fs: FirestoreTimestamp,
+  days_active: z.int().nullable().default(null),
+  days_charged: z.int().nullable().default(null),
 });
 
 export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;
