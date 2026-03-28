@@ -35,6 +35,8 @@ export const orders: TypesenseCollectionConfig = {
       { name: "dates.collection_end_fs", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "dates.charge_start_fs", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "dates.charge_end_fs", type: "int64", sort: true, index: true, facet: false, optional: true },
+      { name: "dates.days_active", type: "int32", sort: true, optional: true },
+      { name: "dates.days_charged", type: "int32", sort: true, optional: true },
       { name: "destinations", type: "object[]" },
       { name: "destinations.delivery", type: "object[]", optional: true },
       { name: "destinations.delivery.address", type: "object[]", optional: true },
