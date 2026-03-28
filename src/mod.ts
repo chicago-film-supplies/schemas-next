@@ -157,6 +157,10 @@ export {
   type COARevenueType,
   type OOSReasonType,
   type RateType,
+  StoreBreakdownEntrySchema,
+  StoreBreakdownLocationSchema,
+  type StoreBreakdownEntry,
+  type StoreBreakdownLocation,
 } from "./common.ts";
 
 export {
@@ -302,8 +306,6 @@ export {
 export {
   InventoryLedgerSchema,
   type InventoryLedger,
-  type InventoryLedgerStore,
-  type InventoryLedgerLocation,
 } from "./inventory-ledger.ts";
 
 export {
@@ -346,8 +348,6 @@ export {
 export {
   StockSummarySchema,
   type StockSummary,
-  type StockSummaryStore,
-  type StockSummaryStoreLocation,
 } from "./stock-summary.ts";
 
 export {

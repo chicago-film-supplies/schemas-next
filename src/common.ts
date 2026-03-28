@@ -158,6 +158,44 @@ const OOS_REASONS = ["cleaning", "damaged", "maintenance", "lost"] as const;
 export type OOSReasonType = typeof OOS_REASONS[number];
 export const OOSReasonEnum: z.ZodType<OOSReasonType> = z.enum(OOS_REASONS);
 
+// ── Store breakdown (shared by InventoryLedger & StockSummary) ──────
+
+export interface StoreBreakdownLocation {
+  uid_location: string;
+  name: string;
+  quantity: number;
+  default: boolean;
+  max: number | null;
+  notes: NoteEntryType[];
+}
+
+export interface StoreBreakdownEntry {
+  uid_store: string;
+  name: string;
+  default: boolean;
+  crms_stock_level_id: number | null;
+  quantity: number;
+  locations: StoreBreakdownLocation[];
+}
+
+export const StoreBreakdownLocationSchema: z.ZodType<StoreBreakdownLocation> = z.strictObject({
+  uid_location: z.string(),
+  name: z.string(),
+  quantity: z.number(),
+  default: z.boolean(),
+  max: z.number().nullable(),
+  notes: z.array(NoteEntry).default([]),
+});
+
+export const StoreBreakdownEntrySchema: z.ZodType<StoreBreakdownEntry> = z.strictObject({
+  uid_store: z.string(),
+  name: z.string(),
+  default: z.boolean(),
+  crms_stock_level_id: z.number().nullable(),
+  quantity: z.number(),
+  locations: z.array(StoreBreakdownLocationSchema).default([]),
+});
+
 // ── Address ─────────────────────────────────────────────────────────
 
 export const Address: z.ZodType<AddressType | null> = z.strictObject({
