@@ -13,7 +13,7 @@ export const products: TypesenseCollectionConfig = {
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "name", type: "string", sort: true, stem: true, facet: false },
       { name: "description", type: "string", stem: true, optional: true },
-      { name: "tracking_category_name", type: "string", sort: true, stem: true, facet: false, optional: true },
+      { name: "tracking_category_name", type: "string", sort: true, stem: true, facet: true, optional: true },
       { name: "type", type: "string", facet: true, sort: true, stem: true },
       { name: "stock_method", type: "string", facet: true, sort: true, stem: true },
       { name: "active", type: "bool", sort: true, facet: true },
