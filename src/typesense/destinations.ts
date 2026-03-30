@@ -1,26 +1,19 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
+import { typesenseAddressFields } from "./types.ts";
 
 /** Typesense collection config for destinations. */
 export const destinations: TypesenseCollectionConfig = {
   alias: "destinations",
-  version: 3,
+  version: 4,
   firestoreCollection: "destinations",
-  collectionName: "destinations_v3",
+  collectionName: "destinations_v4",
   schema: {
-    name: "destinations_v3",
+    name: "destinations_v4",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "mapbox_ids", type: "string[]", facet: true },
-      { name: "address", type: "object", optional: true },
-      { name: "address.full", type: "string", sort: true, stem: true, optional: true },
-      { name: "address.name", type: "string", stem: true, optional: true },
-      { name: "address.city", type: "string", facet: true, optional: true },
-      { name: "address.region", type: "string", facet: true, optional: true },
-      { name: "address.street", type: "string", stem: true, optional: true },
-      { name: "address.country_name", type: "string", facet: true, optional: true },
-      { name: "address.address_coordinates", type: "object", optional: true },
-      { name: "address.user_coordinates", type: "object", optional: true },
+      ...typesenseAddressFields("address", { sortFull: true }),
       { name: "organizations", type: "object[]", optional: true },
       { name: "organizations.uid", type: "string[]", facet: false, optional: true },
       { name: "organizations.name", type: "string[]", stem: true, optional: true },

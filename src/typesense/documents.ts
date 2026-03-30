@@ -5,6 +5,28 @@
  * for each collection. Every document includes an `id` field added by Typesense.
  */
 
+// ── Shared ─────────────────────────────────────────────────────────
+
+/**
+ * Shared address fields used across Typesense document types.
+ *
+ * Coordinates are stored as `[latitude, longitude]` geopoints.
+ * The API translates Firestore `{latitude, longitude}` objects into this format.
+ */
+export interface TypesenseAddressFields {
+  full?: string;
+  name?: string;
+  city?: string;
+  region?: string;
+  street?: string;
+  street2?: string;
+  postcode?: string;
+  country_name?: string;
+  mapbox_id?: string;
+  address_coordinates?: [number, number];
+  user_coordinates?: [number, number];
+}
+
 // ── Bookings ────────────────────────────────────────────────────────
 
 /** Typesense document type for bookings. */
@@ -51,19 +73,11 @@ export interface BookingDocument {
   destinations?: {
     delivery?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
     };
     collection?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
     };
   };
   stores?: Array<{
@@ -120,16 +134,7 @@ export interface DestinationDocument {
   id: string;
   uid: string;
   mapbox_ids: string[];
-  address?: {
-    full?: string;
-    name?: string;
-    city?: string;
-    region?: string;
-    street?: string;
-    country_name?: string;
-    address_coordinates?: Record<string, unknown>;
-    user_coordinates?: Record<string, unknown>;
-  };
+  address?: TypesenseAddressFields;
   organizations?: Array<{
     uid?: string;
     name?: string;
@@ -255,11 +260,7 @@ export interface OrderDocument {
   destinations: Array<{
     delivery?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
       instructions?: string;
       contact?: {
         uid?: string;
@@ -268,11 +269,7 @@ export interface OrderDocument {
     };
     collection?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
       instructions?: string;
       contact?: {
         uid?: string;
@@ -332,24 +329,7 @@ export interface OrganizationDocument {
   tax_profile: string;
   emails?: string[];
   phones?: string[];
-  billing_address: {
-    name?: string;
-    street?: string;
-    full?: string;
-    street2?: string;
-    city?: string;
-    region?: string;
-    postcode?: string;
-    country_name?: string;
-    address_coordinates?: {
-      latitude?: number;
-      longitude?: number;
-    };
-    user_coordinates?: {
-      latitude?: number;
-      longitude?: number;
-    };
-  };
+  billing_address: TypesenseAddressFields;
   contacts: Array<{
     uid?: string;
     name?: string;

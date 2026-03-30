@@ -10,6 +10,7 @@ const TYPESENSE_FIELD_TYPES = [
   "float", "float[]",
   "bool", "bool[]",
   "object", "object[]",
+  "geopoint", "geopoint[]",
 ] as const;
 
 /** Field type in a Typesense collection schema. */
@@ -139,3 +140,33 @@ export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfi
   displayDefaults: TypesenseDisplayDefaultsSchema,
   enabled: z.boolean().optional(),
 });
+
+/**
+ * Generate Typesense field definitions for a nested address object.
+ *
+ * Coordinates use the `geopoint` type with `[latitude, longitude]` order.
+ * The API translates Firestore `{latitude, longitude}` objects into this format.
+ */
+export function typesenseAddressFields(
+  prefix: string,
+  opts: { array?: boolean; sortFull?: boolean; parentOptional?: boolean } = {},
+): TypesenseField[] {
+  const t = (base: string): TypesenseFieldType =>
+    (opts.array ? `${base}[]` : base) as TypesenseFieldType;
+  const parentOptional = opts.parentOptional ?? true;
+
+  return [
+    { name: prefix, type: t("object"), ...(parentOptional && { optional: true }) },
+    { name: `${prefix}.full`, type: t("string"), stem: true, optional: true, ...(opts.sortFull && { sort: true }) },
+    { name: `${prefix}.name`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.city`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.region`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.street`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.street2`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.postcode`, type: t("string"), optional: true },
+    { name: `${prefix}.country_name`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.mapbox_id`, type: t("string"), index: false, optional: true },
+    { name: `${prefix}.address_coordinates`, type: t("geopoint"), optional: true },
+    { name: `${prefix}.user_coordinates`, type: t("geopoint"), optional: true },
+  ];
+}

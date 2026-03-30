@@ -1,13 +1,14 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
+import { typesenseAddressFields } from "./types.ts";
 
 /** Typesense collection config for organizations. */
 export const organizations: TypesenseCollectionConfig = {
   alias: "organizations",
-  version: 8,
+  version: 9,
   firestoreCollection: "organizations",
-  collectionName: "organizations_v8",
+  collectionName: "organizations_v9",
   schema: {
-    name: "organizations_v8",
+    name: "organizations_v9",
     enable_nested_fields: true,
     token_separators: ["(", ")", "-", "+", " "],
     fields: [
@@ -20,21 +21,7 @@ export const organizations: TypesenseCollectionConfig = {
       { name: "tax_profile", type: "string", facet: true },
       { name: "emails", type: "string[]", stem: true, optional: true },
       { name: "phones", type: "string[]", optional: true },
-      { name: "billing_address", type: "object" },
-      { name: "billing_address.name", type: "string", stem: true, optional: true },
-      { name: "billing_address.street", type: "string", stem: true, optional: true },
-      { name: "billing_address.full", type: "string", stem: true, optional: true, sort: true },
-      { name: "billing_address.street2", type: "string", stem: true, optional: true },
-      { name: "billing_address.city", type: "string", facet: false, optional: true },
-      { name: "billing_address.region", type: "string", facet: false, optional: true },
-      { name: "billing_address.postcode", type: "string", facet: false, optional: true },
-      { name: "billing_address.country_name", type: "string", facet: false, optional: true },
-      { name: "billing_address.address_coordinates", type: "object", optional: true },
-      { name: "billing_address.address_coordinates.latitude", type: "float", optional: true },
-      { name: "billing_address.address_coordinates.longitude", type: "float", optional: true },
-      { name: "billing_address.user_coordinates", type: "object", optional: true },
-      { name: "billing_address.user_coordinates.latitude", type: "float", optional: true },
-      { name: "billing_address.user_coordinates.longitude", type: "float", optional: true },
+      ...typesenseAddressFields("billing_address", { sortFull: true, parentOptional: false }),
       { name: "contacts", type: "object[]" },
       { name: "contacts.uid", type: "string[]", facet: false, optional: true },
       { name: "contacts.name", type: "string[]", stem: true, facet: false, optional: true },

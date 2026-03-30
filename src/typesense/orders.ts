@@ -1,13 +1,14 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
+import { typesenseAddressFields } from "./types.ts";
 
 /** Typesense collection config for orders. */
 export const orders: TypesenseCollectionConfig = {
   alias: "orders",
-  version: 14,
+  version: 15,
   firestoreCollection: "orders",
-  collectionName: "orders_v14",
+  collectionName: "orders_v15",
   schema: {
-    name: "orders_v14",
+    name: "orders_v15",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -39,19 +40,13 @@ export const orders: TypesenseCollectionConfig = {
       { name: "dates.days_charged", type: "int32", sort: true, optional: true },
       { name: "destinations", type: "object[]" },
       { name: "destinations.delivery", type: "object[]", optional: true },
-      { name: "destinations.delivery.address", type: "object[]", optional: true },
-      { name: "destinations.delivery.address.full", type: "string[]", stem: true, optional: true },
-      { name: "destinations.delivery.address.city", type: "string[]", facet: false, optional: true },
-      { name: "destinations.delivery.address.region", type: "string[]", facet: false, optional: true },
+      ...typesenseAddressFields("destinations.delivery.address", { array: true }),
       { name: "destinations.delivery.instructions", type: "string[]", stem: true, optional: true },
       { name: "destinations.delivery.contact", type: "object[]", optional: true },
       { name: "destinations.delivery.contact.uid", type: "string[]", facet: false, optional: true },
       { name: "destinations.delivery.contact.name", type: "string[]", stem: true, optional: true },
       { name: "destinations.collection", type: "object[]", optional: true },
-      { name: "destinations.collection.address", type: "object[]", optional: true },
-      { name: "destinations.collection.address.full", type: "string[]", stem: true, optional: true },
-      { name: "destinations.collection.address.city", type: "string[]", facet: false, optional: true },
-      { name: "destinations.collection.address.region", type: "string[]", facet: false, optional: true },
+      ...typesenseAddressFields("destinations.collection.address", { array: true }),
       { name: "destinations.collection.instructions", type: "string[]", stem: true, optional: true },
       { name: "destinations.collection.contact", type: "object[]", optional: true },
       { name: "destinations.collection.contact.uid", type: "string[]", facet: false, optional: true },

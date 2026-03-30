@@ -135,6 +135,7 @@ Deno.test("each field has a name and valid type", () => {
     "float", "float[]",
     "bool", "bool[]",
     "object", "object[]",
+    "geopoint", "geopoint[]",
   ]);
   for (const config of allConfigs) {
     for (const field of config.schema.fields) {
