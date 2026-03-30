@@ -5,10 +5,10 @@ import { z } from "zod";
 import { type FirestoreTimestampType, TimestampFields } from "./common.ts";
 
 const COA_CODES = [
-  "2210", "2800",
-  "4000", "4100", "4110", "4120", "4130", "4140", "4150",
-  "4200", "4210", "4300", "4400", "4600", "4700", "4800", "4810", "4820", "4830",
-  "5000", "5001", "5100", "5200", "5300", "5400", "5500", "5600",
+  2210, 2800,
+  4000, 4100, 4110, 4120, 4130, 4140, 4150,
+  4200, 4210, 4300, 4400, 4600, 4700, 4800, 4810, 4820, 4830,
+  5000, 5001, 5100, 5200, 5300, 5400, 5500, 5600,
 ] as const;
 
 const COA_TYPES = [
@@ -24,7 +24,9 @@ export type COACodeType = typeof COA_CODES[number];
 export type COATypeType = typeof COA_TYPES[number];
 
 /** Zod schema for COACode. */
-export const COACode: z.ZodType<COACodeType> = z.enum(COA_CODES);
+export const COACode: z.ZodType<COACodeType> = z.union(
+  COA_CODES.map((c) => z.literal(c)) as [z.ZodLiteral<COACodeType>, ...z.ZodLiteral<COACodeType>[]]
+);
 /** Zod schema for COAType. */
 export const COAType: z.ZodType<COATypeType> = z.enum(COA_TYPES);
 

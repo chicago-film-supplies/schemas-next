@@ -147,6 +147,7 @@ export interface DestinationDocument {
     uid?: string;
     name?: string;
   }>;
+  created_at?: number;
   updated_at: number;
 }
 
@@ -256,6 +257,8 @@ export interface OrderDocument {
     collection_end_fs?: number;
     charge_start_fs?: number;
     charge_end_fs?: number;
+    days_active?: number;
+    days_charged?: number;
   };
   destinations: Array<{
     delivery?: {
@@ -437,6 +440,10 @@ export interface StoreDocument {
   name: string;
   default: boolean;
   active: boolean;
+  default_location?: {
+    uid?: string;
+    name?: string;
+  };
   crms_store_id: number;
   crms_store_id_str?: string;
   created_at: number;
@@ -525,6 +532,7 @@ export interface WebshopProductDocument {
   id: string;
   uid: string;
   name: string;
+  description?: string;
   type: string;
   stock_method?: string;
   active: boolean;

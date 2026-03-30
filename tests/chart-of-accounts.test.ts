@@ -4,7 +4,7 @@ import { ChartOfAccountsSchema } from "../src/chart-of-accounts.ts";
 Deno.test("ChartOfAccountsSchema validates a complete document", () => {
   const doc = {
     uid: "test-coa-1",
-    code: "4000",
+    code: 4000,
     name: "Sales",
     type: "Revenue",
     description: "General sales revenue",
@@ -17,7 +17,7 @@ Deno.test("ChartOfAccountsSchema validates a complete document", () => {
 Deno.test("ChartOfAccountsSchema rejects invalid code", () => {
   const doc = {
     uid: "test-coa-1",
-    code: "9999",
+    code: 9999,
     name: "Invalid",
     type: "Revenue",
     default_tax_profile: "tax_none",
@@ -29,7 +29,7 @@ Deno.test("ChartOfAccountsSchema rejects invalid code", () => {
 Deno.test("ChartOfAccountsSchema rejects invalid type", () => {
   const doc = {
     uid: "test-coa-1",
-    code: "4000",
+    code: 4000,
     name: "Sales",
     type: "Fake Type",
     default_tax_profile: "tax_none",
@@ -41,7 +41,7 @@ Deno.test("ChartOfAccountsSchema rejects invalid type", () => {
 Deno.test("ChartOfAccountsSchema rejects additional properties", () => {
   const doc = {
     uid: "test-coa-1",
-    code: "4000",
+    code: 4000,
     name: "Sales",
     type: "Revenue",
     default_tax_profile: "tax_none",

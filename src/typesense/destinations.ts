@@ -23,6 +23,7 @@ export const destinations: TypesenseCollectionConfig = {
       { name: "contacts", type: "object[]", optional: true },
       { name: "contacts.uid", type: "string[]", facet: false, optional: true },
       { name: "contacts.name", type: "string[]", stem: true, optional: true },
+      { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
     ],
     default_sorting_field: "updated_at",
