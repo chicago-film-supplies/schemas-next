@@ -8,6 +8,7 @@ export const stores: TypesenseCollectionConfig = {
   collectionName: "stores_v2",
   schema: {
     name: "stores_v2",
+    enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "name", type: "string", sort: true, stem: true, facet: false },
