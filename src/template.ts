@@ -11,7 +11,7 @@ import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 /** Collections that can serve as data sources for templates. */
-const TEMPLATE_SOURCE_COLLECTIONS = ["orders", "invoices"] as const;
+export const TEMPLATE_SOURCE_COLLECTIONS = ["orders", "invoices"] as const;
 /** Firestore collection that provides data to a template. */
 export type TemplateSourceCollectionType = typeof TEMPLATE_SOURCE_COLLECTIONS[number];
 

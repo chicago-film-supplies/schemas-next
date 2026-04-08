@@ -379,6 +379,7 @@ export {
 } from "./quote.ts";
 
 export {
+  TEMPLATE_SOURCE_COLLECTIONS,
   TemplateSchema,
   TemplateInputSchema,
   TemplateUpdateInputSchema,
@@ -623,3 +624,8 @@ export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> 
       })
       .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
   );
+
+// ── Template schema fields (static, generated) ─────────────────────
+
+export type { SchemaField } from "./template-schema-fields.generated.ts";
+export { templateSchemaFields } from "./template-schema-fields.generated.ts";
