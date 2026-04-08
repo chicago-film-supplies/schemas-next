@@ -97,4 +97,5 @@ export const TemplateUpdateInputSchema: z.ZodType<TemplateUpdateInputType> = z.o
 export interface TemplateContext {
   doc: Record<string, unknown>;
   version?: number | null;
+  logo?: string;
 }
