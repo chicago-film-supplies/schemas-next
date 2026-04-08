@@ -44,6 +44,7 @@ export {
   createProductRules,
   createProductTransaction,
   updateProductRules,
+  updateProductOrderRules,
   updateProductTransaction,
 } from "./products.ts";
 
@@ -94,7 +95,7 @@ import type { CollectionRule, TransactionDefinition } from "./types.ts";
 
 import { createOrderRules, createOrderTransaction, updateOrderRules, updateOrderTransaction } from "./orders.ts";
 import { createTransactionRules, createTransactionTransaction, updateTransactionRules, updateTransactionTransaction } from "./transactions.ts";
-import { createProductRules, createProductTransaction, updateProductRules, updateProductTransaction } from "./products.ts";
+import { createProductRules, createProductTransaction, updateProductRules, updateProductOrderRules, updateProductTransaction } from "./products.ts";
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
 import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
@@ -124,6 +125,7 @@ export const rules: CollectionRule[] = [
   ...updateTransactionRules,
   ...createProductRules,
   ...updateProductRules,
+  ...updateProductOrderRules,
   ...createOrganizationRules,
   ...updateOrganizationRules,
   ...createContactRules,

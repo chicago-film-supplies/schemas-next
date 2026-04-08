@@ -4,11 +4,11 @@ import { typesenseAddressFields } from "./types.ts";
 /** Typesense collection config for orders. */
 export const orders: TypesenseCollectionConfig = {
   alias: "orders",
-  version: 15,
+  version: 16,
   firestoreCollection: "orders",
-  collectionName: "orders_v15",
+  collectionName: "orders_v16",
   schema: {
-    name: "orders_v15",
+    name: "orders_v16",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -100,6 +100,7 @@ export const orders: TypesenseCollectionConfig = {
       { name: "items.price.taxes.type", type: "string[]", optional: true },
       { name: "items.price.taxes.amount", type: "float[]", optional: true },
       { name: "items.price.chargeable_days", type: "int32[]", optional: true },
+      { name: "items.price.replacement", type: "float[]", optional: true },
       { name: "items.price.formula", type: "string[]", optional: true },
       { name: "destinations.delivery.uid", type: "string[]", optional: true },
       { name: "destinations.collection.uid", type: "string[]", optional: true },

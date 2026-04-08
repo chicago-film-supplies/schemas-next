@@ -34,6 +34,7 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["type"], target: ["items", "type"] },
       { source: ["stock_method"], target: ["items", "stock_method"] },
       { source: ["price", "base"], target: ["items", "price", "base"], transform: "fallback — used only when input omits price" },
+      { source: ["price", "replacement"], target: ["items", "price", "replacement"], transform: "fallback — used only when input omits replacement" },
       { source: ["price", "taxes"], target: ["items", "price", "taxes"], transform: "fallback — denormalized TaxRef[] from product catalog, used when input omits taxes" },
       { source: ["name"], target: ["items", "name"], transform: "fallback — input name takes precedence" },
     ],

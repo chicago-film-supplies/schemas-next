@@ -305,6 +305,7 @@ export interface OrderDocument {
     total_price?: number;
     price?: {
       base?: number;
+      replacement?: number;
       subtotal?: number;
       subtotal_discounted?: number;
       total?: number;

@@ -237,6 +237,7 @@ export const DiscountInput: z.ZodType<DiscountInputType> = z.object({
  */
 export interface ItemPriceType {
   base?: number;
+  replacement?: number | null;
   chargeable_days?: number | null;
   formula?: PriceFormulaType;
   subtotal?: number;
@@ -248,6 +249,7 @@ export interface ItemPriceType {
 /** Zod schema for item price breakdown (input). */
 export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   base: z.number().optional(),
+  replacement: z.number().nullable().optional(),
   chargeable_days: z.int().nullable().optional(),
   formula: PriceFormulaEnum.optional(),
   subtotal: z.number().optional(),
@@ -376,6 +378,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
  */
 export interface OrderDocItemPriceType {
   base: number;
+  replacement?: number | null;
   chargeable_days: number | null;
   formula: PriceFormulaType;
   subtotal: number;
@@ -387,6 +390,7 @@ export interface OrderDocItemPriceType {
 
 const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
   base: z.number().default(0),
+  replacement: z.number().nullable().optional(),
   chargeable_days: z.number().int().nullable().default(null),
   formula: PriceFormulaEnum.default("five_day_week"),
   subtotal: z.number().default(0),

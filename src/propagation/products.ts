@@ -200,6 +200,27 @@ export const updateProductRules: CollectionRule[] = [
   },
 ];
 
+// ── update-product fan-out to orders ─────────────────────────────
+
+export const updateProductOrderRules: CollectionRule[] = [
+  {
+    id: "update-product:product-to-draft-orders",
+    source: "products",
+    target: "orders",
+    mode: "fan-out",
+    invariant: "Draft orders stay current with the product catalog — once quoted/reserved the embedded snapshot is locked in",
+    trigger: "onUpdate:products",
+    fields: [
+      { source: ["type"], target: ["items", "type"], transform: "patch matching items where status = draft and item.uid matches product uid" },
+      { source: ["stock_method"], target: ["items", "stock_method"] },
+      { source: ["price", "base"], target: ["items", "price", "base"] },
+      { source: ["price", "replacement"], target: ["items", "price", "replacement"] },
+      { source: ["price", "taxes"], target: ["items", "price", "taxes"], transform: "denormalized TaxRef[] from product catalog" },
+      { source: ["name"], target: ["items", "name"] },
+    ],
+  },
+];
+
 export const updateProductTransaction: TransactionDefinition = {
   id: "update-product",
   description: "Updates a product with cascading name changes to components/alternates/locations/tags/tracking-categories, tag/category cross-ref diffs, and webshop fan-out.",
