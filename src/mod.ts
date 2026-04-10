@@ -111,6 +111,17 @@ export {
 } from "./order.ts";
 
 export {
+  OrderEventSchema,
+  OrderEventResponseSchema,
+  OrderEventsQueryInput,
+  type OrderEvent,
+  type OrderEventResponse,
+  type OrderEventsQueryInputType,
+  type EventTypeType,
+  type EventPositionType,
+} from "./order-event.ts";
+
+export {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
@@ -498,6 +509,7 @@ import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
 import type { Destination as DestinationDocType } from "./destination.ts";
 import type { EmailVerification } from "./email-verification.ts";
+import type { OrderEvent } from "./order-event.ts";
 import type { HolidayDates } from "./holiday-dates.ts";
 import type { InventoryLedger } from "./inventory-ledger.ts";
 import type { Invoice } from "./invoice.ts";
@@ -527,7 +539,7 @@ import type { WebshopProduct } from "./webshop-product.ts";
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
-  | EmailVerification | HolidayDates | InventoryLedger | Invoice | Location
+  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Tax | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
@@ -543,6 +555,7 @@ import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
 import { ContactSchema } from "./contact.ts";
 import { DestinationSchema } from "./destination.ts";
 import { EmailVerificationSchema } from "./email-verification.ts";
+import { OrderEventSchema as OrderEventSchema_ } from "./order-event.ts";
 import { HolidayDatesSchema } from "./holiday-dates.ts";
 import { InventoryLedgerSchema } from "./inventory-ledger.ts";
 import { InvoiceSchema } from "./invoice.ts";
@@ -583,6 +596,7 @@ export const schemas: Record<string, z.ZodType> = {
   "location": LocationSchema, "locations": LocationSchema,
   "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,
   "order": OrderSchema, "orders": OrderSchema,
+  "order-event": OrderEventSchema_, "order-events": OrderEventSchema_,
   "organization": OrganizationSchema, "organizations": OrganizationSchema,
   "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,

@@ -7,7 +7,7 @@ export const aggregates: AggregateDefinition[] = [
   {
     id: "order",
     root: "orders",
-    members: ["bookings", "stock-summaries", "public-stock-summaries", "quotes"],
+    members: ["bookings", "stock-summaries", "public-stock-summaries", "quotes", "order-events"],
     description: "Rental/sale order lifecycle — from quote through active rental to completion",
   },
   {
