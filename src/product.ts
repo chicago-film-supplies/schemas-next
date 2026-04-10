@@ -103,9 +103,9 @@ export interface Product {
   tags: UidNameRefType[];
   query_by_tags?: string[];
   tracking_category_name?: string;
-  uid_linked_rental?: string;
-  uid_linked_replacement?: string;
-  uid_tracking_category?: string;
+  uid_linked_rental?: string | null;
+  uid_linked_replacement?: string | null;
+  uid_tracking_category?: string | null;
   webshop: ProductWebshop;
   images?: string[];
   xero_id?: string | null;
@@ -178,9 +178,9 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   tags: z.array(UidNameRef).default([]),
   query_by_tags: z.array(z.string()).default([]).optional(),
   tracking_category_name: z.string().optional(),
-  uid_linked_rental: z.string().optional(),
-  uid_linked_replacement: z.string().optional(),
-  uid_tracking_category: z.string().optional(),
+  uid_linked_rental: z.string().nullable().optional(),
+  uid_linked_replacement: z.string().nullable().optional(),
+  uid_tracking_category: z.string().nullable().optional(),
   webshop: z.strictObject({
     available: z.boolean().default(false),
     description: z.string().nullable().optional(),
@@ -236,7 +236,7 @@ export interface CreateProductInputType {
   component_of?: Record<string, ProductComponent>;
   tags?: UidNameRefType[];
   tracking_category_name?: string;
-  uid_tracking_category?: string;
+  uid_tracking_category?: string | null;
   uid_linked_rental?: string | null;
   uid_linked_replacement?: string | null;
   webshop: {
@@ -289,7 +289,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   component_of: z.record(z.string(), ComponentSchema).default({}),
   tags: z.array(UidNameRef).default([]),
   tracking_category_name: z.string().optional(),
-  uid_tracking_category: z.string().optional(),
+  uid_tracking_category: z.string().nullable().optional(),
   uid_linked_rental: z.string().nullable().optional(),
   uid_linked_replacement: z.string().nullable().optional(),
   webshop: z.object({

@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { UserSchema, SaveFirestorePrefsInput, SaveTypesensePrefsInput } from "../src/user.ts";
+import { UserSchema, UpdateUserInput } from "../src/user.ts";
 
 const emptyPrefs = {
   prefs_firestore: {},
@@ -120,34 +120,57 @@ Deno.test("UserSchema accepts prefs_typesense", () => {
   assertEquals(result.success, true);
 });
 
-Deno.test("SaveFirestorePrefsInput validates correctly", () => {
-  const valid = SaveFirestorePrefsInput.safeParse({
-    context: "orders",
-    prefs: {
-      columns: ["number"],
-      filters: {},
-      sort: { column: "number", direction: "asc" },
+Deno.test("UpdateUserInput validates correctly", () => {
+  const valid = UpdateUserInput.safeParse({
+    version: 0,
+    prefs_firestore: {
+      orders: {
+        columns: ["number"],
+        filters: {},
+        sort: { column: "number", direction: "asc" },
+      },
     },
   });
   assertEquals(valid.success, true);
-
-  const invalid = SaveFirestorePrefsInput.safeParse({ context: "" });
-  assertEquals(invalid.success, false);
 });
 
-Deno.test("SaveTypesensePrefsInput validates correctly", () => {
-  const valid = SaveTypesensePrefsInput.safeParse({
-    collection: "bookings",
-    prefs: {
-      columns: ["number", "name"],
-      filters: {},
-      sort: { column: "number", direction: "desc" },
-      group: null,
-      facet: [],
+Deno.test("UpdateUserInput requires version", () => {
+  const result = UpdateUserInput.safeParse({
+    prefs_typesense: {
+      bookings: {
+        columns: ["number"],
+        filters: {},
+        sort: { column: "number", direction: "desc" },
+        group: null,
+        facet: [],
+      },
     },
   });
-  assertEquals(valid.success, true);
+  assertEquals(result.success, false);
+});
 
-  const invalid = SaveTypesensePrefsInput.safeParse({ collection: "" });
-  assertEquals(invalid.success, false);
+Deno.test("UpdateUserInput strips unknown fields", () => {
+  const result = UpdateUserInput.safeParse({
+    version: 1,
+    password_hash: "should-be-stripped",
+    roles: ["admin"],
+  });
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals("password_hash" in result.data, false);
+    assertEquals("roles" in result.data, false);
+  }
+});
+
+Deno.test("UserSchema defaults version to 0", () => {
+  const result = UserSchema.safeParse({
+    uid: "test-user-1",
+    email: "test@example.com",
+    password_hash: "$argon2id$v=19$hash",
+    ...emptyPrefs,
+  });
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.version, 0);
+  }
 });

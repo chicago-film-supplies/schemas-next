@@ -57,6 +57,7 @@ export interface User {
   email_verified: boolean;
   uid_customer?: string | null;
   roles?: string[];
+  version: number;
   prefs_firestore: Record<string, FirestoreDisplayPrefs>;
   prefs_typesense: Record<string, TypesenseDisplayPrefs>;
   created_at?: FirestoreTimestampType;
@@ -71,13 +72,14 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   email_verified: z.boolean().default(false),
   uid_customer: z.string().nullable().optional(),
   roles: z.array(z.string()).optional(),
+  version: z.int().min(0).default(0),
   prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema),
   prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema),
   ...TimestampFields,
 }).meta({
   title: "User",
   collection: "users",
-  initial: {"uid":null,"email":"","password_hash":"","email_verified":false,"uid_customer":null,"roles":[],"prefs_firestore":{},"prefs_typesense":{}},
+  initial: {"uid":null,"email":"","password_hash":"","email_verified":false,"uid_customer":null,"roles":[],"version":0,"prefs_firestore":{},"prefs_typesense":{}},
   displayDefaults: {
     columns: ["email", "roles"],
     filters: {},
@@ -85,28 +87,18 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   },
 });
 
-// ── Input schemas for preference endpoints ──────────────────────────
+// ── Input schema for user update endpoint ───────────────────────────
 
-/** Payload for saving Firestore display preferences. */
-export interface SaveFirestorePrefsInputType {
-  context: string;
-  prefs: FirestoreDisplayPrefs;
+/** Payload for updating user preferences via PUT /users/:uid. */
+export interface UpdateUserInputType {
+  version: number;
+  prefs_firestore?: Record<string, FirestoreDisplayPrefs>;
+  prefs_typesense?: Record<string, TypesenseDisplayPrefs>;
 }
 
-/** Input schema for saving Firestore display preferences. */
-export const SaveFirestorePrefsInput: z.ZodType<SaveFirestorePrefsInputType> = z.object({
-  context: z.string().min(1),
-  prefs: FirestoreDisplayPrefsSchema,
-});
-
-/** Payload for saving Typesense display preferences. */
-export interface SaveTypesensePrefsInputType {
-  collection: string;
-  prefs: TypesenseDisplayPrefs;
-}
-
-/** Input schema for saving Typesense display preferences. */
-export const SaveTypesensePrefsInput: z.ZodType<SaveTypesensePrefsInputType> = z.object({
-  collection: z.string().min(1),
-  prefs: TypesenseDisplayPrefsSchema,
+/** Input schema for updating user preferences (only pref fields are accepted). */
+export const UpdateUserInput: z.ZodType<UpdateUserInputType> = z.object({
+  version: z.int().min(0),
+  prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema).optional(),
+  prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema).optional(),
 });

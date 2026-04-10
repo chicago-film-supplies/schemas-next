@@ -30,14 +30,12 @@ export {
 
 export {
   UserSchema,
-  SaveFirestorePrefsInput,
-  SaveTypesensePrefsInput,
+  UpdateUserInput,
   type User,
   type DisplaySort,
   type FirestoreDisplayPrefs,
   type TypesenseDisplayPrefs,
-  type SaveFirestorePrefsInputType,
-  type SaveTypesensePrefsInputType,
+  type UpdateUserInputType,
 } from "./user.ts";
 
 export {
