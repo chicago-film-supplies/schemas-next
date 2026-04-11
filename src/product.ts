@@ -121,7 +121,7 @@ export interface Product {
   updated_at?: FirestoreTimestampType;
 }
 
-const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
+export const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
   uid: z.string(),
   path: z.array(z.string()),
   name: z.string(),

@@ -384,7 +384,7 @@ export interface OrderDocItemPriceType {
   total: number;
 }
 
-const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
+export const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
   base: z.number().default(0),
   replacement: z.number().nullable().optional(),
   chargeable_days: z.number().int().nullable().default(null),
@@ -415,7 +415,7 @@ export interface OrderDocLineItemType {
   uid_collection?: string | null;
 }
 
-const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
+export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid: z.string(),
   type: z.enum(DOC_LINE_ITEM_TYPES),
   name: z.string().min(1).max(100),
@@ -461,7 +461,7 @@ export interface OrderDocGroupItemType {
   description: string;
 }
 
-const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
+export const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
   uid: z.uuid(),
   type: z.literal("group"),
   name: z.string().min(1).max(100),
