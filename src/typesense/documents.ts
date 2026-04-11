@@ -299,7 +299,7 @@ export interface OrderDocument {
     zero_priced?: boolean;
     uid_order?: string;
     order_number?: number;
-    uid_component_of?: string;
+    path?: string[];
     uid_delivery?: string;
     uid_collection?: string;
     total_price?: number;

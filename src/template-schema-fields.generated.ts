@@ -109,7 +109,7 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "items[] (type: rental, replacement, ...).stock_method", type: "bulk | serialized | none?" },
     { path: "items[] (type: rental, replacement, ...).order_number", type: "number?" },
     { path: "items[] (type: rental, replacement, ...).uid_order", type: "string?" },
-    { path: "items[] (type: rental, replacement, ...).uid_component_of", type: "string? | null" },
+    { path: "items[] (type: rental, replacement, ...).path", type: "string[]?" },
     { path: "items[] (type: rental, replacement, ...).inclusion_type", type: "default | mandatory | optional? | null" },
     { path: "items[] (type: rental, replacement, ...).zero_priced", type: "boolean? | null" },
     { path: "items[] (type: rental, replacement, ...).crms_id", type: "number? | null" },

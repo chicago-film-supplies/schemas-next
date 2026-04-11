@@ -267,7 +267,7 @@ export interface OrderItemType {
   quantity?: number;
   price?: ItemPriceType;
   stock_method?: StockMethodType;
-  uid_component_of?: string | null;
+  path?: string[];
   inclusion_type?: InclusionTypeType | null;
   zero_priced?: boolean | null;
   uid_delivery?: string;
@@ -285,7 +285,7 @@ export const OrderItem: z.ZodType<OrderItemType> = z.object({
   quantity: z.int().optional(),
   price: ItemPrice.optional(),
   stock_method: StockMethodEnum.optional(),
-  uid_component_of: z.string().nullable().optional(),
+  path: z.array(z.string()).optional(),
   inclusion_type: InclusionTypeEnum.nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   uid_delivery: z.string().optional(),
@@ -407,7 +407,7 @@ export interface OrderDocLineItemType {
   stock_method?: StockMethodType;
   order_number?: number;
   uid_order?: string;
-  uid_component_of?: string | null;
+  path?: string[];
   inclusion_type?: "default" | "mandatory" | "optional" | null;
   zero_priced?: boolean | null;
   crms_id?: number | null;
@@ -425,7 +425,7 @@ export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject(
   stock_method: StockMethodEnum.optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
-  uid_component_of: z.string().nullable().optional(),
+  path: z.array(z.string()).optional(),
   inclusion_type: z.enum(INCLUSION_TYPES_NULLABLE).nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   crms_id: z.number().nullable().optional(),
