@@ -16,8 +16,8 @@ const validProduct = {
     discountable: true,
   },
   alternates: {},
-  components: {},
-  component_of: {},
+  components: [],
+  component_of: [],
   tags: [{ uid: "test-t1", name: "Camera" }],
   webshop: { available: true },
 };
@@ -44,13 +44,15 @@ Deno.test("ProductSchema validates with shipping", () => {
 Deno.test("ProductSchema validates with components", () => {
   const doc = {
     ...validProduct,
-    components: {
-      "test-comp-1": {
+    components: [
+      {
         uid: "test-comp-1",
+        path: ["test-product-1"],
         name: "Battery",
+        type: "rental",
+        stock_method: "bulk",
         crms_id: 200,
         quantity: 2,
-        type: "rental",
         price: {
           base: 0,
           taxes: [{ uid: "test-tax-none", name: "No Tax", rate: 0, type: "percent" }],
@@ -58,7 +60,7 @@ Deno.test("ProductSchema validates with components", () => {
           discountable: false,
         },
       },
-    },
+    ],
   };
   assertEquals(ProductSchema.safeParse(doc).success, true);
 });

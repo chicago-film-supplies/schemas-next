@@ -13,8 +13,8 @@ const validWebshopProduct = {
     discountable: true,
   },
   alternates: {},
-  components: {},
-  component_of: {},
+  components: [],
+  component_of: [],
   webshop: { available: true, description: "Great camera" },
 };
 

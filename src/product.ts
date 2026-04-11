@@ -31,14 +31,16 @@ export interface ProductAlternate {
 /** A component product within a parent product. */
 export interface ProductComponent {
   uid: string;
+  path: string[];
   name: string;
   active?: boolean;
+  type: ComponentTypeType;
+  stock_method: StockMethodType;
   crms_id: number | null;
   crms_accessory_id?: number | null;
   description?: string;
   inclusion_type?: InclusionTypeType;
   quantity: number;
-  type: ComponentTypeType;
   zero_priced?: boolean;
   price: {
     base: number;
@@ -98,10 +100,12 @@ export interface Product {
   price: ProductPrice;
   shipping?: ProductShipping;
   alternates: Record<string, ProductAlternate>;
-  components: Record<string, ProductComponent>;
-  component_of: Record<string, ProductComponent>;
+  components: ProductComponent[];
+  component_of: ProductComponent[];
   tags: UidNameRefType[];
   query_by_tags?: string[];
+  query_by_components?: string[];
+  query_by_component_of?: string[];
   tracking_category_name?: string;
   uid_linked_rental?: string | null;
   uid_linked_replacement?: string | null;
@@ -118,14 +122,16 @@ export interface Product {
 
 const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
   uid: z.string(),
+  path: z.array(z.string()),
   name: z.string(),
   active: z.boolean().optional(),
+  type: ComponentTypeEnum,
+  stock_method: StockMethodEnum,
   crms_id: z.number().nullable(),
   crms_accessory_id: z.number().nullable().optional(),
   description: z.string().optional(),
   inclusion_type: InclusionTypeEnum.optional(),
   quantity: z.number(),
-  type: ComponentTypeEnum,
   zero_priced: z.boolean().optional(),
   price: z.strictObject({
     base: z.number(),
@@ -173,10 +179,12 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.record(z.string(), UidNameRef),
-  components: z.record(z.string(), ComponentSchema),
-  component_of: z.record(z.string(), ComponentSchema),
+  components: z.array(ComponentSchema).default([]),
+  component_of: z.array(ComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]),
   query_by_tags: z.array(z.string()).default([]).optional(),
+  query_by_components: z.array(z.string()).default([]).optional(),
+  query_by_component_of: z.array(z.string()).default([]).optional(),
   tracking_category_name: z.string().optional(),
   uid_linked_rental: z.string().nullable().optional(),
   uid_linked_replacement: z.string().nullable().optional(),
@@ -194,7 +202,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
 }).meta({
   title: "Product",
   collection: "products",
-  initial: {"active":true,"alternates":{},"component_only":false,"components":{},"component_of":{},"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","taxes":[],"formula":"five_day_week","discountable":true},"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
+  initial: {"active":true,"alternates":{},"component_only":false,"components":[],"component_of":[],"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","taxes":[],"formula":"five_day_week","discountable":true},"query_by_components":[],"query_by_component_of":[],"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
   displayDefaults: {
     columns: ["type", "name", "active"],
     filters: { type: ["rental", "sale", "service"], active: [true] },
@@ -232,8 +240,8 @@ export interface CreateProductInputType {
     air_un: number | null;
   };
   alternates?: Record<string, UidNameRefType>;
-  components?: Record<string, ProductComponent>;
-  component_of?: Record<string, ProductComponent>;
+  components?: ProductComponent[];
+  component_of?: ProductComponent[];
   tags?: UidNameRefType[];
   tracking_category_name?: string;
   uid_tracking_category?: string | null;
@@ -285,8 +293,8 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.record(z.string(), UidNameRef).default({}),
-  components: z.record(z.string(), ComponentSchema).default({}),
-  component_of: z.record(z.string(), ComponentSchema).default({}),
+  components: z.array(ComponentSchema).default([]),
+  component_of: z.array(ComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]),
   tracking_category_name: z.string().optional(),
   uid_tracking_category: z.string().nullable().optional(),
@@ -337,8 +345,8 @@ export interface UpdateProductInputType {
     air_un: number | null;
   };
   alternates?: Record<string, UidNameRefType>;
-  components?: Record<string, ProductComponent>;
-  component_of?: Record<string, ProductComponent>;
+  components?: ProductComponent[];
+  component_of?: ProductComponent[];
   tags?: UidNameRefType[];
   uid_tracking_category?: string;
   uid_linked_rental?: string;
@@ -381,8 +389,8 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.record(z.string(), UidNameRef).optional(),
-  components: z.record(z.string(), ComponentSchema).optional(),
-  component_of: z.record(z.string(), ComponentSchema).optional(),
+  components: z.array(ComponentSchema).optional(),
+  component_of: z.array(ComponentSchema).optional(),
   tags: z.array(UidNameRef).optional(),
   uid_tracking_category: z.string().optional(),
   uid_linked_rental: z.string().optional(),

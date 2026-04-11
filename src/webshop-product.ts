@@ -28,12 +28,14 @@ export interface WebshopProductAlternate {
 /** A component product within a webshop parent product. */
 export interface WebshopProductComponent {
   uid: string;
+  path: string[];
   name: string;
   active?: boolean;
+  type: ComponentTypeType;
+  stock_method?: StockMethodType;
   description?: string;
   inclusion_type?: InclusionTypeType;
   quantity: number;
-  type: ComponentTypeType;
   zero_priced?: boolean;
   price: {
     base: number;
@@ -79,8 +81,8 @@ export interface WebshopProduct {
   };
   shipping?: WebshopProductShipping;
   alternates: Record<string, WebshopProductAlternate>;
-  components: Record<string, WebshopProductComponent>;
-  component_of: Record<string, WebshopProductComponent>;
+  components: WebshopProductComponent[];
+  component_of: WebshopProductComponent[];
   tags?: UidNameRefType[];
   query_by_tags?: string[];
   webshop: {
@@ -93,12 +95,14 @@ export interface WebshopProduct {
 
 const WebshopComponentSchema: z.ZodType<WebshopProductComponent> = z.strictObject({
   uid: z.string(),
+  path: z.array(z.string()),
   name: z.string(),
   active: z.boolean().optional(),
+  type: ComponentTypeEnum,
+  stock_method: StockMethodEnum.optional(),
   description: z.string().optional(),
   inclusion_type: InclusionTypeEnum.optional(),
   quantity: z.number(),
-  type: ComponentTypeEnum,
   zero_priced: z.boolean().optional(),
   price: z.strictObject({
     base: z.number(),
@@ -142,8 +146,8 @@ export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
     name: z.string(),
     description: z.string().optional(),
   })),
-  components: z.record(z.string(), WebshopComponentSchema),
-  component_of: z.record(z.string(), WebshopComponentSchema),
+  components: z.array(WebshopComponentSchema).default([]),
+  component_of: z.array(WebshopComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]).optional(),
   query_by_tags: z.array(z.string()).default([]).optional(),
   webshop: z.strictObject({

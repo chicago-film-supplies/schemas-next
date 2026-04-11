@@ -350,14 +350,16 @@ export interface OrganizationDocument {
 /** Typesense document type for a product component entry. */
 export interface ProductDocumentComponent {
   uid?: string;
+  path?: string[];
   name?: string;
   quantity?: number;
   active?: boolean;
+  type?: string;
+  stock_method?: string;
   crms_id?: number;
   crms_accessory_id?: number;
   description?: string;
   inclusion_type?: string;
-  type?: string;
   zero_priced?: boolean;
   price?: {
     base?: number;
@@ -425,6 +427,8 @@ export interface ProductDocument {
   }>;
   components?: ProductDocumentComponent[];
   component_of?: ProductDocumentComponent[];
+  query_by_components?: string[];
+  query_by_component_of?: string[];
   crms_stock_level_ids?: number[];
   images?: string[];
   updated_by?: string;
@@ -512,12 +516,14 @@ export interface TrackingCategoryDocument {
 /** Typesense document type for a webshop product component entry. */
 export interface WebshopProductDocumentComponent {
   uid?: string;
+  path?: string[];
   name?: string;
   quantity?: number;
   active?: boolean;
+  type?: string;
+  stock_method?: string;
   description?: string;
   inclusion_type?: string;
-  type?: string;
   zero_priced?: boolean;
   price?: {
     base?: number;
