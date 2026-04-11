@@ -51,21 +51,6 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
 }).meta({
   title: "Tax",
   collection: "taxes",
-  initial: {
-    uid: null,
-    name: "",
-    rate: 0,
-    type: "percent",
-    active: true,
-    crms_id: null,
-    valid_from: "",
-    valid_from_fs: null,
-    valid_to: null,
-    valid_to_fs: null,
-    version: 0,
-    created_by: "",
-    updated_by: "",
-  },
   displayDefaults: {
     columns: ["name", "rate", "type", "active"],
     filters: {},

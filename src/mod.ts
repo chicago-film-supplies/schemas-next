@@ -44,6 +44,8 @@ export {
   type FirestoreDisplayDefaults,
 } from "./display-defaults.ts";
 
+export { getInitialValues } from "./initial.ts";
+
 export {
   SessionSchema,
   type Session,

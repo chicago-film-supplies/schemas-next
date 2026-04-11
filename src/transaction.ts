@@ -6,7 +6,7 @@ import { FirestoreTimestamp, type FirestoreTimestampType, NoteEntry, type NoteEn
 
 /** All possible transaction type identifiers. */
 export const TRANSACTION_TYPES = [
-  "purchase", "find", "make", "opening_balance", "adjustment_increase",
+  "opening_balance", "purchase", "find", "make", "adjustment_increase",
   "sale", "write_off", "trade_in", "adjustment_decrease",
   "transfer_increase", "transfer_decrease",
   "acquisition", "disposal", "partial_disposal",
@@ -179,7 +179,6 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
 }).meta({
   title: "Transaction",
   collection: "transactions",
-  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[],"version":0},
   displayDefaults: {
     columns: ["date", "quantity", "source.type", "type", "reference"],
     filters: {},

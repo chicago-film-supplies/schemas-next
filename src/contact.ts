@@ -52,7 +52,6 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
 }).meta({
   title: "Contact",
   collection: "contacts",
-  initial: {"uid":null,"name":"","emails":[],"phones":[],"organizations":[],"query_by_organizations":[],"version":0},
   displayDefaults: {
     columns: ["name", "emails", "phones"],
     filters: {},

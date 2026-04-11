@@ -72,7 +72,6 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
 }).meta({
   title: "Organization",
   collection: "organizations",
-  initial: {"uid":null,"name":"","tax_profile":"tax_applied","description":"","emails":[],"phones":[],"billing_address":null,"contacts":[],"query_by_contacts":[],"version":0},
   displayDefaults: {
     columns: ["name", "emails", "phones"],
     filters: {},

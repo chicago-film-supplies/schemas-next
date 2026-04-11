@@ -202,7 +202,6 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
 }).meta({
   title: "Product",
   collection: "products",
-  initial: {"active":true,"alternates":{},"component_only":false,"components":[],"component_of":[],"crms_id":null,"description":"","eligible_delivery":true,"eligible_in_store_pickup":true,"eligible_shipping_ground":false,"eligible_shipping_air":false,"name":"","price":{"base":0,"replacement":0,"coa_revenue":"4000","taxes":[],"formula":"five_day_week","discountable":true},"query_by_components":[],"query_by_component_of":[],"shipping":{"weight":0,"height":0,"width":0,"length":0,"air_hazardous":false,"air_un":null},"stock_method":"bulk","tags":[],"query_by_tags":[],"tracking_category_name":"","type":"rental","uid":null,"uid_linked_rental":null,"uid_linked_replacement":null,"uid_tracking_category":null,"version":0,"webshop":{"available":false,"description":null}},
   displayDefaults: {
     columns: ["type", "name", "active"],
     filters: { type: ["rental", "sale", "service"], active: [true] },

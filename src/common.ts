@@ -242,5 +242,4 @@ export const Address: z.ZodType<AddressType | null> = z.strictObject({
   user_coordinates: Coordinates.optional(),
 }).nullable().meta({
   pii: "mask",
-  initial: {"city":"","address_coordinates":null,"user_coordinates":null,"country_name":"","full":"","name":"","postcode":"","region":"","street":"","street2":"","mapbox_id":""},
 });

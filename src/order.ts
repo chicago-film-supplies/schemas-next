@@ -27,7 +27,7 @@ const ORDER_STATUSES = [
 type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-const ITEM_TYPES = ["destination", "group", "rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+const ITEM_TYPES = ["rental", "destination", "group", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
 type ItemTypeType = typeof ITEM_TYPES[number];
 
 /** Line item types in the full document (superset of input types). */
@@ -109,8 +109,6 @@ export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.object(
   address: Address.optional(),
   instructions: z.string().nullable().optional(),
   contact: DestinationContact.nullable().optional(),
-}).meta({
-  initial: {"uid":null,"address":null,"instructions":null,"contact":null},
 });
 
 /**
@@ -294,8 +292,6 @@ export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid_collection: z.string().optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
-}).meta({
-  initial: {"description":"","name":"","order_number":0,"price":{"base":0,"chargeable_days":null,"formula":"five_day_week","subtotal":0,"discount":null,"taxes":[],"total":0},"quantity":0,"type":"rental","stock_method":"bulk","uid":"","uid_order":"","uid_component_of":null,"inclusion_type":null,"zero_priced":null},
 });
 
 /**
@@ -455,8 +451,6 @@ export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z
   uid_delivery: z.string().nullable().default(null),
   uid_collection: z.string().nullable().default(null),
   description: z.string().default(""),
-}).meta({
-  initial: {"name":"","uid_delivery":null,"uid_collection":null,"description":""},
 });
 
 /** Group divider in items array. */
@@ -632,7 +626,6 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
 }).meta({
   title: "Order",
   collection: "orders",
-  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"subtotal_discounted":0,"taxes":[],"transaction_fees":[],"total":0},"uid":null,"version":0},
   displayDefaults: {
     columns: ["number", "organization.name", "subject", "status"],
     filters: { status: [] },
