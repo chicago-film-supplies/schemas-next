@@ -37,7 +37,6 @@ export const webshopProducts: TypesenseCollectionConfig = {
       { name: "alternates", type: "object[]", optional: true },
       { name: "alternates.uid", type: "string[]", facet: false, optional: true },
       { name: "alternates.name", type: "string[]", stem: true, optional: true },
-      { name: "alternates.description", type: "string[]", optional: true },
       { name: "shipping", type: "object", optional: true },
       { name: "shipping.weight", type: "float", optional: true },
       { name: "shipping.height", type: "float", optional: true },

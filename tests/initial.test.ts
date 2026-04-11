@@ -97,7 +97,7 @@ Deno.test("getInitialValues — nested objects are recursed", () => {
 
 Deno.test("getInitialValues — records default to empty object", () => {
   const result = getInitialValues(ProductSchema);
-  assertEquals(result.alternates, {});
+  assertEquals(result.alternates, []);
 
   const userResult = getInitialValues(UserSchema);
   assertEquals(userResult.prefs_firestore, {});

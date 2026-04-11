@@ -287,7 +287,6 @@ export {
 export {
   WebshopProductSchema,
   type WebshopProduct,
-  type WebshopProductAlternate,
   type WebshopProductComponent,
   type WebshopProductShipping,
 } from "./webshop-product.ts";

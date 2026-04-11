@@ -562,7 +562,6 @@ export interface WebshopProductDocument {
   alternates?: Array<{
     uid?: string;
     name?: string;
-    description?: string;
   }>;
   shipping?: {
     weight?: number;

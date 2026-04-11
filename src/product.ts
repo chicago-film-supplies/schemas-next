@@ -99,13 +99,14 @@ export interface Product {
   eligible_shipping_air?: boolean;
   price: ProductPrice;
   shipping?: ProductShipping;
-  alternates: Record<string, ProductAlternate>;
+  alternates: ProductAlternate[];
   components: ProductComponent[];
   component_of: ProductComponent[];
   tags: UidNameRefType[];
   query_by_tags?: string[];
   query_by_components?: string[];
   query_by_component_of?: string[];
+  query_by_alternates?: string[];
   tracking_category_name?: string;
   uid_linked_rental?: string | null;
   uid_linked_replacement?: string | null;
@@ -178,13 +179,14 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
     air_hazardous: z.boolean(),
     air_un: z.number().nullable(),
   }).optional(),
-  alternates: z.record(z.string(), UidNameRef),
+  alternates: z.array(UidNameRef).default([]),
   components: z.array(ComponentSchema).default([]),
   component_of: z.array(ComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]),
   query_by_tags: z.array(z.string()).default([]).optional(),
   query_by_components: z.array(z.string()).default([]).optional(),
   query_by_component_of: z.array(z.string()).default([]).optional(),
+  query_by_alternates: z.array(z.string()).default([]).optional(),
   tracking_category_name: z.string().optional(),
   uid_linked_rental: z.string().nullable().optional(),
   uid_linked_replacement: z.string().nullable().optional(),
@@ -238,7 +240,7 @@ export interface CreateProductInputType {
     air_hazardous: boolean;
     air_un: number | null;
   };
-  alternates?: Record<string, UidNameRefType>;
+  alternates?: UidNameRefType[];
   components?: ProductComponent[];
   component_of?: ProductComponent[];
   tags?: UidNameRefType[];
@@ -291,7 +293,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     air_hazardous: z.boolean(),
     air_un: z.number().nullable(),
   }).optional(),
-  alternates: z.record(z.string(), UidNameRef).default({}),
+  alternates: z.array(UidNameRef).default([]),
   components: z.array(ComponentSchema).default([]),
   component_of: z.array(ComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]),
@@ -343,7 +345,7 @@ export interface UpdateProductInputType {
     air_hazardous: boolean;
     air_un: number | null;
   };
-  alternates?: Record<string, UidNameRefType>;
+  alternates?: UidNameRefType[];
   components?: ProductComponent[];
   component_of?: ProductComponent[];
   tags?: UidNameRefType[];
@@ -387,7 +389,7 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     air_hazardous: z.boolean(),
     air_un: z.number().nullable(),
   }).optional(),
-  alternates: z.record(z.string(), UidNameRef).optional(),
+  alternates: z.array(UidNameRef).optional(),
   components: z.array(ComponentSchema).optional(),
   component_of: z.array(ComponentSchema).optional(),
   tags: z.array(UidNameRef).optional(),

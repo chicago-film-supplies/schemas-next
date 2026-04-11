@@ -18,13 +18,6 @@ import {
 } from "./common.ts";
 import { TaxRef, type TaxRefType } from "./order.ts";
 
-/** An alternate product reference in the webshop. */
-export interface WebshopProductAlternate {
-  uid: string;
-  name: string;
-  description?: string;
-}
-
 /** A component product within a webshop parent product. */
 export interface WebshopProductComponent {
   uid: string;
@@ -80,11 +73,14 @@ export interface WebshopProduct {
     discountable: boolean;
   };
   shipping?: WebshopProductShipping;
-  alternates: Record<string, WebshopProductAlternate>;
+  alternates: UidNameRefType[];
   components: WebshopProductComponent[];
   component_of: WebshopProductComponent[];
   tags?: UidNameRefType[];
   query_by_tags?: string[];
+  query_by_components?: string[];
+  query_by_component_of?: string[];
+  query_by_alternates?: string[];
   webshop: {
     available: boolean;
     description?: string | null;
@@ -141,15 +137,14 @@ export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
     air_hazardous: z.boolean().optional(),
     air_un: z.number().nullable().optional(),
   }).optional(),
-  alternates: z.record(z.string(), z.strictObject({
-    uid: z.string(),
-    name: z.string(),
-    description: z.string().optional(),
-  })),
+  alternates: z.array(UidNameRef).default([]),
   components: z.array(WebshopComponentSchema).default([]),
   component_of: z.array(WebshopComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]).optional(),
   query_by_tags: z.array(z.string()).default([]).optional(),
+  query_by_components: z.array(z.string()).default([]).optional(),
+  query_by_component_of: z.array(z.string()).default([]).optional(),
+  query_by_alternates: z.array(z.string()).default([]).optional(),
   webshop: z.strictObject({
     available: z.boolean().default(false),
     description: z.string().nullable().optional(),
