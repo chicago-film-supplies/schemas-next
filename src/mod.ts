@@ -110,6 +110,8 @@ export {
   type OrderDocItemPriceType,
   type OrderDocLineItemType,
   type OrderDocGroupItemType,
+  type OrderDocDestinationItemType,
+  isLineItem,
 } from "./order.ts";
 
 export {

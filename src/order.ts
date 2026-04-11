@@ -539,6 +539,11 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
 /** Union of all item types stored in the order document. */
 export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;
 
+/** Type guard that narrows an order doc item to a line item (excludes destination/group dividers). */
+export function isLineItem(item: OrderDocItemType): item is OrderDocLineItemType {
+  return item.type !== "destination" && item.type !== "group";
+}
+
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
   uid: z.string().nullable(),
