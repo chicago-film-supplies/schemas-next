@@ -112,7 +112,7 @@ export interface InvoiceDocLineItem {
   description: string;
   quantity: number;
   price: InvoiceDocItemPrice;
-  path?: string[];
+  path: string[];
   coa_revenue?: COARevenueType | null;
   tracking_category?: string | null;
   xero_id?: string | null;
@@ -130,7 +130,7 @@ const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
   description: z.string().default(""),
   quantity: z.number().default(0),
   price: InvoiceDocItemPriceSchema,
-  path: z.array(z.string()).optional(),
+  path: z.array(z.string()).default([]),
   coa_revenue: COARevenueEnum.nullable().optional(),
   tracking_category: z.string().nullable().optional(),
   xero_id: z.string().nullable().optional(),
@@ -146,6 +146,7 @@ export interface InvoiceDocOrderItemType {
   uid: string;
   type: "order";
   name: string;
+  path: string[];
   uid_order: string;
   description: string;
 }
@@ -155,6 +156,7 @@ export const InvoiceDocOrderItem: z.ZodType<InvoiceDocOrderItemType> = z.strictO
   uid: z.uuid(),
   type: z.literal("order"),
   name: z.string().max(200).default(""),
+  path: z.array(z.string()).default([]),
   uid_order: z.string(),
   description: z.string().default(""),
 });
