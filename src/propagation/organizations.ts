@@ -76,7 +76,7 @@ export const updateOrganizationRules: CollectionRule[] = [
     mode: "fan-out",
     invariant: "Active invoices display the org name",
     transaction: "update-organization",
-    trigger: "name change — targets active invoices (not paid/voided)",
+    trigger: "name change — targets active invoices (not paid/void)",
     fields: [
       { source: ["name"], target: ["organization", "name"] },
     ],

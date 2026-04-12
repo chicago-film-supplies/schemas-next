@@ -304,12 +304,19 @@ export {
 } from "./booking.ts";
 
 export {
+  CreateInvoiceInput,
   InvoiceSchema,
+  UpdateInvoiceInput,
+  type CreateInvoiceInputType,
   type Invoice,
-  type InvoiceItem,
-  type InvoiceItemPrice,
+  type InvoiceDocItemPrice,
+  type InvoiceDocLineItem,
+  type InvoiceDocTotals,
+  type InvoiceItemInputType,
   type InvoiceItemTypeType,
+  type InvoicePayment,
   type InvoiceStatusType,
+  type UpdateInvoiceInputType,
 } from "./invoice.ts";
 
 export {
@@ -476,7 +483,10 @@ export type {
   InventoryLedgerRecalculated,
   // Invoice aggregate
   InvoiceCreated,
+  InvoiceIssued,
+  InvoicePaymentReceived,
   InvoiceUpdated,
+  InvoiceVoided,
   // Organization aggregate
   OrganizationCreated,
   OrganizationUpdated,

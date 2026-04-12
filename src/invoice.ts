@@ -6,56 +6,159 @@ import {
   Address,
   type AddressType,
   COARevenueEnum,
+  type COARevenueType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
   ItemTaxProfileEnum,
   type ItemTaxProfileType,
+  PriceFormulaEnum,
+  type PriceFormulaType,
   TaxProfileEnum,
   type TaxProfileType,
   TimestampFields,
 } from "./common.ts";
+import {
+  Discount,
+  DiscountInput,
+  type DiscountInputType,
+  type DiscountType,
+  PriceModifier,
+  type PriceModifierType,
+} from "./order.ts";
 
-const INVOICE_STATUSES = ["draft", "issued", "paid", "voided"] as const;
-/** Possible invoice statuses: draft, issued, paid, or voided. */
+const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as const;
+/** Possible invoice statuses. */
 export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
-const INVOICE_ITEM_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "group", "transaction_fee"] as const;
-/** Possible invoice item types (rental, sale, service, etc.). */
+const INVOICE_ITEM_TYPES = ["rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+/** Possible invoice item types. */
 export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
 
-/** Pricing breakdown for a single invoice line item. */
-export interface InvoiceItemPrice {
-  base: number;
-  chargeable_days: number | null;
-  discount_percent: number;
-  formula: string | null;
-  tax_profile: ItemTaxProfileType;
-  total: number;
+const PAYMENT_STATUSES = ["active", "deleted"] as const;
+
+// ── Payment tracking ─────────────────────────────────────────────
+
+/** A payment received against this invoice (synced from Xero). */
+export interface InvoicePayment {
+  uid: string;
+  xero_payment_id: string;
+  date: string;
+  amount: number;
+  reference: string | null;
+  status: typeof PAYMENT_STATUSES[number];
+  synced_at?: FirestoreTimestampType;
 }
 
+const InvoicePaymentSchema: z.ZodType<InvoicePayment> = z.strictObject({
+  uid: z.string(),
+  xero_payment_id: z.string(),
+  date: z.string(),
+  amount: z.number(),
+  reference: z.string().nullable(),
+  status: z.enum(PAYMENT_STATUSES),
+  synced_at: FirestoreTimestamp.optional(),
+});
+
+// ── Item price ───────────────────────────────────────────────────
+
+/** Pricing breakdown for a single invoice line item. */
+export interface InvoiceDocItemPrice {
+  base: number;
+  chargeable_days: number | null;
+  formula: PriceFormulaType;
+  subtotal: number;
+  subtotal_discounted: number;
+  discount: DiscountType | null;
+  taxes: PriceModifierType[];
+  total: number;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  discount_percent?: number;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  tax_profile?: ItemTaxProfileType;
+}
+
+const InvoiceDocItemPriceSchema: z.ZodType<InvoiceDocItemPrice> = z.strictObject({
+  base: z.number().default(0),
+  chargeable_days: z.number().nullable().default(null),
+  formula: PriceFormulaEnum.default("five_day_week"),
+  subtotal: z.number().default(0),
+  subtotal_discounted: z.number().default(0),
+  discount: Discount.nullable().default(null),
+  taxes: z.array(PriceModifier).default([]),
+  total: z.number().default(0),
+  discount_percent: z.number().optional(),
+  tax_profile: ItemTaxProfileEnum.optional(),
+});
+
+// ── Line items ───────────────────────────────────────────────────
+
 /** A line item on an invoice. */
-export interface InvoiceItem {
+export interface InvoiceDocLineItem {
+  uid: string;
+  type: InvoiceItemTypeType;
   name: string;
+  description: string;
   quantity: number;
-  price: InvoiceItemPrice;
-  crms_opportunity_id: number | null;
-  coa_revenue?: string | null;
-  crms_id?: number | string | null;
+  price: InvoiceDocItemPrice;
+  uid_order_item?: string | null;
+  coa_revenue?: COARevenueType | null;
   tracking_category?: string | null;
-  type?: InvoiceItemTypeType | null;
-  uid?: string | null;
   xero_id?: string | null;
   xero_tracking_option_id?: string | null;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  crms_opportunity_id?: number | null;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  crms_id?: number | string | null;
 }
+
+const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
+  uid: z.string(),
+  type: z.enum(INVOICE_ITEM_TYPES),
+  name: z.string(),
+  description: z.string().default(""),
+  quantity: z.number().default(0),
+  price: InvoiceDocItemPriceSchema,
+  uid_order_item: z.string().nullable().optional(),
+  coa_revenue: COARevenueEnum.nullable().optional(),
+  tracking_category: z.string().nullable().optional(),
+  xero_id: z.string().nullable().optional(),
+  xero_tracking_option_id: z.string().nullable().optional(),
+  crms_opportunity_id: z.number().nullable().optional(),
+  crms_id: z.union([z.number(), z.string()]).nullable().optional(),
+});
+
+// ── Totals ───────────────────────────────────────────────────────
+
+/** Invoice-level totals with payment tracking. */
+export interface InvoiceDocTotals {
+  subtotal: number;
+  subtotal_discounted: number;
+  discount_amount: number;
+  taxes: PriceModifierType[];
+  total: number;
+  amount_paid: number;
+  amount_due: number;
+}
+
+const InvoiceDocTotalsSchema: z.ZodType<InvoiceDocTotals> = z.strictObject({
+  subtotal: z.number().default(0),
+  subtotal_discounted: z.number().default(0),
+  discount_amount: z.number().default(0),
+  taxes: z.array(PriceModifier).default([]),
+  total: z.number().default(0),
+  amount_paid: z.number().default(0),
+  amount_due: z.number().default(0),
+});
+
+// ── Document schema ──────────────────────────────────────────────
 
 /** An invoice document in the invoices Firestore collection. */
 export interface Invoice {
   uid: string;
   number: number;
-  crms_id: number;
-  crms_opportunity_ids?: number[];
   status: InvoiceStatusType;
+  uid_orders: string[];
   tax_profile: TaxProfileType;
   date: string;
   date_fs?: FirestoreTimestampType;
@@ -68,48 +171,31 @@ export interface Invoice {
   organization: {
     uid: string | null;
     name: string;
-    crms_id: number | null;
+    crms_id?: number | null;
     tax_profile: TaxProfileType;
     xero_id: string | null;
     billing_address: AddressType | null;
   };
-  items: InvoiceItem[];
-  items_consolidated: Record<string, InvoiceItem>;
+  items: InvoiceDocLineItem[];
+  totals: InvoiceDocTotals;
+  payments: InvoicePayment[];
   xero_id: string | null;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  crms_id?: number | null;
+  /** @deprecated Legacy CRMS field — not set on new invoices. */
+  crms_opportunity_ids?: number[];
   version: number;
   updated_by: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
 
-const InvoiceItemSchema: z.ZodType<InvoiceItem> = z.strictObject({
-  name: z.string(),
-  quantity: z.number(),
-  price: z.strictObject({
-    base: z.number(),
-    chargeable_days: z.number().nullable(),
-    discount_percent: z.number(),
-    formula: z.string().nullable(),
-    tax_profile: ItemTaxProfileEnum,
-    total: z.number(),
-  }),
-  crms_opportunity_id: z.number().nullable(),
-  coa_revenue: COARevenueEnum.nullable().optional(),
-  crms_id: z.union([z.number(), z.string()]).nullable().optional(),
-  tracking_category: z.string().nullable().optional(),
-  type: z.enum(INVOICE_ITEM_TYPES).nullable().optional(),
-  uid: z.string().nullable().optional(),
-  xero_id: z.string().nullable().optional(),
-  xero_tracking_option_id: z.string().nullable().optional(),
-});
-
 /** Zod schema for an Invoice document. */
 export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   uid: z.string(),
   number: z.number(),
-  crms_id: z.number(),
-  crms_opportunity_ids: z.array(z.number()).optional(),
   status: InvoiceStatus,
+  uid_orders: z.array(z.string()).default([]),
   tax_profile: TaxProfileEnum,
   date: z.string(),
   date_fs: FirestoreTimestamp,
@@ -122,14 +208,17 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   organization: z.strictObject({
     uid: z.string().nullable(),
     name: z.string().meta({ pii: "mask" }),
-    crms_id: z.number().nullable(),
+    crms_id: z.number().nullable().optional(),
     tax_profile: TaxProfileEnum,
     xero_id: z.string().nullable(),
     billing_address: Address,
   }),
-  items: z.array(InvoiceItemSchema),
-  items_consolidated: z.record(z.string(), InvoiceItemSchema),
+  items: z.array(InvoiceDocLineItemSchema).default([]),
+  totals: InvoiceDocTotalsSchema,
+  payments: z.array(InvoicePaymentSchema).default([]),
   xero_id: z.string().nullable(),
+  crms_id: z.number().nullable().optional(),
+  crms_opportunity_ids: z.array(z.number()).optional(),
   version: z.int().min(0).default(0),
   updated_by: z.string(),
   ...TimestampFields,
@@ -141,4 +230,104 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
     filters: { status: [] },
     sort: { column: "number", direction: "desc" },
   },
+});
+
+// ── Input schemas ────────────────────────────────────────────────
+
+/** Item price input — partial, server computes the rest. */
+export interface InvoiceItemInputPrice {
+  base?: number;
+  chargeable_days?: number | null;
+  formula?: PriceFormulaType;
+  discount?: DiscountInputType | null;
+  taxes?: Array<{ uid: string }>;
+}
+
+const InvoiceItemInputPriceSchema: z.ZodType<InvoiceItemInputPrice> = z.object({
+  base: z.number().optional(),
+  chargeable_days: z.number().nullable().optional(),
+  formula: PriceFormulaEnum.optional(),
+  discount: DiscountInput.nullable().optional(),
+  taxes: z.array(z.object({ uid: z.string() })).optional(),
+});
+
+/** Input version of an invoice line item. */
+export interface InvoiceItemInputType {
+  uid: string;
+  type?: InvoiceItemTypeType;
+  name?: string;
+  description?: string;
+  quantity?: number;
+  price?: InvoiceItemInputPrice;
+  uid_order_item?: string;
+  coa_revenue?: COARevenueType | null;
+  tracking_category?: string | null;
+}
+
+const InvoiceItemInputSchema: z.ZodType<InvoiceItemInputType> = z.object({
+  uid: z.string(),
+  type: z.enum(INVOICE_ITEM_TYPES).optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  quantity: z.number().optional(),
+  price: InvoiceItemInputPriceSchema.optional(),
+  uid_order_item: z.string().optional(),
+  coa_revenue: COARevenueEnum.nullable().optional(),
+  tracking_category: z.string().nullable().optional(),
+});
+
+/** Input schema for POST /invoices — create an invoice from orders. */
+export interface CreateInvoiceInputType {
+  uid: string;
+  uid_orders: string[];
+  organization: { uid: string };
+  tax_profile: TaxProfileType;
+  items?: InvoiceItemInputType[];
+  date?: string;
+  due_date?: string;
+  subject?: string;
+  reference?: string | null;
+  external_notes?: string;
+  internal_notes?: string;
+}
+
+/** Input schema for creating an invoice. */
+export const CreateInvoiceInput: z.ZodType<CreateInvoiceInputType> = z.object({
+  uid: z.string(),
+  uid_orders: z.array(z.string()).min(1, "At least one source order is required"),
+  organization: z.object({ uid: z.string() }),
+  tax_profile: TaxProfileEnum,
+  items: z.array(InvoiceItemInputSchema).optional(),
+  date: z.string().optional(),
+  due_date: z.string().optional(),
+  subject: z.string().optional(),
+  reference: z.string().nullable().optional(),
+  external_notes: z.string().meta({ pii: "mask" }).optional(),
+  internal_notes: z.string().meta({ pii: "mask" }).optional(),
+});
+
+/** Input schema for PUT /invoices/:uid — partial update. */
+export interface UpdateInvoiceInputType {
+  status?: InvoiceStatusType;
+  items?: InvoiceItemInputType[];
+  date?: string;
+  due_date?: string;
+  subject?: string;
+  reference?: string | null;
+  external_notes?: string;
+  internal_notes?: string;
+  version: number;
+}
+
+/** Input schema for updating an invoice. */
+export const UpdateInvoiceInput: z.ZodType<UpdateInvoiceInputType> = z.object({
+  status: InvoiceStatus.optional(),
+  items: z.array(InvoiceItemInputSchema).optional(),
+  date: z.string().optional(),
+  due_date: z.string().optional(),
+  subject: z.string().optional(),
+  reference: z.string().nullable().optional(),
+  external_notes: z.string().meta({ pii: "mask" }).optional(),
+  internal_notes: z.string().meta({ pii: "mask" }).optional(),
+  version: z.int().min(0),
 });
