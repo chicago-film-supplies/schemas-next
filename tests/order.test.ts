@@ -25,7 +25,10 @@ Deno.test("CreateOrderInput validates a complete input", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", name: "Camera", quantity: 2 }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", name: "Camera", quantity: 2, path: ["dest-1"] },
+    ],
     subject: "Film shoot",
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
@@ -170,7 +173,10 @@ Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", inclusion_type: "invalid" }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], inclusion_type: "invalid" },
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
@@ -183,7 +189,10 @@ Deno.test("CreateOrderInput accepts null inclusion_type", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", inclusion_type: null }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], inclusion_type: null },
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
@@ -196,7 +205,10 @@ Deno.test("CreateOrderInput rejects invalid item price formula", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", price: { formula: "daily" } }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], price: { formula: "daily" } },
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
@@ -209,7 +221,10 @@ Deno.test("CreateOrderInput rejects invalid item discount type", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", price: { discount: { rate: 10, type: "invalid" } } }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], price: { discount: { rate: 10, type: "invalid" } } },
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
@@ -222,15 +237,19 @@ Deno.test("CreateOrderInput accepts item with discount and taxes", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{
-      uid: "test-item-1",
-      type: "rental",
-      price: {
-        base: 100,
-        discount: { rate: 20, type: "percent" },
-        taxes: [{ uid: "test-chi-rental-tax" }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      {
+        uid: "test-item-1",
+        type: "rental",
+        path: ["dest-1"],
+        price: {
+          base: 100,
+          discount: { rate: 20, type: "percent" },
+          taxes: [{ uid: "test-chi-rental-tax" }],
+        },
       },
-    }],
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
@@ -243,7 +262,10 @@ Deno.test("CreateOrderInput accepts item with null discount", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", price: { discount: null } }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], price: { discount: null } },
+    ],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
@@ -256,7 +278,62 @@ Deno.test("CreateOrderInput rejects float quantity on items", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [validDestination],
-    items: [{ uid: "test-item-1", type: "rental", quantity: 1.5 }],
+    items: [
+      { uid: "dest-1", type: "destination", name: "Chicago", path: [] },
+      { uid: "test-item-1", type: "rental", path: ["dest-1"], quantity: 1.5 },
+    ],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput rejects items not starting with destination", () => {
+  const input = {
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [{ uid: "test-item-1", type: "rental", path: [], name: "Camera" }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput accepts empty items array", () => {
+  const input = {
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("CreateOrderInput rejects items without type", () => {
+  const input = {
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [{ uid: "test-item-1", path: [], name: "Camera" }],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, false);
+});
+
+Deno.test("CreateOrderInput rejects items without path", () => {
+  const input = {
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [validDestination],
+    items: [{ uid: "dest-1", type: "destination", name: "Chicago" }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
@@ -334,9 +411,24 @@ Deno.test("OrderSchema validates a complete document", () => {
     tax_profile: "tax_applied",
     items: [
       {
+        uid: "550e8400-e29b-41d4-a716-446655440000",
+        type: "destination",
+        name: "Test Chicago Office",
+        path: [],
+        uid_delivery: "test-dest-1",
+        uid_collection: "test-dest-2",
+      },
+      {
+        uid: "550e8400-e29b-41d4-a716-446655440001",
+        type: "group",
+        name: "Test Lighting",
+        path: ["550e8400-e29b-41d4-a716-446655440000"],
+      },
+      {
         uid: "test-prod-1",
         type: "rental",
         name: "Camera",
+        path: ["550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001"],
         quantity: 2,
         price: {
           base: 100,
@@ -355,18 +447,6 @@ Deno.test("OrderSchema validates a complete document", () => {
           total: 230,
         },
         stock_method: "bulk",
-      },
-      {
-        uid: "550e8400-e29b-41d4-a716-446655440000",
-        type: "destination",
-        name: "Test Chicago Office",
-        uid_delivery: "test-dest-1",
-        uid_collection: "test-dest-2",
-      },
-      {
-        uid: "550e8400-e29b-41d4-a716-446655440001",
-        type: "group",
-        name: "Test Lighting",
       },
     ],
     query_by_items: ["test-prod-1"],
@@ -431,6 +511,7 @@ Deno.test("OrderSchema rejects destination item with non-uuid uid", () => {
       uid: "not-a-uuid",
       type: "destination",
       name: "Test",
+      path: [],
       uid_delivery: null,
       uid_collection: null,
     }],
@@ -445,6 +526,7 @@ Deno.test("OrderSchema rejects group item with non-uuid uid", () => {
       uid: "not-a-uuid",
       type: "group",
       name: "Test Group",
+      path: [],
     }],
   };
   assertEquals(OrderSchema.safeParse(doc).success, false);

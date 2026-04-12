@@ -262,13 +262,13 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
  */
 export interface OrderItemType {
   uid: string;
-  type?: DocItemTypeType;
+  type: DocItemTypeType;
   name?: string;
   description?: string;
   quantity?: number;
   price?: ItemPriceType;
   stock_method?: StockMethodType;
-  path?: string[];
+  path: string[];
   inclusion_type?: InclusionTypeType | null;
   zero_priced?: boolean | null;
   uid_delivery?: string;
@@ -280,13 +280,13 @@ export interface OrderItemType {
 /** Zod schema for an individual order item (input). */
 export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
-  type: DocItemTypeEnum.optional(),
+  type: DocItemTypeEnum,
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.int().optional(),
   price: ItemPrice.optional(),
   stock_method: StockMethodEnum.optional(),
-  path: z.array(z.string()).optional(),
+  path: z.array(z.string()),
   inclusion_type: InclusionTypeEnum.nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   uid_delivery: z.string().optional(),
@@ -321,7 +321,12 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   dates: OrderDates,
   tax_profile: TaxProfileEnum,
   destinations: z.array(Destination).min(1, "At least one destination is required"),
-  items: z.array(OrderItem).optional(),
+  items: z.array(OrderItem)
+    .refine(
+      (items) => items.length === 0 || items[0].type === "destination",
+      { message: "First item must be a destination divider" },
+    )
+    .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   notes: z.string().meta({ pii: "mask" }).optional(),
@@ -356,7 +361,12 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   dates: OrderDates.optional(),
   tax_profile: TaxProfileEnum.optional(),
   destinations: z.array(Destination).min(1, "At least one destination is required").optional(),
-  items: z.array(OrderItem).optional(),
+  items: z.array(OrderItem)
+    .refine(
+      (items) => items.length === 0 || items[0].type === "destination",
+      { message: "First item must be a destination divider" },
+    )
+    .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   notes: z.string().meta({ pii: "mask" }).optional(),
@@ -408,7 +418,7 @@ export interface OrderDocLineItemType {
   stock_method?: StockMethodType;
   order_number?: number;
   uid_order?: string;
-  path?: string[];
+  path: string[];
   inclusion_type?: "default" | "mandatory" | "optional" | null;
   zero_priced?: boolean | null;
   crms_id?: number | null;
@@ -426,7 +436,7 @@ export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject(
   stock_method: StockMethodEnum.optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
-  path: z.array(z.string()).optional(),
+  path: z.array(z.string()).default([]),
   inclusion_type: z.enum(INCLUSION_TYPES_NULLABLE).nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   crms_id: z.number().nullable().optional(),
@@ -439,6 +449,7 @@ export interface OrderDocDestinationItemType {
   uid: string;
   type: "destination";
   name: string;
+  path: string[];
   uid_delivery: string | null;
   uid_collection: string | null;
   description: string;
@@ -449,6 +460,7 @@ export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z
   uid: z.uuid(),
   type: z.literal("destination"),
   name: z.string().max(200).default(""),
+  path: z.array(z.string()).default([]),
   uid_delivery: z.string().nullable().default(null),
   uid_collection: z.string().nullable().default(null),
   description: z.string().default(""),
@@ -459,6 +471,7 @@ export interface OrderDocGroupItemType {
   uid: string;
   type: "group";
   name: string;
+  path: string[];
   description: string;
 }
 
@@ -466,6 +479,7 @@ export const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObjec
   uid: z.uuid(),
   type: z.literal("group"),
   name: z.string().min(1).max(100),
+  path: z.array(z.string()).default([]),
   description: z.string().default(""),
 });
 
@@ -474,6 +488,7 @@ export interface OrderDocTransactionFeeItemType {
   uid: string;
   type: "transaction_fee";
   name: string;
+  path: string[];
   description: string;
   quantity: number;
   price: PriceModifierType;
@@ -486,6 +501,7 @@ export const OrderDocTransactionFeeItem: z.ZodType<OrderDocTransactionFeeItemTyp
   uid: z.string(),
   type: z.literal("transaction_fee"),
   name: z.string().min(1).max(100),
+  path: z.array(z.string()).default([]),
   description: z.string().default(""),
   quantity: z.number().int().min(0).default(0),
   price: PriceModifier,
@@ -642,3 +658,29 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
     sort: { column: "number", direction: "desc" },
   },
 }) as z.ZodType<Order>;
+
+// ── Shared utility types ─────────────────────────────────────────
+
+/**
+ * A consolidated line item — aggregated quantity and price for display.
+ * Used by consolidateItems() in utilities and the manager app.
+ */
+export interface ConsolidatedItemType {
+  uid: string;
+  name: string;
+  type: string;
+  quantity: number;
+  total_price: number;
+  unit_price: number;
+  stock_method: string;
+}
+
+/**
+ * Path context for an item — which destination and group it belongs to.
+ * Used by getGroupPath() in utilities and consumed by the manager app.
+ */
+export interface GroupPathType {
+  destination: string | null;
+  group: string | null;
+  product: string | null;
+}

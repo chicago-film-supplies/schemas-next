@@ -115,6 +115,8 @@ export {
   type OrderDocGroupItemType,
   type OrderDocDestinationItemType,
   isLineItem,
+  type ConsolidatedItemType,
+  type GroupPathType,
 } from "./order.ts";
 
 export {
