@@ -177,6 +177,18 @@ export type COARevenueType = typeof COA_REVENUE_CODES[number];
 /** Zod schema for COARevenueType. */
 export const COARevenueEnum: z.ZodType<COARevenueType> = z.enum(COA_REVENUE_CODES);
 
+const DOC_ITEM_TYPES = ["rental", "destination", "group", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+/** All item types accepted in order/invoice input schemas (includes structural dividers). */
+export type DocItemTypeType = typeof DOC_ITEM_TYPES[number];
+/** Zod schema for DocItemTypeType. */
+export const DocItemTypeEnum: z.ZodType<DocItemTypeType> = z.enum(DOC_ITEM_TYPES);
+
+const DOC_LINE_ITEM_TYPES = ["rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+/** Billable line item types stored in order/invoice documents (excludes destination/group dividers). */
+export type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
+/** Zod schema for DocLineItemTypeType. */
+export const DocLineItemTypeEnum: z.ZodType<DocLineItemTypeType> = z.enum(DOC_LINE_ITEM_TYPES);
+
 const OOS_REASONS = ["cleaning", "damaged", "maintenance", "lost"] as const;
 /** Allowed values for out-of-service reason. */
 export type OOSReasonType = typeof OOS_REASONS[number];

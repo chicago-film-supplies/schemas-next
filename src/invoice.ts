@@ -7,6 +7,10 @@ import {
   type AddressType,
   COARevenueEnum,
   type COARevenueType,
+  DocItemTypeEnum,
+  type DocItemTypeType,
+  DocLineItemTypeEnum,
+  type DocLineItemTypeType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
   ItemTaxProfileEnum,
@@ -22,6 +26,10 @@ import {
   DiscountInput,
   type DiscountInputType,
   type DiscountType,
+  OrderDocDestinationItem,
+  type OrderDocDestinationItemType,
+  OrderDocGroupItem,
+  type OrderDocGroupItemType,
   PriceModifier,
   type PriceModifierType,
 } from "./order.ts";
@@ -31,9 +39,12 @@ const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as con
 export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
-const INVOICE_ITEM_TYPES = ["rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
-/** Possible invoice item types. */
-export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
+// Item type constants imported from common.ts:
+// DocItemTypeType / DocItemTypeEnum — all types including structural dividers (input schemas)
+// DocLineItemTypeType / DocLineItemTypeEnum — billable types only (doc schemas)
+
+/** Possible invoice item types (input — includes structural dividers). */
+export type InvoiceItemTypeType = DocItemTypeType;
 
 const PAYMENT_STATUSES = ["active", "deleted"] as const;
 
@@ -93,15 +104,15 @@ const InvoiceDocItemPriceSchema: z.ZodType<InvoiceDocItemPrice> = z.strictObject
 
 // ── Line items ───────────────────────────────────────────────────
 
-/** A line item on an invoice. */
+/** A billable line item on an invoice. */
 export interface InvoiceDocLineItem {
   uid: string;
-  type: InvoiceItemTypeType;
+  type: DocLineItemTypeType;
   name: string;
   description: string;
   quantity: number;
   price: InvoiceDocItemPrice;
-  uid_order_item?: string | null;
+  path?: string[];
   coa_revenue?: COARevenueType | null;
   tracking_category?: string | null;
   xero_id?: string | null;
@@ -114,12 +125,12 @@ export interface InvoiceDocLineItem {
 
 const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
   uid: z.string(),
-  type: z.enum(INVOICE_ITEM_TYPES),
+  type: DocLineItemTypeEnum,
   name: z.string(),
   description: z.string().default(""),
   quantity: z.number().default(0),
   price: InvoiceDocItemPriceSchema,
-  uid_order_item: z.string().nullable().optional(),
+  path: z.array(z.string()).optional(),
   coa_revenue: COARevenueEnum.nullable().optional(),
   tracking_category: z.string().nullable().optional(),
   xero_id: z.string().nullable().optional(),
@@ -127,6 +138,23 @@ const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
   crms_opportunity_id: z.number().nullable().optional(),
   crms_id: z.union([z.number(), z.string()]).nullable().optional(),
 });
+
+// ── Item union ──────────────────────────────────────────────────
+
+/** Union of all item types stored in an invoice document. */
+export type InvoiceDocItemType = InvoiceDocLineItem | OrderDocGroupItemType | OrderDocDestinationItemType;
+
+/** Zod schema for any invoice document item (line item, group, or destination). */
+export const InvoiceDocItem: z.ZodType<InvoiceDocItemType> = z.union([
+  InvoiceDocLineItemSchema,
+  OrderDocGroupItem,
+  OrderDocDestinationItem,
+]);
+
+/** Type guard that narrows an invoice doc item to a billable line item (excludes destination/group dividers). */
+export function isInvoiceLineItem(item: InvoiceDocItemType): item is InvoiceDocLineItem {
+  return item.type !== "destination" && item.type !== "group";
+}
 
 // ── Totals ───────────────────────────────────────────────────────
 
@@ -136,6 +164,7 @@ export interface InvoiceDocTotals {
   subtotal_discounted: number;
   discount_amount: number;
   taxes: PriceModifierType[];
+  transaction_fees: PriceModifierType[];
   total: number;
   amount_paid: number;
   amount_due: number;
@@ -146,6 +175,7 @@ const InvoiceDocTotalsSchema: z.ZodType<InvoiceDocTotals> = z.strictObject({
   subtotal_discounted: z.number().default(0),
   discount_amount: z.number().default(0),
   taxes: z.array(PriceModifier).default([]),
+  transaction_fees: z.array(PriceModifier).default([]),
   total: z.number().default(0),
   amount_paid: z.number().default(0),
   amount_due: z.number().default(0),
@@ -176,7 +206,7 @@ export interface Invoice {
     xero_id: string | null;
     billing_address: AddressType | null;
   };
-  items: InvoiceDocLineItem[];
+  items: InvoiceDocItemType[];
   totals: InvoiceDocTotals;
   payments: InvoicePayment[];
   xero_id: string | null;
@@ -213,7 +243,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
     xero_id: z.string().nullable(),
     billing_address: Address,
   }),
-  items: z.array(InvoiceDocLineItemSchema).default([]),
+  items: z.array(InvoiceDocItem).default([]),
   totals: InvoiceDocTotalsSchema,
   payments: z.array(InvoicePaymentSchema).default([]),
   xero_id: z.string().nullable(),
@@ -251,7 +281,7 @@ const InvoiceItemInputPriceSchema: z.ZodType<InvoiceItemInputPrice> = z.object({
   taxes: z.array(z.object({ uid: z.string() })).optional(),
 });
 
-/** Input version of an invoice line item. */
+/** Input version of an invoice item (covers line items, groups, and destinations). */
 export interface InvoiceItemInputType {
   uid: string;
   type?: InvoiceItemTypeType;
@@ -259,19 +289,23 @@ export interface InvoiceItemInputType {
   description?: string;
   quantity?: number;
   price?: InvoiceItemInputPrice;
-  uid_order_item?: string;
+  path?: string[];
+  uid_delivery?: string;
+  uid_collection?: string;
   coa_revenue?: COARevenueType | null;
   tracking_category?: string | null;
 }
 
 const InvoiceItemInputSchema: z.ZodType<InvoiceItemInputType> = z.object({
   uid: z.string(),
-  type: z.enum(INVOICE_ITEM_TYPES).optional(),
+  type: DocItemTypeEnum.optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.number().optional(),
   price: InvoiceItemInputPriceSchema.optional(),
-  uid_order_item: z.string().optional(),
+  path: z.array(z.string()).optional(),
+  uid_delivery: z.string().optional(),
+  uid_collection: z.string().optional(),
   coa_revenue: COARevenueEnum.nullable().optional(),
   tracking_category: z.string().nullable().optional(),
 });

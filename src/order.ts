@@ -5,6 +5,10 @@ import { z } from "zod";
 import {
   Address,
   type AddressType,
+  DocItemTypeEnum,
+  type DocItemTypeType,
+  DocLineItemTypeEnum,
+  type DocLineItemTypeType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
   InclusionTypeEnum,
@@ -27,14 +31,9 @@ const ORDER_STATUSES = [
 type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-const ITEM_TYPES = ["rental", "destination", "group", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
-type ItemTypeType = typeof ITEM_TYPES[number];
-
-/** Line item types in the full document (superset of input types). */
-const DOC_LINE_ITEM_TYPES = [
-  "rental", "replacement", "sale", "service", "surcharge", "transaction_fee",
-] as const;
-type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
+// Item type constants imported from common.ts:
+// DocItemTypeType / DocItemTypeEnum — all types including structural dividers (input schemas)
+// DocLineItemTypeType / DocLineItemTypeEnum — billable types only (doc schemas)
 
 const INCLUSION_TYPES_NULLABLE = ["default", "mandatory", "optional"] as const;
 
@@ -261,7 +260,7 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
  */
 export interface OrderItemType {
   uid: string;
-  type?: ItemTypeType;
+  type?: DocItemTypeType;
   name?: string;
   description?: string;
   quantity?: number;
@@ -279,7 +278,7 @@ export interface OrderItemType {
 /** Zod schema for an individual order item (input). */
 export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
-  type: z.enum(ITEM_TYPES).optional(),
+  type: DocItemTypeEnum.optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.int().optional(),
@@ -417,7 +416,7 @@ export interface OrderDocLineItemType {
 
 export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid: z.string(),
-  type: z.enum(DOC_LINE_ITEM_TYPES),
+  type: DocLineItemTypeEnum,
   name: z.string().min(1).max(100),
   description: z.string().default(""),
   quantity: z.number().int().min(0).default(0),

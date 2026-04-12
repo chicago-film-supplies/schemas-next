@@ -158,6 +158,8 @@ export {
   COARevenueEnum,
   OOSReasonEnum,
   RateTypeEnum,
+  DocItemTypeEnum,
+  DocLineItemTypeEnum,
   type AddressType,
   type CoordinatesType,
   type FirestoreTimestampType,
@@ -175,6 +177,8 @@ export {
   type COARevenueType,
   type OOSReasonType,
   type RateType,
+  type DocItemTypeType,
+  type DocLineItemTypeType,
   StoreBreakdownEntrySchema,
   StoreBreakdownLocationSchema,
   type StoreBreakdownEntry,
@@ -305,11 +309,14 @@ export {
 
 export {
   CreateInvoiceInput,
+  InvoiceDocItem,
   InvoiceSchema,
+  isInvoiceLineItem,
   UpdateInvoiceInput,
   type CreateInvoiceInputType,
   type Invoice,
   type InvoiceDocItemPrice,
+  type InvoiceDocItemType,
   type InvoiceDocLineItem,
   type InvoiceDocTotals,
   type InvoiceItemInputType,
@@ -391,6 +398,11 @@ export {
   WebhookEventSchema,
   type WebhookEvent,
 } from "./webhook-event.ts";
+
+export {
+  CounterSchema,
+  type Counter,
+} from "./counter.ts";
 
 export {
   QuoteSchema,
@@ -520,6 +532,7 @@ export type {
 
 // ── Union of all Firestore document types ───────────────────────────
 
+import type { Counter } from "./counter.ts";
 import type { Booking } from "./booking.ts";
 import type { CacheGeocodes } from "./cache-geocodes.ts";
 import type { ChartOfAccounts } from "./chart-of-accounts.ts";
@@ -555,7 +568,7 @@ import type { WebshopProduct } from "./webshop-product.ts";
 
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
-  | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
+  | Booking | CacheGeocodes | ChartOfAccounts | Contact | Counter | DestinationDocType
   | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Tax | Template
@@ -567,6 +580,7 @@ export type SchemaDocType =
 import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
+import { CounterSchema as CounterSchema_ } from "./counter.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
 import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
 import { ContactSchema } from "./contact.ts";
@@ -602,6 +616,7 @@ import { WebshopProductSchema } from "./webshop-product.ts";
 /** All document schemas keyed by singular and plural collection names. */
 export const schemas: Record<string, z.ZodType> = {
   "booking": BookingSchema, "bookings": BookingSchema,
+  "counter": CounterSchema_, "counters": CounterSchema_,
   "cache-geocodes": CacheGeocodesSchema,
   "chart-of-accounts": ChartOfAccountsSchema,
   "contact": ContactSchema, "contacts": ContactSchema,
