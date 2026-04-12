@@ -7,8 +7,6 @@ import {
   type AddressType,
   COARevenueEnum,
   type COARevenueType,
-  DocItemTypeEnum,
-  type DocItemTypeType,
   DocLineItemTypeEnum,
   type DocLineItemTypeType,
   FirestoreTimestamp,
@@ -39,12 +37,14 @@ const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as con
 export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
 const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
-// Item type constants imported from common.ts:
-// DocItemTypeType / DocItemTypeEnum — all types including structural dividers (input schemas)
-// DocLineItemTypeType / DocLineItemTypeEnum — billable types only (doc schemas)
-
-/** Possible invoice item types (input — includes structural dividers). */
-export type InvoiceItemTypeType = DocItemTypeType;
+// Invoice item types are a superset of order item types — adds "order" divider.
+// Billable types (DOC_LINE_ITEM_TYPES) are shared and unchanged.
+const INVOICE_ITEM_TYPES = [
+  "rental", "destination", "group", "order", "replacement", "sale", "service", "surcharge", "transaction_fee",
+] as const;
+/** Possible invoice item types (input — includes structural dividers + order divider). */
+export type InvoiceItemTypeType = typeof INVOICE_ITEM_TYPES[number];
+const InvoiceItemTypeEnum: z.ZodType<InvoiceItemTypeType> = z.enum(INVOICE_ITEM_TYPES);
 
 const PAYMENT_STATUSES = ["active", "deleted"] as const;
 
@@ -139,21 +139,42 @@ const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
   crms_id: z.union([z.number(), z.string()]).nullable().optional(),
 });
 
+// ── Order divider ───────────────────────────────────────────────
+
+/** Order divider item — scopes invoice items to a source order for multi-order invoices. */
+export interface InvoiceDocOrderItemType {
+  uid: string;
+  type: "order";
+  name: string;
+  uid_order: string;
+  description: string;
+}
+
+/** Zod schema for an order divider item. */
+export const InvoiceDocOrderItem: z.ZodType<InvoiceDocOrderItemType> = z.strictObject({
+  uid: z.uuid(),
+  type: z.literal("order"),
+  name: z.string().max(200).default(""),
+  uid_order: z.string(),
+  description: z.string().default(""),
+});
+
 // ── Item union ──────────────────────────────────────────────────
 
 /** Union of all item types stored in an invoice document. */
-export type InvoiceDocItemType = InvoiceDocLineItem | OrderDocGroupItemType | OrderDocDestinationItemType;
+export type InvoiceDocItemType = InvoiceDocLineItem | OrderDocGroupItemType | OrderDocDestinationItemType | InvoiceDocOrderItemType;
 
-/** Zod schema for any invoice document item (line item, group, or destination). */
+/** Zod schema for any invoice document item (line item, group, destination, or order divider). */
 export const InvoiceDocItem: z.ZodType<InvoiceDocItemType> = z.union([
   InvoiceDocLineItemSchema,
   OrderDocGroupItem,
   OrderDocDestinationItem,
+  InvoiceDocOrderItem,
 ]);
 
-/** Type guard that narrows an invoice doc item to a billable line item (excludes destination/group dividers). */
+/** Type guard that narrows an invoice doc item to a billable line item (excludes structural dividers). */
 export function isInvoiceLineItem(item: InvoiceDocItemType): item is InvoiceDocLineItem {
-  return item.type !== "destination" && item.type !== "group";
+  return item.type !== "destination" && item.type !== "group" && item.type !== "order";
 }
 
 // ── Totals ───────────────────────────────────────────────────────
@@ -281,7 +302,7 @@ const InvoiceItemInputPriceSchema: z.ZodType<InvoiceItemInputPrice> = z.object({
   taxes: z.array(z.object({ uid: z.string() })).optional(),
 });
 
-/** Input version of an invoice item (covers line items, groups, and destinations). */
+/** Input version of an invoice item (covers line items, groups, destinations, and order dividers). */
 export interface InvoiceItemInputType {
   uid: string;
   type?: InvoiceItemTypeType;
@@ -290,6 +311,7 @@ export interface InvoiceItemInputType {
   quantity?: number;
   price?: InvoiceItemInputPrice;
   path?: string[];
+  uid_order?: string;
   uid_delivery?: string;
   uid_collection?: string;
   coa_revenue?: COARevenueType | null;
@@ -298,12 +320,13 @@ export interface InvoiceItemInputType {
 
 const InvoiceItemInputSchema: z.ZodType<InvoiceItemInputType> = z.object({
   uid: z.string(),
-  type: DocItemTypeEnum.optional(),
+  type: InvoiceItemTypeEnum.optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.number().optional(),
   price: InvoiceItemInputPriceSchema.optional(),
   path: z.array(z.string()).optional(),
+  uid_order: z.string().optional(),
   uid_delivery: z.string().optional(),
   uid_collection: z.string().optional(),
   coa_revenue: COARevenueEnum.nullable().optional(),

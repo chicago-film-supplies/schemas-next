@@ -66,6 +66,12 @@ export {
   updateContactTransaction,
 } from "./contacts.ts";
 
+// ── Invoice rules ───────────────────────────────────────────────────
+
+export {
+  updateOrderInvoiceRules,
+} from "./invoices.ts";
+
 // ── Location rules ──────────────────────────────────────────────────
 
 export {
@@ -99,6 +105,7 @@ import { createProductRules, createProductTransaction, updateProductRules, updat
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
 import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
+import { updateOrderInvoiceRules } from "./invoices.ts";
 import { updateTaxRules } from "./taxes.ts";
 import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
 
@@ -130,6 +137,7 @@ export const rules: CollectionRule[] = [
   ...updateOrganizationRules,
   ...createContactRules,
   ...updateContactRules,
+  ...updateOrderInvoiceRules,
   ...updateTaxRules,
   ...updateTagRules,
   ...deleteTagRules,

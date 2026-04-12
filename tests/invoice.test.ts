@@ -247,6 +247,94 @@ Deno.test("CreateInvoiceInput accepts items with path and destination fields", (
   assertEquals(CreateInvoiceInput.safeParse(input).success, true);
 });
 
+Deno.test("InvoiceSchema accepts order divider item in items array", () => {
+  const doc = {
+    ...validInvoice,
+    items: [
+      {
+        uid: "550e8400-e29b-41d4-a716-446655440002",
+        type: "order",
+        name: "Order #1001",
+        uid_order: "order-1",
+        description: "",
+      },
+      {
+        ...validInvoice.items[0],
+        path: ["550e8400-e29b-41d4-a716-446655440002"],
+      },
+    ],
+  };
+  assertEquals(InvoiceSchema.safeParse(doc).success, true);
+});
+
+Deno.test("InvoiceSchema accepts full multi-order hierarchy", () => {
+  const doc = {
+    ...validInvoice,
+    uid_orders: ["order-1", "order-2"],
+    items: [
+      {
+        uid: "550e8400-e29b-41d4-a716-446655440010",
+        type: "order",
+        name: "Order #1001",
+        uid_order: "order-1",
+        description: "",
+      },
+      {
+        uid: "550e8400-e29b-41d4-a716-446655440001",
+        type: "destination",
+        name: "Main Venue",
+        uid_delivery: "del-1",
+        uid_collection: null,
+        description: "",
+      },
+      {
+        ...validInvoice.items[0],
+        path: ["550e8400-e29b-41d4-a716-446655440010", "550e8400-e29b-41d4-a716-446655440001"],
+      },
+      {
+        uid: "550e8400-e29b-41d4-a716-446655440020",
+        type: "order",
+        name: "Order #1002",
+        uid_order: "order-2",
+        description: "",
+      },
+      {
+        uid: "item-2",
+        type: "sale",
+        name: "Tripod Sale",
+        quantity: 2,
+        price: {
+          base: 200,
+          chargeable_days: null,
+          formula: "fixed",
+          subtotal: 400,
+          subtotal_discounted: 400,
+          discount: null,
+          taxes: [],
+          total: 400,
+        },
+        path: ["550e8400-e29b-41d4-a716-446655440020"],
+      },
+    ],
+  };
+  assertEquals(InvoiceSchema.safeParse(doc).success, true);
+});
+
+Deno.test("CreateInvoiceInput accepts order divider items", () => {
+  const input = {
+    uid: "new-inv-1",
+    uid_orders: ["order-1"],
+    organization: { uid: "org-1" },
+    tax_profile: "tax_applied",
+    items: [
+      { uid: "order-div-1", type: "order", name: "Order #1001", uid_order: "order-1" },
+      { uid: "dest-1", type: "destination", name: "Venue", uid_delivery: "del-1", path: ["order-div-1"] },
+      { uid: "item-1", type: "rental", name: "Spot Light", path: ["order-div-1", "dest-1"] },
+    ],
+  };
+  assertEquals(CreateInvoiceInput.safeParse(input).success, true);
+});
+
 Deno.test("UpdateInvoiceInput requires version", () => {
   const input = { status: "issued" };
   assertEquals(UpdateInvoiceInput.safeParse(input).success, false);

@@ -20,6 +20,7 @@ import {
   updateLocationRules,
   createLocationRules,
   updateLocationTransactionalRules,
+  updateOrderInvoiceRules,
   updateTaxRules,
   createLocationTransaction,
   updateLocationTransaction,
@@ -66,6 +67,7 @@ Deno.test("rules array contains all individual rule sets", () => {
     ...createLocationRules,
     ...updateLocationTransactionalRules,
     ...updateLocationRules,
+    ...updateOrderInvoiceRules,
   ];
   assertEquals(rules.length, allRuleSets.length);
   for (const rule of allRuleSets) {

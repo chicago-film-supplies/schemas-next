@@ -310,6 +310,7 @@ export {
 export {
   CreateInvoiceInput,
   InvoiceDocItem,
+  InvoiceDocOrderItem,
   InvoiceSchema,
   isInvoiceLineItem,
   UpdateInvoiceInput,
@@ -318,6 +319,7 @@ export {
   type InvoiceDocItemPrice,
   type InvoiceDocItemType,
   type InvoiceDocLineItem,
+  type InvoiceDocOrderItemType,
   type InvoiceDocTotals,
   type InvoiceItemInputType,
   type InvoiceItemTypeType,
