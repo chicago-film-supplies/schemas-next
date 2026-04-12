@@ -232,6 +232,15 @@ export interface Invoice {
   totals: InvoiceDocTotals;
   payments: InvoicePayment[];
   xero_id: string | null;
+  uploadcare_uuid: string | null;
+  pdf_generated_at: FirestoreTimestampType | null;
+  pdf_versions: Array<{
+    version: number;
+    uploadcare_uuid: string;
+    created_at: FirestoreTimestampType;
+    created_by: string;
+    deleted_at: FirestoreTimestampType | null;
+  }>;
   /** @deprecated Legacy CRMS field — not set on new invoices. */
   crms_id?: number | null;
   /** @deprecated Legacy CRMS field — not set on new invoices. */
@@ -270,6 +279,15 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   totals: InvoiceDocTotalsSchema,
   payments: z.array(InvoicePaymentSchema).default([]),
   xero_id: z.string().nullable(),
+  uploadcare_uuid: z.string().nullable().default(null),
+  pdf_generated_at: FirestoreTimestamp.nullable().default(null),
+  pdf_versions: z.array(z.strictObject({
+    version: z.number(),
+    uploadcare_uuid: z.string(),
+    created_at: FirestoreTimestamp,
+    created_by: z.string(),
+    deleted_at: FirestoreTimestamp.nullable(),
+  })).default([]),
   crms_id: z.number().nullable().optional(),
   crms_opportunity_ids: z.array(z.number()).optional(),
   version: z.int().min(0).default(0),

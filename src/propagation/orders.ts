@@ -314,5 +314,7 @@ export const updateOrderTransaction: TransactionDefinition = {
     "update-order:bookings-to-stock-summaries",
     "update-order:stock-to-public-stock",
     "update-order:order-to-order-events",
+    "update-order:items-to-invoices",
+    "update-order:status-to-invoices",
   ],
 };

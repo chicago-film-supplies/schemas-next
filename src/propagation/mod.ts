@@ -72,6 +72,7 @@ export {
   createInvoiceRules,
   createInvoiceTransaction,
   updateInvoiceOrderRules,
+  updateInvoiceTransaction,
   updateOrderInvoiceRules,
 } from "./invoices.ts";
 
@@ -108,7 +109,7 @@ import { createProductRules, createProductTransaction, updateProductRules, updat
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
 import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
-import { createInvoiceRules, createInvoiceTransaction, updateInvoiceOrderRules, updateOrderInvoiceRules } from "./invoices.ts";
+import { createInvoiceRules, createInvoiceTransaction, updateInvoiceOrderRules, updateInvoiceTransaction, updateOrderInvoiceRules } from "./invoices.ts";
 import { updateTaxRules } from "./taxes.ts";
 import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
 
@@ -126,6 +127,7 @@ export const transactions: TransactionDefinition[] = [
   createLocationTransaction,
   updateLocationTransaction,
   createInvoiceTransaction,
+  updateInvoiceTransaction,
 ];
 
 /** All propagation rules across all transactions and cascades. */

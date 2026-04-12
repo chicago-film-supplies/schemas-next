@@ -58,6 +58,12 @@ export const updateInvoiceOrderRules: CollectionRule[] = [
   },
 ];
 
+export const updateInvoiceTransaction: TransactionDefinition = {
+  id: "update-invoice",
+  description: "Updates invoice status and co-writes status change to referenced orders",
+  steps: ["update-invoice:status-to-orders"],
+};
+
 // ── update-order → invoices ────────────────────────────────────────
 
 export const updateOrderInvoiceRules: CollectionRule[] = [
