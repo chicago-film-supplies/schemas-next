@@ -163,7 +163,8 @@ export interface InvoiceDocument {
   crms_id_str?: string;
   status: string;
   tax_profile: string;
-  uid_orders?: string[];
+  number_orders?: number[];
+  number_orders_str?: string[];
   subject?: string;
   reference?: string;
   external_notes?: string;
@@ -244,6 +245,11 @@ export interface OrderDocument {
   reference?: string;
   notes?: string;
   crms_status?: string;
+  invoices?: Array<{
+    uid?: string;
+    number?: number;
+    status?: string;
+  }>;
   organization: {
     uid?: string;
     name: string;

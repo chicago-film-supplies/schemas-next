@@ -189,6 +189,12 @@ export type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
 /** Zod schema for DocLineItemTypeType. */
 export const DocLineItemTypeEnum: z.ZodType<DocLineItemTypeType> = z.enum(DOC_LINE_ITEM_TYPES);
 
+const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as const;
+/** Possible invoice statuses. */
+export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
+/** Zod schema for InvoiceStatusType. */
+export const InvoiceStatusEnum: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
+
 const OOS_REASONS = ["cleaning", "damaged", "maintenance", "lost"] as const;
 /** Allowed values for out-of-service reason. */
 export type OOSReasonType = typeof OOS_REASONS[number];

@@ -21,6 +21,8 @@ import {
   StockMethodEnum,
   type StockMethodType,
   TaxProfileEnum,
+  type InvoiceStatusType,
+  InvoiceStatusEnum,
   type TaxProfileType,
   TimestampFields,
 } from "./common.ts";
@@ -591,6 +593,8 @@ export interface Order {
   items: OrderDocItemType[];
   tax_profile: TaxProfileType;
   totals: OrderDocTotalsType;
+  invoices: Array<{ uid: string; number: number; status: InvoiceStatusType }>;
+  query_by_invoices: string[];
   query_by_items: string[];
   query_by_contacts: string[];
   crms_id?: number | null;
@@ -616,6 +620,8 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   items: z.array(OrderDocItem).default([]),
   tax_profile: TaxProfileEnum.default("tax_applied"),
   totals: OrderDocTotals,
+  invoices: z.array(z.strictObject({ uid: z.string(), number: z.number(), status: InvoiceStatusEnum })).default([]),
+  query_by_invoices: z.array(z.string()).default([]),
   query_by_items: z.array(z.string()).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   crms_id: z.number().nullable().optional(),

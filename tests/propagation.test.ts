@@ -20,6 +20,9 @@ import {
   updateLocationRules,
   createLocationRules,
   updateLocationTransactionalRules,
+  createInvoiceRules,
+  createInvoiceTransaction,
+  updateInvoiceOrderRules,
   updateOrderInvoiceRules,
   updateTaxRules,
   createLocationTransaction,
@@ -67,6 +70,8 @@ Deno.test("rules array contains all individual rule sets", () => {
     ...createLocationRules,
     ...updateLocationTransactionalRules,
     ...updateLocationRules,
+    ...createInvoiceRules,
+    ...updateInvoiceOrderRules,
     ...updateOrderInvoiceRules,
   ];
   assertEquals(rules.length, allRuleSets.length);
@@ -104,6 +109,7 @@ Deno.test("transactions array contains all individual transactions", () => {
     updateContactTransaction,
     createLocationTransaction,
     updateLocationTransaction,
+    createInvoiceTransaction,
   ];
   assertEquals(transactions.length, allTransactions.length);
   for (const txn of allTransactions) {

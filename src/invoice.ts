@@ -16,6 +16,8 @@ import {
   PriceFormulaEnum,
   type PriceFormulaType,
   TaxProfileEnum,
+  type InvoiceStatusType,
+  InvoiceStatusEnum,
   type TaxProfileType,
   TimestampFields,
 } from "./common.ts";
@@ -32,10 +34,8 @@ import {
   type PriceModifierType,
 } from "./order.ts";
 
-const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as const;
-/** Possible invoice statuses. */
-export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
-const InvoiceStatus: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
+export { type InvoiceStatusType } from "./common.ts";
+const InvoiceStatus: z.ZodType<InvoiceStatusType> = InvoiceStatusEnum;
 
 // Invoice item types are a superset of order item types — adds "order" divider.
 // Billable types (DOC_LINE_ITEM_TYPES) are shared and unchanged.
@@ -209,7 +209,8 @@ export interface Invoice {
   uid: string;
   number: number;
   status: InvoiceStatusType;
-  uid_orders: string[];
+  query_by_orders: string[];
+  number_orders: number[];
   tax_profile: TaxProfileType;
   date: string;
   date_fs?: FirestoreTimestampType;
@@ -246,7 +247,8 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   uid: z.string(),
   number: z.number(),
   status: InvoiceStatus,
-  uid_orders: z.array(z.string()).default([]),
+  query_by_orders: z.array(z.string()).default([]),
+  number_orders: z.array(z.number()).default([]),
   tax_profile: TaxProfileEnum,
   date: z.string(),
   date_fs: FirestoreTimestamp,
@@ -336,7 +338,7 @@ const InvoiceItemInputSchema: z.ZodType<InvoiceItemInputType> = z.object({
 /** Input schema for POST /invoices — create an invoice from orders. */
 export interface CreateInvoiceInputType {
   uid: string;
-  uid_orders: string[];
+  query_by_orders: string[];
   organization: { uid: string };
   tax_profile: TaxProfileType;
   items?: InvoiceItemInputType[];
@@ -351,7 +353,7 @@ export interface CreateInvoiceInputType {
 /** Input schema for creating an invoice. */
 export const CreateInvoiceInput: z.ZodType<CreateInvoiceInputType> = z.object({
   uid: z.string(),
-  uid_orders: z.array(z.string()).min(1, "At least one source order is required"),
+  query_by_orders: z.array(z.string()).min(1, "At least one source order is required"),
   organization: z.object({ uid: z.string() }),
   tax_profile: TaxProfileEnum,
   items: z.array(InvoiceItemInputSchema).optional(),

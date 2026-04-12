@@ -5,7 +5,8 @@ const validInvoice = {
   uid: "test-inv-1",
   number: 1001,
   status: "draft",
-  uid_orders: ["test-order-1"],
+  query_by_orders: ["test-order-1"],
+  number_orders: [1000],
   tax_profile: "tax_applied",
   date: "2026-03-01",
   organization: {
@@ -215,7 +216,7 @@ Deno.test("InvoiceSchema accepts transaction_fees in totals", () => {
 Deno.test("CreateInvoiceInput accepts valid input", () => {
   const input = {
     uid: "new-inv-1",
-    uid_orders: ["order-1"],
+    query_by_orders: ["order-1"],
     organization: { uid: "org-1" },
     tax_profile: "tax_applied",
   };
@@ -225,7 +226,7 @@ Deno.test("CreateInvoiceInput accepts valid input", () => {
 Deno.test("CreateInvoiceInput requires at least one order", () => {
   const input = {
     uid: "new-inv-1",
-    uid_orders: [],
+    query_by_orders: [],
     organization: { uid: "org-1" },
     tax_profile: "tax_applied",
   };
@@ -235,7 +236,7 @@ Deno.test("CreateInvoiceInput requires at least one order", () => {
 Deno.test("CreateInvoiceInput accepts items with path and destination fields", () => {
   const input = {
     uid: "new-inv-1",
-    uid_orders: ["order-1"],
+    query_by_orders: ["order-1"],
     organization: { uid: "org-1" },
     tax_profile: "tax_applied",
     items: [
@@ -270,7 +271,7 @@ Deno.test("InvoiceSchema accepts order divider item in items array", () => {
 Deno.test("InvoiceSchema accepts full multi-order hierarchy", () => {
   const doc = {
     ...validInvoice,
-    uid_orders: ["order-1", "order-2"],
+    query_by_orders: ["order-1", "order-2"],
     items: [
       {
         uid: "550e8400-e29b-41d4-a716-446655440010",
@@ -323,7 +324,7 @@ Deno.test("InvoiceSchema accepts full multi-order hierarchy", () => {
 Deno.test("CreateInvoiceInput accepts order divider items", () => {
   const input = {
     uid: "new-inv-1",
-    uid_orders: ["order-1"],
+    query_by_orders: ["order-1"],
     organization: { uid: "org-1" },
     tax_profile: "tax_applied",
     items: [
