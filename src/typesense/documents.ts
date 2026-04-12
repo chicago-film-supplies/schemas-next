@@ -159,10 +159,11 @@ export interface InvoiceDocument {
   uid: string;
   number: number;
   number_str?: string;
-  crms_id: number;
+  crms_id?: number;
   crms_id_str?: string;
   status: string;
   tax_profile: string;
+  uid_orders?: string[];
   subject?: string;
   reference?: string;
   external_notes?: string;
@@ -173,24 +174,23 @@ export interface InvoiceDocument {
     crms_id?: number;
     crms_id_str?: string;
     tax_profile?: string;
+    xero_id?: string;
+    billing_address?: TypesenseAddressFields;
   };
-  items_consolidated: Array<{
+  items?: Array<{
     uid?: string;
     name?: string;
     quantity?: number;
     type?: string;
-    price?: {
-      base?: number;
-      total?: number;
-      discount_percent?: number;
-      chargeable_days?: number;
-      formula?: string;
-      tax_profile?: string;
-    };
-    crms_opportunity_id?: number;
-    tracking_category?: string;
-    coa_revenue?: string;
   }>;
+  totals?: {
+    total?: number;
+    total_str?: string;
+    amount_paid?: number;
+    amount_paid_str?: string;
+    amount_due?: number;
+    amount_due_str?: string;
+  };
   crms_opportunity_ids?: number[];
   xero_id?: string;
   updated_by?: string;
@@ -249,6 +249,8 @@ export interface OrderDocument {
     name: string;
     crms_id?: number;
     crms_id_str?: string;
+    xero_id?: string;
+    billing_address?: TypesenseAddressFields;
   };
   dates: {
     delivery_start_fs?: number;
@@ -287,6 +289,7 @@ export interface OrderDocument {
     taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
     transaction_fees?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
     total?: number;
+    total_str?: string;
   };
   items?: Array<{
     uid?: string;

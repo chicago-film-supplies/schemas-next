@@ -4,11 +4,11 @@ import { typesenseAddressFields } from "./types.ts";
 /** Typesense collection config for orders. */
 export const orders: TypesenseCollectionConfig = {
   alias: "orders",
-  version: 17,
+  version: 18,
   firestoreCollection: "orders",
-  collectionName: "orders_v17",
+  collectionName: "orders_v18",
   schema: {
-    name: "orders_v17",
+    name: "orders_v18",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -29,6 +29,8 @@ export const orders: TypesenseCollectionConfig = {
       { name: "organization.name", type: "string", sort: true, stem: true, facet: false },
       { name: "organization.crms_id", type: "int64", optional: true },
       { name: "organization.crms_id_str", type: "string", index: true, sort: false, facet: false, optional: true },
+      { name: "organization.xero_id", type: "string", optional: true },
+      ...typesenseAddressFields("organization.billing_address"),
       { name: "dates", type: "object" },
       { name: "dates.delivery_start_fs", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "dates.delivery_end_fs", type: "int64", sort: true, index: true, facet: false, optional: true },

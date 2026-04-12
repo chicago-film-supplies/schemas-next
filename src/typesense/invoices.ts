@@ -1,13 +1,14 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
+import { typesenseAddressFields } from "./types.ts";
 
 /** Typesense collection config for invoices. */
 export const invoices: TypesenseCollectionConfig = {
   alias: "invoices",
-  version: 5,
+  version: 6,
   firestoreCollection: "invoices",
-  collectionName: "invoices_v5",
+  collectionName: "invoices_v6",
   schema: {
-    name: "invoices_v5",
+    name: "invoices_v6",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -26,6 +27,8 @@ export const invoices: TypesenseCollectionConfig = {
       { name: "organization.crms_id", type: "int64", optional: true },
       { name: "organization.crms_id_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "organization.tax_profile", type: "string", facet: true, optional: true },
+      { name: "organization.xero_id", type: "string", optional: true },
+      ...typesenseAddressFields("organization.billing_address"),
       { name: "items", type: "object[]", optional: true },
       { name: "items.uid", type: "string[]", facet: false, optional: true },
       { name: "items.name", type: "string[]", stem: true, optional: true },
@@ -33,8 +36,11 @@ export const invoices: TypesenseCollectionConfig = {
       { name: "items.type", type: "string[]", facet: true, optional: true },
       { name: "totals", type: "object", optional: true },
       { name: "totals.total", type: "float", sort: true, optional: true },
+      { name: "totals.total_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "totals.amount_paid", type: "float", sort: true, optional: true },
+      { name: "totals.amount_paid_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "totals.amount_due", type: "float", sort: true, optional: true },
+      { name: "totals.amount_due_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "crms_id", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "crms_id_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "crms_opportunity_ids", type: "int64[]", optional: true },
