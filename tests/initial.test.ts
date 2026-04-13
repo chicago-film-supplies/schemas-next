@@ -118,8 +118,8 @@ Deno.test("getInitialValues — product price has correct structure", () => {
   assertEquals(price.formula, "five_day_week");
   assertEquals(price.taxes, []);
   assertEquals(price.discountable, false);
-  // COA revenue codes are integer-like strings — JS sorts object keys numerically
-  assertEquals(price.coa_revenue, "2210");
+  // COA revenue codes are numeric — JS sorts object keys numerically, so first is 2210
+  assertEquals(price.coa_revenue, 2210);
 });
 
 Deno.test("getInitialValues — order item input schema works", () => {

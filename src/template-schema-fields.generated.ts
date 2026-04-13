@@ -232,7 +232,7 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "items[] (type: rental, replacement, ...).price.discount_percent", type: "number?" },
     { path: "items[] (type: rental, replacement, ...).price.tax_profile", type: "tax_none | tax_chicago_rental_tax | tax_chicago_sales_tax | tax_rantoul_sales_tax?" },
     { path: "items[] (type: rental, replacement, ...).path", type: "string[]" },
-    { path: "items[] (type: rental, replacement, ...).coa_revenue", type: "2210 | 2800 | 4000 | 4100 | 4110 | 4120 | 4130 | 4140 | 4150 | 4200 | 4210 | 4700 | 4800? | null" },
+    { path: "items[] (type: rental, replacement, ...).coa_revenue", type: "union? | null" },
     { path: "items[] (type: rental, replacement, ...).tracking_category", type: "string? | null" },
     { path: "items[] (type: rental, replacement, ...).xero_id", type: "string? | null" },
     { path: "items[] (type: rental, replacement, ...).xero_tracking_option_id", type: "string? | null" },

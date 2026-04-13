@@ -169,13 +169,18 @@ export type ComponentTypeType = typeof COMPONENT_TYPES[number];
 export const ComponentTypeEnum: z.ZodType<ComponentTypeType> = z.enum(COMPONENT_TYPES);
 
 const COA_REVENUE_CODES = [
-  "2210", "2800", "4000", "4100", "4110", "4120", "4130", "4140", "4150",
-  "4200", "4210", "4700", "4800",
+  2210, 2800, 4000, 4100, 4110, 4120, 4130, 4140, 4150,
+  4200, 4210, 4700, 4800,
 ] as const;
 /** Allowed values for chart-of-accounts revenue code. */
 export type COARevenueType = typeof COA_REVENUE_CODES[number];
 /** Zod schema for COARevenueType. */
-export const COARevenueEnum: z.ZodType<COARevenueType> = z.enum(COA_REVENUE_CODES);
+export const COARevenueEnum: z.ZodType<COARevenueType> = z.union([
+  z.literal(2210), z.literal(2800), z.literal(4000), z.literal(4100),
+  z.literal(4110), z.literal(4120), z.literal(4130), z.literal(4140),
+  z.literal(4150), z.literal(4200), z.literal(4210), z.literal(4700),
+  z.literal(4800),
+]);
 
 const DOC_ITEM_TYPES = ["rental", "destination", "group", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
 /** All item types accepted in order/invoice input schemas (includes structural dividers). */

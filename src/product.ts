@@ -5,6 +5,7 @@ import { z } from "zod";
 import { type TransactionStore, TransactionStoreSchema } from "./transaction.ts";
 import {
   COARevenueEnum,
+  type COARevenueType,
   ComponentTypeEnum,
   type ComponentTypeType,
   type FirestoreTimestampType,
@@ -45,7 +46,7 @@ export interface ProductComponent {
   price: {
     base: number;
     replacement?: number | null;
-    coa_revenue?: string;
+    coa_revenue?: COARevenueType;
     taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
@@ -56,7 +57,7 @@ export interface ProductComponent {
 export interface ProductPrice {
   base: number;
   replacement?: number | null;
-  coa_revenue?: string;
+  coa_revenue?: COARevenueType;
   taxes: TaxRefType[];
   formula: PriceFormulaType;
   discountable: boolean;
@@ -137,7 +138,7 @@ export const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
   price: z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
-    coa_revenue: z.string().optional(),
+    coa_revenue: COARevenueEnum.optional(),
     taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
@@ -227,7 +228,7 @@ export interface CreateProductInputType {
   price: {
     base: number;
     replacement?: number | null;
-    coa_revenue?: string;
+    coa_revenue?: COARevenueType;
     taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
@@ -332,7 +333,7 @@ export interface UpdateProductInputType {
   price?: {
     base: number;
     replacement?: number | null;
-    coa_revenue?: string;
+    coa_revenue?: COARevenueType;
     taxes: TaxRefType[];
     formula: PriceFormulaType;
     discountable: boolean;
