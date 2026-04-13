@@ -313,6 +313,7 @@ export {
 export {
   CreateInvoiceInput,
   InvoiceDocItem,
+  InvoiceDocLineItemSchema,
   InvoiceDocOrderItem,
   InvoiceSchema,
   isInvoiceLineItem,

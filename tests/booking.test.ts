@@ -1,7 +1,13 @@
 import { assertEquals } from "@std/assert";
+import { getInitialValues } from "../src/initial.ts";
 import { BookingSchema } from "../src/booking.ts";
 
+const bookingBase = getInitialValues(BookingSchema) as Record<string, unknown>;
+const breakdownBase = bookingBase.breakdown as Record<string, unknown>;
+const datesBase = bookingBase.dates as Record<string, unknown>;
+
 const validBooking = {
+  ...bookingBase,
   uid: "test-booking-1",
   uid_order: "test-order-1",
   uid_product: "test-prod-1",
@@ -10,36 +16,23 @@ const validBooking = {
   type: "rental",
   status: "reserved",
   quantity: 5,
-  shortage: 0,
   subject: "Event lighting",
   unit_price: 100,
   total_price: 500,
   breakdown: {
-    damaged: 0,
-    lost: 0,
-    out: 0,
-    prepped: 0,
-    quoted: 0,
+    ...breakdownBase,
     reserved: 5,
-    returned: 0,
   },
   dates: {
+    ...datesBase,
     start: "2026-03-01",
     start_fs: null,
     end: "2026-03-10",
-    end_fs: null,
     charge_start: "2026-03-01",
     charge_start_fs: null,
     charge_end: "2026-03-10",
-    charge_end_fs: null,
-  },
-  destinations: {
-    delivery: null,
-    collection: null,
   },
   organization: { uid: "test-org-1", name: "Test Acme Corp", crms_id: null },
-  stores: [],
-  query_by_uid_store: [],
   uid_destination_delivery: "test-dest-1",
   uid_destination_collection: "test-dest-2",
   created_at: null,

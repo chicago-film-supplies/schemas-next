@@ -1,7 +1,14 @@
 import { assertEquals } from "@std/assert";
-import { CreateInvoiceInput, InvoiceSchema, UpdateInvoiceInput } from "../src/invoice.ts";
+import { getInitialValues } from "../src/initial.ts";
+import { CreateInvoiceInput, InvoiceDocLineItemSchema, InvoiceSchema, UpdateInvoiceInput } from "../src/invoice.ts";
+
+const invoiceBase = getInitialValues(InvoiceSchema) as Record<string, unknown>;
+const totalsBase = invoiceBase.totals as Record<string, unknown>;
+const lineItemBase = getInitialValues(InvoiceDocLineItemSchema) as Record<string, unknown>;
+const priceBase = (lineItemBase as { price: Record<string, unknown> }).price;
 
 const validInvoice = {
+  ...invoiceBase,
   uid: "test-inv-1",
   number: 1001,
   status: "draft",
@@ -17,33 +24,27 @@ const validInvoice = {
     billing_address: null,
   },
   items: [{
+    ...lineItemBase,
     uid: "item-1",
     type: "rental",
     name: "Camera Rental",
     quantity: 1,
     price: {
+      ...priceBase,
       base: 500,
       chargeable_days: 5,
-      formula: "five_day_week",
       subtotal: 500,
       subtotal_discounted: 500,
-      discount: null,
-      taxes: [],
       total: 500,
     },
   }],
   totals: {
+    ...totalsBase,
     subtotal: 500,
     subtotal_discounted: 500,
-    discount_amount: 0,
-    taxes: [],
-    transaction_fees: [],
     total: 500,
-    amount_paid: 0,
     amount_due: 500,
   },
-  payments: [],
-  xero_id: null,
   updated_by: "test-user-1",
 };
 
@@ -300,18 +301,17 @@ Deno.test("InvoiceSchema accepts full multi-order hierarchy", () => {
         description: "",
       },
       {
+        ...lineItemBase,
         uid: "item-2",
         type: "sale",
         name: "Tripod Sale",
         quantity: 2,
         price: {
+          ...priceBase,
           base: 200,
-          chargeable_days: null,
           formula: "fixed",
           subtotal: 400,
           subtotal_discounted: 400,
-          discount: null,
-          taxes: [],
           total: 400,
         },
         path: ["550e8400-e29b-41d4-a716-446655440020"],

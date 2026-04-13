@@ -1,7 +1,11 @@
 import { assertEquals, assertThrows } from "@std/assert";
+import { getInitialValues } from "../src/initial.ts";
 import { TransactionSchema, getTransactionMultiplier } from "../src/transaction.ts";
 
+const transactionBase = getInitialValues(TransactionSchema) as Record<string, unknown>;
+
 const validTransaction = {
+  ...transactionBase,
   uid: "test-txn-1",
   uid_product: "test-prod-1",
   type: "purchase",
@@ -13,11 +17,7 @@ const validTransaction = {
   date_fs: null,
   reference: "PO-001",
   source: { type: "manual", number: null, uid: null },
-  stores: [],
-  query_by_uid_store: [],
-  notes: [],
   serialized_details: null,
-  crms_sync: {},
   created_at: null,
   updated_at: null,
 };

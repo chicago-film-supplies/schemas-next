@@ -1,5 +1,12 @@
 import { assertEquals } from "@std/assert";
-import { CreateOrderInput, OrderSchema, UpdateOrderInput } from "../src/order.ts";
+import { getInitialValues } from "../src/initial.ts";
+import { CreateOrderInput, DocDestination, OrderDocDates, OrderDocItemPrice, OrderSchema, UpdateOrderInput } from "../src/order.ts";
+
+const orderBase = getInitialValues(OrderSchema) as Record<string, unknown>;
+const totalsBase = orderBase.totals as Record<string, unknown>;
+const datesBase = getInitialValues(OrderDocDates) as Record<string, unknown>;
+const destBase = getInitialValues(DocDestination) as Record<string, unknown>;
+const priceBase = getInitialValues(OrderDocItemPrice) as Record<string, unknown>;
 
 const validDates = {
   delivery_start: "2026-03-01",
@@ -352,36 +359,21 @@ Deno.test("UpdateOrderInput rejects missing version", () => {
 // ── OrderSchema (document) ───────────────────────────────────────
 
 const validDocDestination = {
-  delivery: {
-    uid: null,
-    address: null,
-    instructions: null,
-    contact: null,
-  },
-  collection: {
-    uid: null,
-    address: null,
-    instructions: null,
-    contact: null,
-  },
+  ...destBase,
 };
 
 const validDocDates = {
+  ...datesBase,
   delivery_start: "2026-03-01",
-  delivery_start_fs: null,
   delivery_end: "2026-03-01",
-  delivery_end_fs: null,
   collection_start: "2026-03-10",
-  collection_start_fs: null,
   collection_end: "2026-03-10",
-  collection_end_fs: null,
   charge_start: "2026-03-01",
-  charge_start_fs: null,
   charge_end: "2026-03-10",
-  charge_end_fs: null,
 };
 
 const minimalDoc = {
+  ...orderBase,
   uid: "test-order-1",
   number: 1001,
   status: "draft",
@@ -392,11 +384,9 @@ const minimalDoc = {
   dates: validDocDates,
   destinations: [validDocDestination],
   totals: {
-    discount_amount: 0,
+    ...totalsBase,
     subtotal: 100,
     subtotal_discounted: 100,
-    taxes: [],
-    transaction_fees: [],
     total: 100,
   },
 };
@@ -431,12 +421,11 @@ Deno.test("OrderSchema validates a complete document", () => {
         path: ["550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001"],
         quantity: 2,
         price: {
+          ...priceBase,
           base: 100,
           chargeable_days: 5,
-          formula: "five_day_week",
           subtotal: 200,
           subtotal_discounted: 200,
-          discount: null,
           taxes: [{
             uid: "test-chi-rental-tax",
             name: "Chicago Rental Tax",
@@ -566,13 +555,11 @@ Deno.test("OrderSchema rejects float chargeable_days in price", () => {
       type: "rental",
       name: "Camera",
       price: {
+        ...priceBase,
         base: 100,
         chargeable_days: 3.5,
-        formula: "five_day_week",
         subtotal: 100,
         subtotal_discounted: 100,
-        discount: null,
-        taxes: [],
         total: 100,
       },
     }],
@@ -588,13 +575,11 @@ Deno.test("OrderSchema rejects invalid price formula", () => {
       type: "rental",
       name: "Camera",
       price: {
+        ...priceBase,
         base: 100,
-        chargeable_days: null,
         formula: "daily",
         subtotal: 100,
         subtotal_discounted: 100,
-        discount: null,
-        taxes: [],
         total: 100,
       },
     }],
@@ -610,13 +595,12 @@ Deno.test("OrderSchema rejects invalid discount type", () => {
       type: "rental",
       name: "Camera",
       price: {
+        ...priceBase,
         base: 100,
-        chargeable_days: null,
         formula: "fixed",
         subtotal: 100,
         subtotal_discounted: 90,
         discount: { rate: 10, type: "invalid", amount: 10 },
-        taxes: [],
         total: 90,
       },
     }],
@@ -721,13 +705,11 @@ Deno.test("OrderSchema rejects extra properties on line item price", () => {
       type: "rental",
       name: "Camera",
       price: {
+        ...priceBase,
         base: 100,
-        chargeable_days: null,
         formula: "fixed",
         subtotal: 100,
         subtotal_discounted: 100,
-        discount: null,
-        taxes: [],
         total: 100,
         extra: true,
       },

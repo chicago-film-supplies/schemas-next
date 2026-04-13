@@ -123,7 +123,7 @@ export interface InvoiceDocLineItem {
   crms_id?: number | string | null;
 }
 
-const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
+export const InvoiceDocLineItemSchema: z.ZodType<InvoiceDocLineItem> = z.strictObject({
   uid: z.string(),
   type: DocLineItemTypeEnum,
   name: z.string(),
