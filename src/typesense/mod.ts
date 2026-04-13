@@ -24,9 +24,11 @@ export {
   TypesenseMultiWaySynonymSchema,
   TypesenseOneWaySynonymSchema,
   TypesenseSynonymSchema,
+  typesenseAddressFields,
 } from "./types.ts";
 
 export type {
+  TypesenseAddressFields,
   BookingDocument,
   ChartOfAccountsDocument,
   ContactDocument,

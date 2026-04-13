@@ -4,13 +4,15 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType, NoteEntry, type NoteEntryType } from "./common.ts";
 
+/** All possible transaction type identifiers. */
 export const TRANSACTION_TYPES = [
-  "purchase", "find", "make", "opening_balance", "adjustment_increase",
+  "opening_balance", "purchase", "find", "make", "adjustment_increase",
   "sale", "write_off", "trade_in", "adjustment_decrease",
   "transfer_increase", "transfer_decrease",
   "acquisition", "disposal", "partial_disposal",
   "depreciation_tax", "depreciation_gaap",
 ] as const;
+/** Union of all transaction type string literals. */
 export type TransactionTypeType = typeof TRANSACTION_TYPES[number];
 const TransactionType: z.ZodType<TransactionTypeType> = z.enum(TRANSACTION_TYPES);
 
@@ -65,6 +67,7 @@ export function getDisplayTransactionTypes(increaseOnly?: boolean): TransactionT
 const TRANSACTION_SOURCE_TYPES = ["manual", "order", "internal"] as const;
 type TransactionSourceTypeType = typeof TRANSACTION_SOURCE_TYPES[number];
 
+/** A location within a store affected by a transaction. */
 export interface TransactionStoreLocation {
   uid_location: string;
   name: string;
@@ -75,6 +78,7 @@ export interface TransactionStoreLocation {
   max: number | null;
 }
 
+/** A store affected by a transaction, including its locations. */
 export interface TransactionStore {
   uid_store: string;
   name: string;
@@ -83,12 +87,14 @@ export interface TransactionStore {
   locations: TransactionStoreLocation[];
 }
 
+/** The origin source of a transaction (manual, order, or internal). */
 export interface TransactionSource {
   type: TransactionSourceTypeType;
   number: string | number | null;
   uid: string | null;
 }
 
+/** A transaction document representing an inventory movement or financial event. */
 export interface Transaction {
   uid: string;
   uid_product: string;
@@ -117,6 +123,7 @@ export interface Transaction {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for TransactionStoreLocation. */
 export const TransactionStoreLocationSchema: z.ZodType<TransactionStoreLocation> = z.strictObject({
   uid_location: z.string(),
   name: z.string(),
@@ -127,6 +134,7 @@ export const TransactionStoreLocationSchema: z.ZodType<TransactionStoreLocation>
   max: z.number().nullable(),
 });
 
+/** Zod schema for TransactionStore. */
 export const TransactionStoreSchema: z.ZodType<TransactionStore> = z.strictObject({
   uid_store: z.string(),
   name: z.string(),
@@ -141,6 +149,7 @@ const SourceSchema: z.ZodType<TransactionSource> = z.strictObject({
   uid: z.string().nullable(),
 });
 
+/** Zod schema for Transaction. */
 export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
   uid: z.string(),
   uid_product: z.string(),
@@ -170,7 +179,6 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
 }).meta({
   title: "Transaction",
   collection: "transactions",
-  initial: {"date":"","notes":[],"quantity":0,"query_by_uid_store":[],"reference":"","serialized_details":null,"type":"opening_balance","uid":null,"uid_product":null,"source":{"type":"manual","number":null,"uid":null},"stores":[],"total_cost":0,"unit_cost":0,"unit_costs":[],"version":0},
   displayDefaults: {
     columns: ["date", "quantity", "source.type", "type", "reference"],
     filters: {},
@@ -219,6 +227,7 @@ const InputTransactionStoreSchema: z.ZodType<InputTransactionStore> = z.object({
   locations: z.array(InputTransactionStoreLocationSchema).min(1),
 });
 
+/** Input type for creating a manual transaction. */
 export interface CreateTransactionInputType {
   uid: string;
   uid_product: string;
@@ -235,6 +244,7 @@ export interface CreateTransactionInputType {
   } | null;
 }
 
+/** Input schema for creating a manual transaction. */
 export const CreateTransactionInput: z.ZodType<CreateTransactionInputType> = z.object({
   uid: z.string().min(1),
   uid_product: z.string().min(1),
@@ -251,6 +261,7 @@ export const CreateTransactionInput: z.ZodType<CreateTransactionInputType> = z.o
   }).nullable().optional(),
 });
 
+/** Input type for updating a manual transaction. */
 export interface UpdateTransactionInputType {
   uid: string;
   uid_product: string;
@@ -268,6 +279,7 @@ export interface UpdateTransactionInputType {
   version: number;
 }
 
+/** Input schema for updating a manual transaction. */
 export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.object({
   uid: z.string().min(1),
   uid_product: z.string().min(1),
@@ -285,6 +297,7 @@ export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.o
   version: z.int().min(0),
 });
 
+/** Input type for creating a store-to-store transfer. */
 export interface CreateStoreTransferInputType {
   uid_product: string;
   quantity: number;
@@ -299,6 +312,7 @@ export interface CreateStoreTransferInputType {
   } | null;
 }
 
+/** Input schema for creating a store-to-store transfer. */
 export const CreateStoreTransferInput: z.ZodType<CreateStoreTransferInputType> = z.object({
   uid_product: z.string().min(1),
   quantity: z.number().int().positive(),
@@ -313,6 +327,7 @@ export const CreateStoreTransferInput: z.ZodType<CreateStoreTransferInputType> =
   }).nullable().optional(),
 });
 
+/** Input type for updating a store-to-store transfer. */
 export interface UpdateStoreTransferInputType {
   uid_product: string;
   transfer_number: number;
@@ -329,6 +344,7 @@ export interface UpdateStoreTransferInputType {
   version: number;
 }
 
+/** Input schema for updating a store-to-store transfer. */
 export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> = z.object({
   uid_product: z.string().min(1),
   transfer_number: z.number().int(),

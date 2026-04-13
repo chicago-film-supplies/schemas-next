@@ -127,6 +127,21 @@ Deno.test("displayDefaults.facet entries reference fields with facet: true", () 
   }
 });
 
+Deno.test("enable_nested_fields is true when schema has object or object[] fields", () => {
+  for (const config of allConfigs) {
+    const hasObjectFields = config.schema.fields.some((f) =>
+      f.type === "object" || f.type === "object[]"
+    );
+    if (hasObjectFields) {
+      assertEquals(
+        config.schema.enable_nested_fields,
+        true,
+        `${config.alias}: has object/object[] fields but enable_nested_fields is not true`,
+      );
+    }
+  }
+});
+
 Deno.test("each field has a name and valid type", () => {
   const validTypes = new Set([
     "string", "string[]",
@@ -135,6 +150,7 @@ Deno.test("each field has a name and valid type", () => {
     "float", "float[]",
     "bool", "bool[]",
     "object", "object[]",
+    "geopoint", "geopoint[]",
   ]);
   for (const config of allConfigs) {
     for (const field of config.schema.fields) {

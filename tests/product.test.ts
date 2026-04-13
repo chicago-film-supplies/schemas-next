@@ -1,23 +1,15 @@
 import { assertEquals } from "@std/assert";
 import { ProductSchema } from "../src/product.ts";
+import { getInitialValues } from "../src/initial.ts";
 
+const base = getInitialValues(ProductSchema);
 const validProduct = {
+  ...base,
   uid: "test-product-1",
   name: "Canon C300",
   active: true,
-  type: "rental",
-  stock_method: "bulk",
-  component_only: false,
   crms_id: 100,
-  price: {
-    base: 500,
-    taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }],
-    formula: "five_day_week",
-    discountable: true,
-  },
-  alternates: {},
-  components: {},
-  component_of: {},
+  price: { ...(base.price as Record<string, unknown>), base: 500, taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }], discountable: true },
   tags: [{ uid: "test-t1", name: "Camera" }],
   webshop: { available: true },
 };
@@ -44,13 +36,15 @@ Deno.test("ProductSchema validates with shipping", () => {
 Deno.test("ProductSchema validates with components", () => {
   const doc = {
     ...validProduct,
-    components: {
-      "test-comp-1": {
+    components: [
+      {
         uid: "test-comp-1",
+        path: ["test-product-1"],
         name: "Battery",
+        type: "rental",
+        stock_method: "bulk",
         crms_id: 200,
         quantity: 2,
-        type: "rental",
         price: {
           base: 0,
           taxes: [{ uid: "test-tax-none", name: "No Tax", rate: 0, type: "percent" }],
@@ -58,7 +52,7 @@ Deno.test("ProductSchema validates with components", () => {
           discountable: false,
         },
       },
-    },
+    ],
   };
   assertEquals(ProductSchema.safeParse(doc).success, true);
 });

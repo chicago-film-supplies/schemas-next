@@ -2,6 +2,7 @@
   "name": "@cfs/schemas",
   "version": "1.14.0-beta.23",
   "license": "MIT",
+  "description": "Shared Zod 4 schemas for CFS Firestore collections, Typesense collections, propagation rules, and domain events.",
   "exports": {
     ".": "./src/mod.ts",
     "./common": "./src/common.ts",
@@ -37,11 +38,12 @@
     "./log": "./src/log.ts"
   },
   "tasks": {
-    "test": "deno test --allow-read tests/",
+    "test": "deno test --allow-read --allow-run --allow-write tests/",
     "lint": "deno lint",
     "check": "deno check src/mod.ts src/typesense/mod.ts",
     "setup": "deno install && git config core.hooksPath .githooks && deno task fetch-llms-docs",
-    "fetch-llms-docs": "deno run --allow-net=zod.dev,docs.deno.com --allow-read --allow-write scripts/fetch-llms-docs.ts"
+    "fetch-llms-docs": "deno run --allow-net=zod.dev,docs.deno.com --allow-read --allow-write scripts/fetch-llms-docs.ts",
+    "generate-schema-template-fields": "deno run --allow-read --allow-write scripts/generate-schema-template-fields.ts"
   },
   "imports": {
     "zod": "npm:zod@^4.3.6",
@@ -54,7 +56,8 @@
     "include": [
       "src/",
       "deno.json",
-      "LICENSE"
+      "LICENSE",
+      "README.md"
     ]
   }
 }

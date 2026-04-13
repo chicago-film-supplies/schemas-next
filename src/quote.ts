@@ -7,6 +7,7 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** A PDF quote document associated with an order. */
 export interface Quote {
   uid: string;
   uid_order: string;
@@ -20,6 +21,7 @@ export interface Quote {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for Quote. */
 export const QuoteSchema: z.ZodType<Quote> = z.strictObject({
   uid: z.string(),
   uid_order: z.string(),
@@ -45,6 +47,7 @@ export const QuoteSchema: z.ZodType<Quote> = z.strictObject({
 export interface SaveQuoteVersionInputType {
   uid_order: string;
 }
+/** Zod schema for SaveQuoteVersionInput. */
 export const SaveQuoteVersionInput: z.ZodType<SaveQuoteVersionInputType> = z.object({
   uid_order: z.string().min(1),
 });
@@ -53,6 +56,7 @@ export const SaveQuoteVersionInput: z.ZodType<SaveQuoteVersionInputType> = z.obj
 export interface RestoreQuoteInputType {
   uid: string;
 }
+/** Zod schema for RestoreQuoteInput. */
 export const RestoreQuoteInput: z.ZodType<RestoreQuoteInputType> = z.object({
   uid: z.string().min(1),
 });

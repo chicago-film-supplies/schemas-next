@@ -7,8 +7,10 @@
 import { z } from "zod";
 
 const LOG_LEVELS = ["debug", "info", "warn", "error"] as const;
+/** Log severity level. */
 export type LogLevelType = typeof LOG_LEVELS[number];
 
+/** Structured log envelope emitted by the API. */
 export interface LogRecord {
   level: LogLevelType;
   msg: string;
@@ -25,6 +27,7 @@ export interface LogRecord {
   [key: string]: unknown;
 }
 
+/** Zod schema for LogRecord. */
 export const LogRecordSchema: z.ZodType<LogRecord> = z.object({
   level: z.enum(LOG_LEVELS),
   msg: z.string(),
@@ -45,9 +48,12 @@ export const LogRecordSchema: z.ZodType<LogRecord> = z.object({
 const PROPAGATION_MODES = ["embed", "fan-out", "co-write", "derive", "reference"] as const;
 const PROPAGATION_STATUSES = ["completed", "skipped", "failed"] as const;
 
+/** Status outcome of a propagation rule execution. */
 export type PropagationStatusType = typeof PROPAGATION_STATUSES[number];
+/** Propagation strategy used by a rule. */
 export type PropagationModeType = typeof PROPAGATION_MODES[number];
 
+/** Structured log entry for a single propagation rule execution. */
 export interface PropagationLogRecord {
   level: LogLevelType;
   msg: "propagation";
@@ -78,6 +84,7 @@ export interface PropagationLogRecord {
   [key: string]: unknown;
 }
 
+/** Zod schema for PropagationLogRecord. */
 export const PropagationLogRecordSchema: z.ZodType<PropagationLogRecord> = z.object({
   level: z.enum(LOG_LEVELS),
   msg: z.literal("propagation"),
@@ -110,8 +117,10 @@ export const PropagationLogRecordSchema: z.ZodType<PropagationLogRecord> = z.obj
 // ── Client log record ────────────────────────────────────────────────
 
 const CLIENT_APPS = ["manager"] as const;
+/** Identifier for a client application that emits logs. */
 export type ClientAppType = typeof CLIENT_APPS[number];
 
+/** A single log entry sent from a client application. */
 export interface ClientLogEntry {
   level: LogLevelType;
   msg: string;
@@ -122,6 +131,7 @@ export interface ClientLogEntry {
   data?: Record<string, unknown>;
 }
 
+/** Zod schema for ClientLogEntry. */
 export const ClientLogEntrySchema: z.ZodType<ClientLogEntry> = z.object({
   level: z.enum(LOG_LEVELS),
   msg: z.string().max(100),
@@ -132,10 +142,12 @@ export const ClientLogEntrySchema: z.ZodType<ClientLogEntry> = z.object({
   data: z.record(z.string(), z.unknown()).optional(),
 });
 
+/** A batch of client log entries submitted in a single request. */
 export interface ClientLogBatch {
   logs: ClientLogEntry[];
 }
 
+/** Zod schema for ClientLogBatch. */
 export const ClientLogBatchSchema: z.ZodType<ClientLogBatch> = z.object({
   logs: z.array(ClientLogEntrySchema).min(1).max(50),
 });

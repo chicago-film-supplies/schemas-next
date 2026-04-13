@@ -7,7 +7,7 @@ export const aggregates: AggregateDefinition[] = [
   {
     id: "order",
     root: "orders",
-    members: ["bookings", "stock-summaries", "public-stock-summaries", "quotes"],
+    members: ["bookings", "stock-summaries", "public-stock-summaries", "quotes", "order-events"],
     description: "Rental/sale order lifecycle — from quote through active rental to completion",
   },
   {
@@ -32,7 +32,7 @@ export const aggregates: AggregateDefinition[] = [
     id: "invoice",
     root: "invoices",
     members: [],
-    description: "Financial invoices synced from CRMS — read-only from API perspective",
+    description: "Financial invoices generated from orders — syncs to Xero for accounting and payment tracking",
   },
   {
     id: "store",

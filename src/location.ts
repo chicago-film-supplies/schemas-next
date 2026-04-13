@@ -4,12 +4,14 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Product capacity constraint for a location. */
 export interface LocationProductCapacity {
   uid: string;
   max: number | null;
   max_default: number | null;
 }
 
+/** A product assigned to a location. */
 export interface LocationProduct {
   uid: string;
   name: string;
@@ -17,6 +19,7 @@ export interface LocationProduct {
   default: boolean;
 }
 
+/** A location document in Firestore. */
 export interface Location {
   uid: string;
   uid_store: string;
@@ -33,6 +36,7 @@ export interface Location {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for Location. */
 export const LocationSchema: z.ZodType<Location> = z.strictObject({
   uid: z.string(),
   uid_store: z.string(),
@@ -59,7 +63,6 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
 }).meta({
   title: "Location",
   collection: "locations",
-  initial: {"uid":null,"uid_store":"","name":"","default":false,"uid_location_type":null,"product_capacities":[],"query_by_product_capacities":[],"active":true,"products":[],"query_by_products":[],"version":0},
   displayDefaults: {
     columns: ["name", "active", "default"],
     filters: {},
@@ -67,17 +70,22 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
   },
 });
 
+/** Input type for creating a location. */
 export interface CreateLocationInputType {
+  uid: string;
   uid_store: string;
   name: string;
   uid_location_type?: string | null;
 }
+/** Input schema for creating a location. */
 export const CreateLocationInput: z.ZodType<CreateLocationInputType> = z.object({
+  uid: z.string(),
   uid_store: z.string(),
   name: z.string().min(1).max(100),
   uid_location_type: z.string().nullable().optional(),
 });
 
+/** Input type for updating a location. */
 export interface UpdateLocationInputType {
   uid: string;
   name?: string;
@@ -85,6 +93,7 @@ export interface UpdateLocationInputType {
   active?: boolean;
   version: number;
 }
+/** Input schema for updating a location. */
 export const UpdateLocationInput: z.ZodType<UpdateLocationInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100).optional(),

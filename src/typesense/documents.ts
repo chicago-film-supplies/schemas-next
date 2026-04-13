@@ -5,8 +5,31 @@
  * for each collection. Every document includes an `id` field added by Typesense.
  */
 
+// ── Shared ─────────────────────────────────────────────────────────
+
+/**
+ * Shared address fields used across Typesense document types.
+ *
+ * Coordinates are stored as `[latitude, longitude]` geopoints.
+ * The API translates Firestore `{latitude, longitude}` objects into this format.
+ */
+export interface TypesenseAddressFields {
+  full?: string;
+  name?: string;
+  city?: string;
+  region?: string;
+  street?: string;
+  street2?: string;
+  postcode?: string;
+  country_name?: string;
+  mapbox_id?: string;
+  address_coordinates?: [number, number];
+  user_coordinates?: [number, number];
+}
+
 // ── Bookings ────────────────────────────────────────────────────────
 
+/** Typesense document type for bookings. */
 export interface BookingDocument {
   id: string;
   uid: string;
@@ -50,19 +73,11 @@ export interface BookingDocument {
   destinations?: {
     delivery?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
     };
     collection?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
     };
   };
   stores?: Array<{
@@ -78,6 +93,7 @@ export interface BookingDocument {
 
 // ── Chart of Accounts ───────────────────────────────────────────────
 
+/** Typesense document type for chart of accounts. */
 export interface ChartOfAccountsDocument {
   id: string;
   uid: string;
@@ -93,6 +109,7 @@ export interface ChartOfAccountsDocument {
 
 // ── Contacts ────────────────────────────────────────────────────────
 
+/** Typesense document type for contacts. */
 export interface ContactDocument {
   id: string;
   uid: string;
@@ -112,20 +129,12 @@ export interface ContactDocument {
 
 // ── Destinations ────────────────────────────────────────────────────
 
+/** Typesense document type for destinations. */
 export interface DestinationDocument {
   id: string;
   uid: string;
   mapbox_ids: string[];
-  address?: {
-    full?: string;
-    name?: string;
-    city?: string;
-    region?: string;
-    street?: string;
-    country_name?: string;
-    address_coordinates?: Record<string, unknown>;
-    user_coordinates?: Record<string, unknown>;
-  };
+  address?: TypesenseAddressFields;
   organizations?: Array<{
     uid?: string;
     name?: string;
@@ -138,20 +147,24 @@ export interface DestinationDocument {
     uid?: string;
     name?: string;
   }>;
+  created_at?: number;
   updated_at: number;
 }
 
 // ── Invoices ────────────────────────────────────────────────────────
 
+/** Typesense document type for invoices. */
 export interface InvoiceDocument {
   id: string;
   uid: string;
   number: number;
   number_str?: string;
-  crms_id: number;
+  crms_id?: number;
   crms_id_str?: string;
   status: string;
   tax_profile: string;
+  number_orders?: number[];
+  number_orders_str?: string[];
   subject?: string;
   reference?: string;
   external_notes?: string;
@@ -162,24 +175,23 @@ export interface InvoiceDocument {
     crms_id?: number;
     crms_id_str?: string;
     tax_profile?: string;
+    xero_id?: string;
+    billing_address?: TypesenseAddressFields;
   };
-  items_consolidated: Array<{
+  items?: Array<{
     uid?: string;
     name?: string;
     quantity?: number;
     type?: string;
-    price?: {
-      base?: number;
-      total?: number;
-      discount_percent?: number;
-      chargeable_days?: number;
-      formula?: string;
-      tax_profile?: string;
-    };
-    crms_opportunity_id?: number;
-    tracking_category?: string;
-    coa_revenue?: string;
   }>;
+  totals?: {
+    total?: number;
+    total_str?: string;
+    amount_paid?: number;
+    amount_paid_str?: string;
+    amount_due?: number;
+    amount_due_str?: string;
+  };
   crms_opportunity_ids?: number[];
   xero_id?: string;
   updated_by?: string;
@@ -191,6 +203,7 @@ export interface InvoiceDocument {
 
 // ── Locations ───────────────────────────────────────────────────────
 
+/** Typesense document type for locations. */
 export interface LocationDocument {
   id: string;
   uid: string;
@@ -216,6 +229,7 @@ export interface LocationDocument {
 
 // ── Orders ──────────────────────────────────────────────────────────
 
+/** Typesense document type for orders. */
 export interface OrderDocument {
   id: string;
   uid: string;
@@ -231,11 +245,18 @@ export interface OrderDocument {
   reference?: string;
   notes?: string;
   crms_status?: string;
+  invoices?: Array<{
+    uid?: string;
+    number?: number;
+    status?: string;
+  }>;
   organization: {
     uid?: string;
     name: string;
     crms_id?: number;
     crms_id_str?: string;
+    xero_id?: string;
+    billing_address?: TypesenseAddressFields;
   };
   dates: {
     delivery_start_fs?: number;
@@ -244,15 +265,13 @@ export interface OrderDocument {
     collection_end_fs?: number;
     charge_start_fs?: number;
     charge_end_fs?: number;
+    days_active?: number;
+    days_charged?: number;
   };
   destinations: Array<{
     delivery?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
       instructions?: string;
       contact?: {
         uid?: string;
@@ -261,11 +280,7 @@ export interface OrderDocument {
     };
     collection?: {
       uid?: string;
-      address?: {
-        full?: string;
-        city?: string;
-        region?: string;
-      };
+      address?: TypesenseAddressFields;
       instructions?: string;
       contact?: {
         uid?: string;
@@ -280,6 +295,7 @@ export interface OrderDocument {
     taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
     transaction_fees?: Array<{ uid?: string; name?: string; rate?: number; type?: string; amount?: number }>;
     total?: number;
+    total_str?: string;
   };
   items?: Array<{
     uid?: string;
@@ -292,12 +308,13 @@ export interface OrderDocument {
     zero_priced?: boolean;
     uid_order?: string;
     order_number?: number;
-    uid_component_of?: string;
+    path?: string[];
     uid_delivery?: string;
     uid_collection?: string;
     total_price?: number;
     price?: {
       base?: number;
+      replacement?: number;
       subtotal?: number;
       subtotal_discounted?: number;
       total?: number;
@@ -313,6 +330,7 @@ export interface OrderDocument {
 
 // ── Organizations ───────────────────────────────────────────────────
 
+/** Typesense document type for organizations. */
 export interface OrganizationDocument {
   id: string;
   uid: string;
@@ -324,24 +342,7 @@ export interface OrganizationDocument {
   tax_profile: string;
   emails?: string[];
   phones?: string[];
-  billing_address: {
-    name?: string;
-    street?: string;
-    full?: string;
-    street2?: string;
-    city?: string;
-    region?: string;
-    postcode?: string;
-    country_name?: string;
-    address_coordinates?: {
-      latitude?: number;
-      longitude?: number;
-    };
-    user_coordinates?: {
-      latitude?: number;
-      longitude?: number;
-    };
-  };
+  billing_address: TypesenseAddressFields;
   contacts: Array<{
     uid?: string;
     name?: string;
@@ -355,16 +356,19 @@ export interface OrganizationDocument {
 
 // ── Products ────────────────────────────────────────────────────────
 
+/** Typesense document type for a product component entry. */
 export interface ProductDocumentComponent {
   uid?: string;
+  path?: string[];
   name?: string;
   quantity?: number;
   active?: boolean;
+  type?: string;
+  stock_method?: string;
   crms_id?: number;
   crms_accessory_id?: number;
   description?: string;
   inclusion_type?: string;
-  type?: string;
   zero_priced?: boolean;
   price?: {
     base?: number;
@@ -376,6 +380,7 @@ export interface ProductDocumentComponent {
   };
 }
 
+/** Typesense document type for products. */
 export interface ProductDocument {
   id: string;
   uid: string;
@@ -431,6 +436,8 @@ export interface ProductDocument {
   }>;
   components?: ProductDocumentComponent[];
   component_of?: ProductDocumentComponent[];
+  query_by_components?: string[];
+  query_by_component_of?: string[];
   crms_stock_level_ids?: number[];
   images?: string[];
   updated_by?: string;
@@ -440,12 +447,17 @@ export interface ProductDocument {
 
 // ── Stores ──────────────────────────────────────────────────────────
 
+/** Typesense document type for stores. */
 export interface StoreDocument {
   id: string;
   uid: string;
   name: string;
   default: boolean;
   active: boolean;
+  default_location?: {
+    uid?: string;
+    name?: string;
+  };
   crms_store_id: number;
   crms_store_id_str?: string;
   created_at: number;
@@ -454,6 +466,7 @@ export interface StoreDocument {
 
 // ── Tags ────────────────────────────────────────────────────────────
 
+/** Typesense document type for tags. */
 export interface TagDocument {
   id: string;
   uid: string;
@@ -469,6 +482,7 @@ export interface TagDocument {
 
 // ── Templates ───────────────────────────────────────────────────────
 
+/** Typesense document type for templates. */
 export interface TemplateDocument {
   id: string;
   uid: string;
@@ -486,6 +500,7 @@ export interface TemplateDocument {
 
 // ── Tracking Categories ─────────────────────────────────────────────
 
+/** Typesense document type for tracking categories. */
 export interface TrackingCategoryDocument {
   id: string;
   uid: string;
@@ -507,14 +522,17 @@ export interface TrackingCategoryDocument {
 
 // ── Webshop Products ────────────────────────────────────────────────
 
+/** Typesense document type for a webshop product component entry. */
 export interface WebshopProductDocumentComponent {
   uid?: string;
+  path?: string[];
   name?: string;
   quantity?: number;
   active?: boolean;
+  type?: string;
+  stock_method?: string;
   description?: string;
   inclusion_type?: string;
-  type?: string;
   zero_priced?: boolean;
   price?: {
     base?: number;
@@ -525,10 +543,12 @@ export interface WebshopProductDocumentComponent {
   };
 }
 
+/** Typesense document type for webshop products. */
 export interface WebshopProductDocument {
   id: string;
   uid: string;
   name: string;
+  description?: string;
   type: string;
   stock_method?: string;
   active: boolean;
@@ -551,7 +571,6 @@ export interface WebshopProductDocument {
   alternates?: Array<{
     uid?: string;
     name?: string;
-    description?: string;
   }>;
   shipping?: {
     weight?: number;

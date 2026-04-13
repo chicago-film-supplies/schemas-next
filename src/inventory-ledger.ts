@@ -15,6 +15,7 @@ const INVENTORY_STOCK_METHODS = ["bulk", "serialized"] as const;
 type InventoryStockMethodType = typeof INVENTORY_STOCK_METHODS[number];
 
 
+/** An inventory ledger document tracking stock quantities and costs per product. */
 export interface InventoryLedger {
   uid: string;
   uid_product: string;
@@ -38,6 +39,7 @@ export interface InventoryLedger {
   updated_at: FirestoreTimestampType;
 }
 
+/** Zod schema for an InventoryLedger document. */
 export const InventoryLedgerSchema: z.ZodType<InventoryLedger> = z.strictObject({
   uid: z.string(),
   uid_product: z.string(),

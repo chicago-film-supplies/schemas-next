@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for tracking categories. */
 export const trackingCategories: TypesenseCollectionConfig = {
   alias: "tracking-categories",
   version: 5,

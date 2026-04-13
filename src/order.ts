@@ -5,6 +5,10 @@ import { z } from "zod";
 import {
   Address,
   type AddressType,
+  DocItemTypeEnum,
+  type DocItemTypeType,
+  DocLineItemTypeEnum,
+  type DocLineItemTypeType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
   InclusionTypeEnum,
@@ -17,6 +21,8 @@ import {
   StockMethodEnum,
   type StockMethodType,
   TaxProfileEnum,
+  type InvoiceStatusType,
+  InvoiceStatusEnum,
   type TaxProfileType,
   TimestampFields,
 } from "./common.ts";
@@ -27,14 +33,9 @@ const ORDER_STATUSES = [
 type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 
-const ITEM_TYPES = ["destination", "group", "rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
-type ItemTypeType = typeof ITEM_TYPES[number];
-
-/** Line item types in the full document (superset of input types). */
-const DOC_LINE_ITEM_TYPES = [
-  "rental", "replacement", "sale", "service", "surcharge", "transaction_fee",
-] as const;
-type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
+// Item type constants imported from common.ts:
+// DocItemTypeType / DocItemTypeEnum — all types including structural dividers (input schemas)
+// DocLineItemTypeType / DocLineItemTypeEnum — billable types only (doc schemas)
 
 const INCLUSION_TYPES_NULLABLE = ["default", "mandatory", "optional"] as const;
 
@@ -50,6 +51,7 @@ export interface OrderDatesType {
   charge_end: string;
 }
 
+/** Zod schema for order dates. */
 export const OrderDates: z.ZodType<OrderDatesType> = z.object({
   delivery_start: z.string(),
   delivery_end: z.string(),
@@ -69,6 +71,7 @@ export interface DestinationContactType {
   phones?: string[];
 }
 
+/** Zod schema for destination contact reference. */
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100).meta({ pii: "mask" }),
@@ -84,6 +87,7 @@ export interface DocDestinationContactType {
   phones?: string[];
 }
 
+/** Zod schema for destination contact reference (document version). */
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100).meta({ pii: "mask" }),
@@ -100,13 +104,12 @@ export interface DestinationEndpointType {
   contact?: DestinationContactType | null;
 }
 
+/** Zod schema for a destination endpoint. */
 export const DestinationEndpoint: z.ZodType<DestinationEndpointType> = z.object({
   uid: z.string().nullable().optional(),
   address: Address.optional(),
   instructions: z.string().nullable().optional(),
   contact: DestinationContact.nullable().optional(),
-}).meta({
-  initial: {"uid":null,"address":null,"instructions":null,"contact":null},
 });
 
 /**
@@ -119,6 +122,7 @@ export interface DocDestinationEndpointType {
   contact: DocDestinationContactType | null;
 }
 
+/** Zod schema for a destination endpoint (document version). */
 export const DocDestinationEndpoint: z.ZodType<DocDestinationEndpointType> = z.strictObject({
   uid: z.string().nullable(),
   address: Address,
@@ -134,6 +138,7 @@ export interface DestinationType {
   collection: DestinationEndpointType;
 }
 
+/** Zod schema for a destination pair. */
 export const Destination: z.ZodType<DestinationType> = z.object({
   delivery: DestinationEndpoint,
   collection: DestinationEndpoint,
@@ -147,6 +152,7 @@ export interface DocDestinationType {
   collection: DocDestinationEndpointType;
 }
 
+/** Zod schema for a document-level destination pair. */
 export const DocDestination: z.ZodType<DocDestinationType> = z.strictObject({
   delivery: DocDestinationEndpoint,
   collection: DocDestinationEndpoint,
@@ -166,6 +172,7 @@ export interface PriceModifierType {
   amount: number;
 }
 
+/** Zod schema for a rate-based price modifier (tax or transaction fee). */
 export const PriceModifier: z.ZodType<PriceModifierType> = z.strictObject({
   uid: z.string(),
   name: z.string(),
@@ -185,6 +192,7 @@ export interface TaxRefType {
   type: RateType;
 }
 
+/** Zod schema for a denormalized tax snapshot without computed amount. */
 export const TaxRef: z.ZodType<TaxRefType> = z.strictObject({
   uid: z.string(),
   name: z.string(),
@@ -202,10 +210,23 @@ export interface DiscountType {
   amount: number;
 }
 
+/** Zod schema for an item discount. */
 export const Discount: z.ZodType<DiscountType> = z.strictObject({
   rate: z.number(),
   type: RateTypeEnum,
   amount: z.number(),
+});
+
+/** Discount input — rate and type only. Amount is computed by calculateItemPrice. */
+export interface DiscountInputType {
+  rate: number;
+  type: RateType;
+}
+
+/** Zod schema for a discount input (without computed amount). */
+export const DiscountInput: z.ZodType<DiscountInputType> = z.object({
+  rate: z.number(),
+  type: RateTypeEnum,
 });
 
 // ── Input schemas ─────────────────────────────────────────────────
@@ -215,23 +236,23 @@ export const Discount: z.ZodType<DiscountType> = z.strictObject({
  */
 export interface ItemPriceType {
   base?: number;
+  replacement?: number | null;
   chargeable_days?: number | null;
   formula?: PriceFormulaType;
   subtotal?: number;
-  discount?: { rate: number; type: RateType } | null;
+  discount?: DiscountInputType | null;
   taxes?: Array<{ uid: string }>;
   total?: number;
 }
 
+/** Zod schema for item price breakdown (input). */
 export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
   base: z.number().optional(),
+  replacement: z.number().nullable().optional(),
   chargeable_days: z.int().nullable().optional(),
   formula: PriceFormulaEnum.optional(),
   subtotal: z.number().optional(),
-  discount: z.object({
-    rate: z.number(),
-    type: RateTypeEnum,
-  }).nullable().optional(),
+  discount: DiscountInput.nullable().optional(),
   taxes: z.array(z.object({ uid: z.string() })).optional(),
   total: z.number().optional(),
 });
@@ -241,13 +262,13 @@ export const ItemPrice: z.ZodType<ItemPriceType> = z.object({
  */
 export interface OrderItemType {
   uid: string;
-  type?: ItemTypeType;
+  type: DocItemTypeType;
   name?: string;
   description?: string;
   quantity?: number;
   price?: ItemPriceType;
   stock_method?: StockMethodType;
-  uid_component_of?: string | null;
+  path: string[];
   inclusion_type?: InclusionTypeType | null;
   zero_priced?: boolean | null;
   uid_delivery?: string;
@@ -256,23 +277,22 @@ export interface OrderItemType {
   uid_order?: string;
 }
 
+/** Zod schema for an individual order item (input). */
 export const OrderItem: z.ZodType<OrderItemType> = z.object({
   uid: z.string(),
-  type: z.enum(ITEM_TYPES).optional(),
+  type: DocItemTypeEnum,
   name: z.string().optional(),
   description: z.string().optional(),
   quantity: z.int().optional(),
   price: ItemPrice.optional(),
   stock_method: StockMethodEnum.optional(),
-  uid_component_of: z.string().nullable().optional(),
+  path: z.array(z.string()),
   inclusion_type: InclusionTypeEnum.nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   uid_delivery: z.string().optional(),
   uid_collection: z.string().optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
-}).meta({
-  initial: {"description":"","name":"","order_number":0,"price":{"base":0,"chargeable_days":null,"formula":"five_day_week","subtotal":0,"discount":null,"taxes":[],"total":0},"quantity":0,"type":"rental","stock_method":"bulk","uid":"","uid_order":"","uid_component_of":null,"inclusion_type":null,"zero_priced":null},
 });
 
 /**
@@ -293,6 +313,7 @@ export interface CreateOrderInputType {
   customer_returning?: boolean;
 }
 
+/** Input schema for creating an order. */
 export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   uid: z.string(),
   organization: z.object({ uid: z.string() }),
@@ -300,7 +321,12 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
   dates: OrderDates,
   tax_profile: TaxProfileEnum,
   destinations: z.array(Destination).min(1, "At least one destination is required"),
-  items: z.array(OrderItem).optional(),
+  items: z.array(OrderItem)
+    .refine(
+      (items) => items.length === 0 || items[0].type === "destination",
+      { message: "First item must be a destination divider" },
+    )
+    .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   notes: z.string().meta({ pii: "mask" }).optional(),
@@ -327,6 +353,7 @@ export interface UpdateOrderInputType {
   version: number;
 }
 
+/** Input schema for updating an order. */
 export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   uid: z.string().optional(),
   organization: z.object({ uid: z.string() }).optional(),
@@ -334,7 +361,12 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
   dates: OrderDates.optional(),
   tax_profile: TaxProfileEnum.optional(),
   destinations: z.array(Destination).min(1, "At least one destination is required").optional(),
-  items: z.array(OrderItem).optional(),
+  items: z.array(OrderItem)
+    .refine(
+      (items) => items.length === 0 || items[0].type === "destination",
+      { message: "First item must be a destination divider" },
+    )
+    .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   notes: z.string().meta({ pii: "mask" }).optional(),
@@ -353,6 +385,7 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
  */
 export interface OrderDocItemPriceType {
   base: number;
+  replacement?: number | null;
   chargeable_days: number | null;
   formula: PriceFormulaType;
   subtotal: number;
@@ -362,8 +395,9 @@ export interface OrderDocItemPriceType {
   total: number;
 }
 
-const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
+export const OrderDocItemPrice: z.ZodType<OrderDocItemPriceType> = z.strictObject({
   base: z.number().default(0),
+  replacement: z.number().nullable().optional(),
   chargeable_days: z.number().int().nullable().default(null),
   formula: PriceFormulaEnum.default("five_day_week"),
   subtotal: z.number().default(0),
@@ -384,7 +418,7 @@ export interface OrderDocLineItemType {
   stock_method?: StockMethodType;
   order_number?: number;
   uid_order?: string;
-  uid_component_of?: string | null;
+  path: string[];
   inclusion_type?: "default" | "mandatory" | "optional" | null;
   zero_priced?: boolean | null;
   crms_id?: number | null;
@@ -392,9 +426,9 @@ export interface OrderDocLineItemType {
   uid_collection?: string | null;
 }
 
-const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
+export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid: z.string(),
-  type: z.enum(DOC_LINE_ITEM_TYPES),
+  type: DocLineItemTypeEnum,
   name: z.string().min(1).max(100),
   description: z.string().default(""),
   quantity: z.number().int().min(0).default(0),
@@ -402,7 +436,7 @@ const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   stock_method: StockMethodEnum.optional(),
   order_number: z.number().optional(),
   uid_order: z.string().optional(),
-  uid_component_of: z.string().nullable().optional(),
+  path: z.array(z.string()).default([]),
   inclusion_type: z.enum(INCLUSION_TYPES_NULLABLE).nullable().optional(),
   zero_priced: z.boolean().nullable().optional(),
   crms_id: z.number().nullable().optional(),
@@ -410,10 +444,12 @@ const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject({
   uid_collection: z.string().nullable().optional(),
 });
 
+/** Destination divider item in the order document items array. */
 export interface OrderDocDestinationItemType {
   uid: string;
   type: "destination";
   name: string;
+  path: string[];
   uid_delivery: string | null;
   uid_collection: string | null;
   description: string;
@@ -424,11 +460,10 @@ export const OrderDocDestinationItem: z.ZodType<OrderDocDestinationItemType> = z
   uid: z.uuid(),
   type: z.literal("destination"),
   name: z.string().max(200).default(""),
+  path: z.array(z.string()).default([]),
   uid_delivery: z.string().nullable().default(null),
   uid_collection: z.string().nullable().default(null),
   description: z.string().default(""),
-}).meta({
-  initial: {"name":"","uid_delivery":null,"uid_collection":null,"description":""},
 });
 
 /** Group divider in items array. */
@@ -436,13 +471,15 @@ export interface OrderDocGroupItemType {
   uid: string;
   type: "group";
   name: string;
+  path: string[];
   description: string;
 }
 
-const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
+export const OrderDocGroupItem: z.ZodType<OrderDocGroupItemType> = z.strictObject({
   uid: z.uuid(),
   type: z.literal("group"),
   name: z.string().min(1).max(100),
+  path: z.array(z.string()).default([]),
   description: z.string().default(""),
 });
 
@@ -451,6 +488,7 @@ export interface OrderDocTransactionFeeItemType {
   uid: string;
   type: "transaction_fee";
   name: string;
+  path: string[];
   description: string;
   quantity: number;
   price: PriceModifierType;
@@ -458,10 +496,12 @@ export interface OrderDocTransactionFeeItemType {
   uid_order?: string;
 }
 
+/** Zod schema for a transaction fee line item in the order document. */
 export const OrderDocTransactionFeeItem: z.ZodType<OrderDocTransactionFeeItemType> = z.strictObject({
   uid: z.string(),
   type: z.literal("transaction_fee"),
   name: z.string().min(1).max(100),
+  path: z.array(z.string()).default([]),
   description: z.string().default(""),
   quantity: z.number().int().min(0).default(0),
   price: PriceModifier,
@@ -495,6 +535,7 @@ export interface OrderDocDatesType {
   days_charged: number | null;
 }
 
+/** Zod schema for order dates with Firestore timestamp companions. */
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   delivery_start: z.string().default(""),
   delivery_start_fs: FirestoreTimestamp,
@@ -512,7 +553,13 @@ export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
   days_charged: z.int().nullable().default(null),
 });
 
+/** Union of all item types stored in the order document. */
 export type OrderDocItemType = OrderDocLineItemType | OrderDocDestinationItemType | OrderDocGroupItemType | OrderDocTransactionFeeItemType;
+
+/** Type guard that narrows an order doc item to a line item (excludes destination/group dividers). */
+export function isLineItem(item: OrderDocItemType): item is OrderDocLineItemType {
+  return item.type !== "destination" && item.type !== "group";
+}
 
 /** Denormalized organization snapshot on the order document. */
 const OrderDocOrganization = z.strictObject({
@@ -562,6 +609,8 @@ export interface Order {
   items: OrderDocItemType[];
   tax_profile: TaxProfileType;
   totals: OrderDocTotalsType;
+  invoices: Array<{ uid: string; number: number; status: InvoiceStatusType }>;
+  query_by_invoices: string[];
   query_by_items: string[];
   query_by_contacts: string[];
   crms_id?: number | null;
@@ -576,6 +625,7 @@ export interface Order {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for the full order Firestore document. */
 export const OrderSchema: z.ZodType<Order> = z.strictObject({
   uid: z.string(),
   number: z.int(),
@@ -586,6 +636,8 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   items: z.array(OrderDocItem).default([]),
   tax_profile: TaxProfileEnum.default("tax_applied"),
   totals: OrderDocTotals,
+  invoices: z.array(z.strictObject({ uid: z.string(), number: z.number(), status: InvoiceStatusEnum })).default([]),
+  query_by_invoices: z.array(z.string()).default([]),
   query_by_items: z.array(z.string()).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   crms_id: z.number().nullable().optional(),
@@ -600,10 +652,35 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
 }).meta({
   title: "Order",
   collection: "orders",
-  initial: {"crms_id":null,"customer_collecting":false,"customer_returning":false,"dates":{"delivery_start":"","delivery_end":"","collection_start":"","collection_end":"","charge_start":"","charge_end":""},"destinations":[{"delivery":{"uid":null,"address":null,"instructions":null,"contact":null},"collection":{"uid":null,"address":null,"instructions":null,"contact":null}}],"items":[],"notes":"","organization":{"uid":null,"name":"","billing_address":null},"reference":null,"query_by_items":[],"query_by_contacts":[],"status":"draft","subject":"","tax_profile":"tax_applied","totals":{"discount_amount":0,"subtotal":0,"subtotal_discounted":0,"taxes":[],"transaction_fees":[],"total":0},"uid":null,"version":0},
   displayDefaults: {
     columns: ["number", "organization.name", "subject", "status"],
     filters: { status: [] },
     sort: { column: "number", direction: "desc" },
   },
 }) as z.ZodType<Order>;
+
+// ── Shared utility types ─────────────────────────────────────────
+
+/**
+ * A consolidated line item — aggregated quantity and price for display.
+ * Used by consolidateItems() in utilities and the manager app.
+ */
+export interface ConsolidatedItemType {
+  uid: string;
+  name: string;
+  type: string;
+  quantity: number;
+  total_price: number;
+  unit_price: number;
+  stock_method: string;
+}
+
+/**
+ * Path context for an item — which destination and group it belongs to.
+ * Used by getGroupPath() in utilities and consumed by the manager app.
+ */
+export interface GroupPathType {
+  destination: string | null;
+  group: string | null;
+  product: string | null;
+}

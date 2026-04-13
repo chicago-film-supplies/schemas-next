@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** Full Firestore document for a single holiday date entry. */
 export interface HolidayDates {
   uid: string;
   uid_holiday: string;
@@ -15,6 +16,7 @@ export interface HolidayDates {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for HolidayDates. */
 export const HolidayDatesSchema: z.ZodType<HolidayDates> = z.strictObject({
   uid: z.string(),
   uid_holiday: z.string(),

@@ -1,13 +1,15 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
+import { typesenseAddressFields } from "./types.ts";
 
+/** Typesense collection config for bookings. */
 export const bookings: TypesenseCollectionConfig = {
   alias: "bookings",
-  version: 3,
+  version: 4,
   firestoreCollection: "bookings",
-  collectionName: "bookings_v3",
+  collectionName: "bookings_v4",
   enabled: false,
   schema: {
-    name: "bookings_v3",
+    name: "bookings_v4",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -48,16 +50,10 @@ export const bookings: TypesenseCollectionConfig = {
       { name: "destinations", type: "object", optional: true },
       { name: "destinations.delivery", type: "object", optional: true },
       { name: "destinations.delivery.uid", type: "string", optional: true },
-      { name: "destinations.delivery.address", type: "object", optional: true },
-      { name: "destinations.delivery.address.full", type: "string", stem: true, optional: true },
-      { name: "destinations.delivery.address.city", type: "string", facet: true, optional: true },
-      { name: "destinations.delivery.address.region", type: "string", facet: true, optional: true },
+      ...typesenseAddressFields("destinations.delivery.address"),
       { name: "destinations.collection", type: "object", optional: true },
       { name: "destinations.collection.uid", type: "string", optional: true },
-      { name: "destinations.collection.address", type: "object", optional: true },
-      { name: "destinations.collection.address.full", type: "string", stem: true, optional: true },
-      { name: "destinations.collection.address.city", type: "string", facet: true, optional: true },
-      { name: "destinations.collection.address.region", type: "string", facet: true, optional: true },
+      ...typesenseAddressFields("destinations.collection.address"),
       { name: "stores", type: "object[]", optional: true },
       { name: "stores.uid_store", type: "string[]", facet: false, optional: true },
       { name: "stores.name", type: "string[]", stem: true, optional: true },

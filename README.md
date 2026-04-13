@@ -2,6 +2,23 @@
 
 Shared Zod 4 schemas for CFS Firestore collections and Typesense collections, published to JSR as `@cfs/schemas`. Also includes programmatically enforceable propagation rules and shared TypeScript types and interfaces.
 
+## Usage
+
+```ts
+import { ContactSchema, type Contact } from "jsr:@cfs/schemas";
+import { CreateOrderInput } from "jsr:@cfs/schemas/order";
+import { type BookingDocument, bookings } from "jsr:@cfs/schemas/typesense";
+
+// Validate a Firestore document
+const contact: Contact = ContactSchema.parse(firestoreDoc);
+
+// Validate API input (strips unknown fields)
+const input = CreateOrderInput.parse(requestBody);
+
+// Access Typesense collection config
+console.log(bookings.schema.name); // "bookings"
+```
+
 ## Setup
 
 Requires [Deno](https://deno.land/).

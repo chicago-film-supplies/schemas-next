@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { type FirestoreFieldValue, type FirestoreTimestampType, TimestampFields, UidNameRef, type UidNameRefType } from "./common.ts";
 
+/** A tracking category document in Firestore. */
 export interface TrackingCategory {
   uid: string;
   name: string;
@@ -19,6 +20,7 @@ export interface TrackingCategory {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for TrackingCategory. */
 export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObject({
   uid: z.string(),
   name: z.string().min(1).max(100),
@@ -34,7 +36,6 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
 }).meta({
   title: "Tracking Category",
   collection: "tracking-categories",
-  initial: {"uid":null,"name":"","crms_product_group_name":"","products":{},"xero_tracking_option_id":null,"version":0,"updated_by":""},
   displayDefaults: {
     columns: ["name", "count"],
     filters: {},
@@ -42,22 +43,28 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   },
 });
 
+/** Input type for creating a tracking category. */
 export interface CreateTrackingCategoryInputType {
+  uid: string;
   name: string;
   crms_product_group_id: number;
   crms_product_group_name: string;
 }
+/** Input schema for creating a tracking category. */
 export const CreateTrackingCategoryInput: z.ZodType<CreateTrackingCategoryInputType> = z.object({
+  uid: z.string(),
   name: z.string().min(1).max(100),
   crms_product_group_id: z.number(),
   crms_product_group_name: z.string(),
 });
 
+/** Input type for updating a tracking category. */
 export interface UpdateTrackingCategoryInputType {
   uid: string;
   name: string;
   version: number;
 }
+/** Input schema for updating a tracking category. */
 export const UpdateTrackingCategoryInput: z.ZodType<UpdateTrackingCategoryInputType> = z.object({
   uid: z.string(),
   name: z.string().min(1).max(100),

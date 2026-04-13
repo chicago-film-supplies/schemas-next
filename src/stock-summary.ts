@@ -16,6 +16,7 @@ const SUMMARY_TYPES = ["sale", "rental"] as const;
 type SummaryTypeType = typeof SUMMARY_TYPES[number];
 
 
+/** A stock summary document aggregating availability and bookings for a product over a date range. */
 export interface StockSummary {
   uid: string;
   uid_product: string;
@@ -56,6 +57,7 @@ export interface StockSummary {
   expiresAt: FirestoreTimestampType;
 }
 
+/** Zod schema for StockSummary. */
 export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
   uid: z.string(),
   uid_product: z.string(),

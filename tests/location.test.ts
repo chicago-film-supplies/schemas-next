@@ -1,18 +1,20 @@
 import { assertEquals } from "@std/assert";
+import { getInitialValues } from "../src/initial.ts";
 import { LocationSchema } from "../src/location.ts";
 
+const locationBase = getInitialValues(LocationSchema) as Record<string, unknown>;
+
 const validLocation = {
+  ...locationBase,
   uid: "test-loc-1",
   uid_store: "test-store-1",
   name: "Aisle A",
   default: true,
-  uid_location_type: null,
   active: true,
   product_capacities: [{ uid: "test-p1", max: 50, max_default: 40 }],
   query_by_product_capacities: ["test-p1"],
   products: [{ uid: "test-p1", name: "LED Panel", quantity: 10, default: true }],
   query_by_products: ["test-p1"],
-  version: 0,
   created_at: null,
   updated_at: null,
 };

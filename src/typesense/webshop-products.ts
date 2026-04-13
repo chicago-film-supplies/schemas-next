@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for webshop products. */
 export const webshopProducts: TypesenseCollectionConfig = {
   alias: "webshop-products",
   version: 4,
@@ -11,6 +12,7 @@ export const webshopProducts: TypesenseCollectionConfig = {
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "name", type: "string", sort: true, stem: true, facet: false },
+      { name: "description", type: "string", stem: true, optional: true },
       { name: "type", type: "string", facet: true, sort: true, stem: true },
       { name: "stock_method", type: "string", facet: true, sort: true, stem: true, optional: true },
       { name: "active", type: "bool", sort: true, facet: true },
@@ -35,14 +37,13 @@ export const webshopProducts: TypesenseCollectionConfig = {
       { name: "alternates", type: "object[]", optional: true },
       { name: "alternates.uid", type: "string[]", facet: false, optional: true },
       { name: "alternates.name", type: "string[]", stem: true, optional: true },
-      { name: "alternates.description", type: "string[]", optional: true },
       { name: "shipping", type: "object", optional: true },
-      { name: "shipping.weight", type: "int32", optional: true },
-      { name: "shipping.height", type: "int32", optional: true },
-      { name: "shipping.width", type: "int32", optional: true },
-      { name: "shipping.length", type: "int32", optional: true },
+      { name: "shipping.weight", type: "float", optional: true },
+      { name: "shipping.height", type: "float", optional: true },
+      { name: "shipping.width", type: "float", optional: true },
+      { name: "shipping.length", type: "float", optional: true },
       { name: "shipping.air_hazardous", type: "bool", facet: true, optional: true },
-      { name: "shipping.air_un", type: "int32", optional: true },
+      { name: "shipping.air_un", type: "float", optional: true },
       { name: "tags", type: "object[]", optional: true },
       { name: "tags.uid", type: "string[]", facet: false, optional: true },
       { name: "tags.name", type: "string[]", stem: true, facet: false, optional: true },
@@ -61,6 +62,8 @@ export const webshopProducts: TypesenseCollectionConfig = {
       { name: "components.price.taxes", type: "object[]", optional: true },
       { name: "components.price.taxes.uid", type: "string[]", optional: true },
       { name: "components.price.taxes.name", type: "string[]", optional: true },
+      { name: "components.price.taxes.rate", type: "float[]", optional: true },
+      { name: "components.price.taxes.type", type: "string[]", optional: true },
       { name: "components.price.formula", type: "string[]", facet: true, optional: true },
       { name: "components.price.discountable", type: "bool[]", facet: true, optional: true },
       { name: "component_of", type: "object[]", optional: true },
@@ -78,6 +81,8 @@ export const webshopProducts: TypesenseCollectionConfig = {
       { name: "component_of.price.taxes", type: "object[]", optional: true },
       { name: "component_of.price.taxes.uid", type: "string[]", optional: true },
       { name: "component_of.price.taxes.name", type: "string[]", optional: true },
+      { name: "component_of.price.taxes.rate", type: "float[]", optional: true },
+      { name: "component_of.price.taxes.type", type: "string[]", optional: true },
       { name: "component_of.price.formula", type: "string[]", facet: true, optional: true },
       { name: "component_of.price.discountable", type: "bool[]", facet: true, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false, optional: true },

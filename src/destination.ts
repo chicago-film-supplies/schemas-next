@@ -11,6 +11,7 @@ import {
   type UidNameRefType,
 } from "./common.ts";
 
+/** Full Firestore document for a destination (a physical address used in orders). */
 export interface Destination {
   uid: string;
   address: AddressType | null;
@@ -26,6 +27,7 @@ export interface Destination {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for Destination. */
 export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
   uid: z.string(),
   address: Address,
@@ -41,7 +43,6 @@ export const DestinationSchema: z.ZodType<Destination> = z.strictObject({
 }).meta({
   title: "Destination",
   collection: "destinations",
-  initial: {"uid":null,"address":null,"mapbox_ids":[],"organizations":[],"query_by_organizations":[],"products":[],"query_by_products":[],"contacts":[],"query_by_contacts":[],"version":0},
   displayDefaults: {
     columns: ["address.full", "address.city", "address.region"],
     filters: {},

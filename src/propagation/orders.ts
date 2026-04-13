@@ -34,6 +34,7 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["type"], target: ["items", "type"] },
       { source: ["stock_method"], target: ["items", "stock_method"] },
       { source: ["price", "base"], target: ["items", "price", "base"], transform: "fallback — used only when input omits price" },
+      { source: ["price", "replacement"], target: ["items", "price", "replacement"], transform: "fallback — used only when input omits replacement" },
       { source: ["price", "taxes"], target: ["items", "price", "taxes"], transform: "fallback — denormalized TaxRef[] from product catalog, used when input omits taxes" },
       { source: ["name"], target: ["items", "name"], transform: "fallback — input name takes precedence" },
     ],
@@ -146,11 +147,33 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["query_by_uid_store"], target: ["query_by_uid_store"] },
     ],
   },
+  {
+    id: "create-order:order-to-order-events",
+    source: "orders",
+    target: "order-events",
+    mode: "co-write",
+    invariant: "Lightweight schedule projection — one event per destination per position for dashboard calendar/card views",
+    transaction: "create-order",
+    fields: [
+      { source: ["uid"], target: ["uid_order"] },
+      { source: ["number"], target: ["order_number"] },
+      { source: ["status"], target: ["status"] },
+      { source: ["subject"], target: ["subject"] },
+      { source: ["organization", "uid"], target: ["organization", "uid"] },
+      { source: ["organization", "name"], target: ["organization", "name"] },
+      { source: ["destinations", "delivery"], target: ["destination"], transform: "full DocDestinationEndpointType for start events" },
+      { source: ["destinations", "collection"], target: ["destination"], transform: "full DocDestinationEndpointType for end events" },
+      { source: ["dates", "delivery_start"], target: ["date"], transform: "start event date" },
+      { source: ["dates", "collection_start"], target: ["date"], transform: "end event date (rental items only)" },
+      { source: ["items"], target: ["item_uids"], transform: "product UIDs filtered by destination — delivery types for start, collection types for end" },
+      { source: ["customer_collecting", "customer_returning"], target: ["event_type"], transform: "getEventType(customerCollecting, customerReturning, position)" },
+    ],
+  },
 ];
 
 export const createOrderTransaction: TransactionDefinition = {
   id: "create-order",
-  description: "Creates an order with bookings and stock summaries in a single Firestore transaction. Skips bookings for draft/canceled status.",
+  description: "Creates an order with bookings, stock summaries, and order events in a single Firestore transaction. Skips bookings/events for draft/canceled status.",
   steps: [
     "create-order:org-to-order",
     "create-order:products-to-order-items",
@@ -160,6 +183,7 @@ export const createOrderTransaction: TransactionDefinition = {
     "create-order:bookings-to-stock-summaries",
     "create-order:ledger-to-stock-summaries",
     "create-order:stock-to-public-stock",
+    "create-order:order-to-order-events",
   ],
 };
 
@@ -255,11 +279,33 @@ export const updateOrderRules: CollectionRule[] = [
       { source: [], target: [], transform: "same as create-order — copies all fields, simplifies store_breakdown to {uid_store, quantity}" },
     ],
   },
+  {
+    id: "update-order:order-to-order-events",
+    source: "orders",
+    target: "order-events",
+    mode: "co-write",
+    invariant: "Order events rebuilt on every update — old events for removed destinations are deleted",
+    transaction: "update-order",
+    fields: [
+      { source: ["uid"], target: ["uid_order"] },
+      { source: ["number"], target: ["order_number"] },
+      { source: ["status"], target: ["status"] },
+      { source: ["subject"], target: ["subject"] },
+      { source: ["organization", "uid"], target: ["organization", "uid"] },
+      { source: ["organization", "name"], target: ["organization", "name"] },
+      { source: ["destinations", "delivery"], target: ["destination"], transform: "full DocDestinationEndpointType for start events" },
+      { source: ["destinations", "collection"], target: ["destination"], transform: "full DocDestinationEndpointType for end events" },
+      { source: ["dates", "delivery_start"], target: ["date"], transform: "start event date" },
+      { source: ["dates", "collection_start"], target: ["date"], transform: "end event date (rental items only)" },
+      { source: ["items"], target: ["item_uids"], transform: "product UIDs filtered by destination — delivery types for start, collection types for end" },
+      { source: ["customer_collecting", "customer_returning"], target: ["event_type"], transform: "getEventType(customerCollecting, customerReturning, position)" },
+    ],
+  },
 ];
 
 export const updateOrderTransaction: TransactionDefinition = {
   id: "update-order",
-  description: "Updates an order, diffing items/status/dates to create/update/delete bookings and recalculate stock summaries.",
+  description: "Updates an order, diffing items/status/dates to create/update/delete bookings, recalculate stock summaries, and rebuild order events.",
   steps: [
     "update-order:org-to-order",
     "update-order:order-self-derive",
@@ -267,5 +313,8 @@ export const updateOrderTransaction: TransactionDefinition = {
     "update-order:ledger-to-bookings",
     "update-order:bookings-to-stock-summaries",
     "update-order:stock-to-public-stock",
+    "update-order:order-to-order-events",
+    "update-order:items-to-invoices",
+    "update-order:status-to-invoices",
   ],
 };

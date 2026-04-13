@@ -7,11 +7,13 @@ import { FirestoreTimestamp, type FirestoreTimestampType, ProductTypeEnum, type 
 const SUMMARY_TYPES = ["sale", "rental"] as const;
 type SummaryTypeType = typeof SUMMARY_TYPES[number];
 
+/** A store entry in a public stock summary with available quantity. */
 export interface PublicStockSummaryStore {
   uid_store: string;
   quantity: number;
 }
 
+/** A public-facing stock summary with availability data for a product over a date range. */
 export interface PublicStockSummary {
   uid: string;
   uid_product: string;
@@ -31,6 +33,7 @@ export interface PublicStockSummary {
   expiresAt: FirestoreTimestampType;
 }
 
+/** Zod schema for PublicStockSummary. */
 export const PublicStockSummarySchema: z.ZodType<PublicStockSummary> = z.strictObject({
   uid: z.string(),
   uid_product: z.string(),

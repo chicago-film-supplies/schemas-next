@@ -30,14 +30,12 @@ export {
 
 export {
   UserSchema,
-  SaveFirestorePrefsInput,
-  SaveTypesensePrefsInput,
+  UpdateUserInput,
   type User,
   type DisplaySort,
   type FirestoreDisplayPrefs,
   type TypesenseDisplayPrefs,
-  type SaveFirestorePrefsInputType,
-  type SaveTypesensePrefsInputType,
+  type UpdateUserInputType,
 } from "./user.ts";
 
 export {
@@ -45,6 +43,8 @@ export {
   getTypesenseDisplayDefaults,
   type FirestoreDisplayDefaults,
 } from "./display-defaults.ts";
+
+export { getInitialValues } from "./initial.ts";
 
 export {
   SessionSchema,
@@ -79,11 +79,15 @@ export {
   DocDestinationContact,
   OrderItem,
   OrderDocDestinationItem,
+  OrderDocGroupItem,
+  OrderDocLineItem,
+  OrderDocItemPrice,
   OrderDocTransactionFeeItem,
   ItemPrice,
   PriceModifier,
   TaxRef,
   Discount,
+  DiscountInput,
   type Order,
   type CreateOrderInputType,
   type UpdateOrderInputType,
@@ -99,6 +103,7 @@ export {
   type PriceModifierType,
   type TaxRefType,
   type DiscountType,
+  type DiscountInputType,
   type OrderDocTotalsType,
   type OrderDocTransactionFeeItemType,
   OrderDocDates,
@@ -108,7 +113,22 @@ export {
   type OrderDocItemPriceType,
   type OrderDocLineItemType,
   type OrderDocGroupItemType,
+  type OrderDocDestinationItemType,
+  isLineItem,
+  type ConsolidatedItemType,
+  type GroupPathType,
 } from "./order.ts";
+
+export {
+  OrderEventSchema,
+  OrderEventResponseSchema,
+  OrderEventsQueryInput,
+  type OrderEvent,
+  type OrderEventResponse,
+  type OrderEventsQueryInputType,
+  type EventTypeType,
+  type EventPositionType,
+} from "./order-event.ts";
 
 export {
   LoginInput,
@@ -138,8 +158,11 @@ export {
   InclusionTypeEnum,
   ComponentTypeEnum,
   COARevenueEnum,
+  InvoiceStatusEnum,
   OOSReasonEnum,
   RateTypeEnum,
+  DocItemTypeEnum,
+  DocLineItemTypeEnum,
   type AddressType,
   type CoordinatesType,
   type FirestoreTimestampType,
@@ -157,6 +180,8 @@ export {
   type COARevenueType,
   type OOSReasonType,
   type RateType,
+  type DocItemTypeType,
+  type DocLineItemTypeType,
   StoreBreakdownEntrySchema,
   StoreBreakdownLocationSchema,
   type StoreBreakdownEntry,
@@ -263,6 +288,7 @@ export {
   type CreateProductInputType,
   type UpdateProductInputType,
   type ProductAlternate,
+  ComponentSchema,
   type ProductComponent,
   type ProductPrice,
   type ProductShipping,
@@ -272,7 +298,6 @@ export {
 export {
   WebshopProductSchema,
   type WebshopProduct,
-  type WebshopProductAlternate,
   type WebshopProductComponent,
   type WebshopProductShipping,
 } from "./webshop-product.ts";
@@ -286,12 +311,25 @@ export {
 } from "./booking.ts";
 
 export {
+  CreateInvoiceInput,
+  InvoiceDocItem,
+  InvoiceDocLineItemSchema,
+  InvoiceDocOrderItem,
   InvoiceSchema,
+  isInvoiceLineItem,
+  UpdateInvoiceInput,
+  type CreateInvoiceInputType,
   type Invoice,
-  type InvoiceItem,
-  type InvoiceItemPrice,
+  type InvoiceDocItemPrice,
+  type InvoiceDocItemType,
+  type InvoiceDocLineItem,
+  type InvoiceDocOrderItemType,
+  type InvoiceDocTotals,
+  type InvoiceItemInputType,
   type InvoiceItemTypeType,
+  type InvoicePayment,
   type InvoiceStatusType,
+  type UpdateInvoiceInputType,
 } from "./invoice.ts";
 
 export {
@@ -368,6 +406,11 @@ export {
 } from "./webhook-event.ts";
 
 export {
+  CounterSchema,
+  type Counter,
+} from "./counter.ts";
+
+export {
   QuoteSchema,
   SaveQuoteVersionInput,
   RestoreQuoteInput,
@@ -377,6 +420,7 @@ export {
 } from "./quote.ts";
 
 export {
+  TEMPLATE_SOURCE_COLLECTIONS,
   TemplateSchema,
   TemplateInputSchema,
   TemplateUpdateInputSchema,
@@ -422,6 +466,10 @@ export {
   createContactTransaction,
   updateContactRules,
   updateContactTransaction,
+  createInvoiceRules,
+  createInvoiceTransaction,
+  updateInvoiceOrderRules,
+  updateOrderInvoiceRules,
   updateTagRules,
   deleteTagRules,
   updateTrackingCategoryRules,
@@ -457,7 +505,10 @@ export type {
   InventoryLedgerRecalculated,
   // Invoice aggregate
   InvoiceCreated,
+  InvoiceIssued,
+  InvoicePaymentReceived,
   InvoiceUpdated,
+  InvoiceVoided,
   // Organization aggregate
   OrganizationCreated,
   OrganizationUpdated,
@@ -491,12 +542,14 @@ export type {
 
 // ── Union of all Firestore document types ───────────────────────────
 
+import type { Counter } from "./counter.ts";
 import type { Booking } from "./booking.ts";
 import type { CacheGeocodes } from "./cache-geocodes.ts";
 import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
 import type { Destination as DestinationDocType } from "./destination.ts";
 import type { EmailVerification } from "./email-verification.ts";
+import type { OrderEvent } from "./order-event.ts";
 import type { HolidayDates } from "./holiday-dates.ts";
 import type { InventoryLedger } from "./inventory-ledger.ts";
 import type { Invoice } from "./invoice.ts";
@@ -525,8 +578,8 @@ import type { WebshopProduct } from "./webshop-product.ts";
 
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
-  | Booking | CacheGeocodes | ChartOfAccounts | Contact | DestinationDocType
-  | EmailVerification | HolidayDates | InventoryLedger | Invoice | Location
+  | Booking | CacheGeocodes | ChartOfAccounts | Contact | Counter | DestinationDocType
+  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Tax | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
@@ -537,11 +590,13 @@ export type SchemaDocType =
 import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
+import { CounterSchema as CounterSchema_ } from "./counter.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
 import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
 import { ContactSchema } from "./contact.ts";
 import { DestinationSchema } from "./destination.ts";
 import { EmailVerificationSchema } from "./email-verification.ts";
+import { OrderEventSchema as OrderEventSchema_ } from "./order-event.ts";
 import { HolidayDatesSchema } from "./holiday-dates.ts";
 import { InventoryLedgerSchema } from "./inventory-ledger.ts";
 import { InvoiceSchema } from "./invoice.ts";
@@ -571,6 +626,7 @@ import { WebshopProductSchema } from "./webshop-product.ts";
 /** All document schemas keyed by singular and plural collection names. */
 export const schemas: Record<string, z.ZodType> = {
   "booking": BookingSchema, "bookings": BookingSchema,
+  "counter": CounterSchema_, "counters": CounterSchema_,
   "cache-geocodes": CacheGeocodesSchema,
   "chart-of-accounts": ChartOfAccountsSchema,
   "contact": ContactSchema, "contacts": ContactSchema,
@@ -582,6 +638,7 @@ export const schemas: Record<string, z.ZodType> = {
   "location": LocationSchema, "locations": LocationSchema,
   "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,
   "order": OrderSchema, "orders": OrderSchema,
+  "order-event": OrderEventSchema_, "order-events": OrderEventSchema_,
   "organization": OrganizationSchema, "organizations": OrganizationSchema,
   "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,
   "password-reset": PasswordResetSchema, "password-resets": PasswordResetSchema,
@@ -621,3 +678,8 @@ export const firestoreDisplayDefaults: Record<string, FirestoreDisplayDefaults> 
       })
       .filter((entry): entry is [string, FirestoreDisplayDefaults] => entry[1] != null),
   );
+
+// ── Template schema fields (static, generated) ─────────────────────
+
+export type { SchemaField } from "./template-schema-fields.generated.ts";
+export { templateSchemaFields } from "./template-schema-fields.generated.ts";

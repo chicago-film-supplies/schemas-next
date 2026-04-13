@@ -1,5 +1,6 @@
 import type { TypesenseCollectionConfig } from "./types.ts";
 
+/** Typesense collection config for chart of accounts. */
 export const chartOfAccounts: TypesenseCollectionConfig = {
   alias: "chart-of-accounts",
   version: 4,

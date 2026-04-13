@@ -1,20 +1,14 @@
 import { assertEquals } from "@std/assert";
 import { WebshopProductSchema } from "../src/webshop-product.ts";
+import { getInitialValues } from "../src/initial.ts";
 
+const base = getInitialValues(WebshopProductSchema);
 const validWebshopProduct = {
+  ...base,
   uid: "test-wp-1",
   name: "Canon C300",
   active: true,
-  type: "rental",
-  price: {
-    base: 500,
-    taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }],
-    formula: "five_day_week",
-    discountable: true,
-  },
-  alternates: {},
-  components: {},
-  component_of: {},
+  price: { ...(base.price as Record<string, unknown>), base: 500, taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }], discountable: true },
   webshop: { available: true, description: "Great camera" },
 };
 

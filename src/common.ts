@@ -14,10 +14,12 @@ export interface FirestoreTimestampValue {
   nanoseconds: number;
 }
 
+/** Structural interface for Firestore FieldValue (write-time sentinel). */
 export interface FirestoreFieldValue {
   isEqual(other: FirestoreFieldValue): boolean;
 }
 
+/** Union of Firestore Timestamp (read) and FieldValue (write). */
 export type FirestoreTimestampType = FirestoreTimestampValue | FirestoreFieldValue;
 
 /**
@@ -61,6 +63,7 @@ export interface CoordinatesType {
   longitude: number;
 }
 
+/** Zod schema for coordinates (latitude/longitude), nullable. */
 export const Coordinates: z.ZodType<CoordinatesType | null> = z.strictObject({
   latitude: z.number(),
   longitude: z.number(),
@@ -91,6 +94,7 @@ export interface UidNameRefType {
   name: string;
 }
 
+/** Zod schema for a uid + name reference. */
 export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
   uid: z.string().min(1),
   name: z.string().min(1).max(100).meta({ pii: "none" }),
@@ -105,6 +109,7 @@ export interface NoteEntryType {
   updated_by?: string;
 }
 
+/** Zod schema for a note entry. */
 export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
   note: z.string(),
   updated_at: FirestoreTimestamp.optional(),
@@ -114,52 +119,96 @@ export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
 // ── Shared enums ────────────────────────────────────────────────────
 
 const RATE_TYPES = ["percent", "flat"] as const;
+/** Allowed values for rate type: percent or flat. */
 export type RateType = typeof RATE_TYPES[number];
+/** Zod schema for RateType. */
 export const RateTypeEnum: z.ZodType<RateType> = z.enum(RATE_TYPES);
 
 const PRODUCT_TYPES = ["rental", "sale", "service", "surcharge", "replacement", "transaction_fee"] as const;
+/** Allowed values for product type. */
 export type ProductTypeType = typeof PRODUCT_TYPES[number];
+/** Zod schema for ProductTypeType. */
 export const ProductTypeEnum: z.ZodType<ProductTypeType> = z.enum(PRODUCT_TYPES);
 
 const STOCK_METHODS = ["bulk", "serialized", "none"] as const;
+/** Allowed values for inventory stock tracking method. */
 export type StockMethodType = typeof STOCK_METHODS[number];
+/** Zod schema for StockMethodType. */
 export const StockMethodEnum: z.ZodType<StockMethodType> = z.enum(STOCK_METHODS);
 
 const TAX_PROFILES = ["tax_applied", "tax_exempt", "tax_rantoul"] as const;
+/** Allowed values for organization-level tax profile. */
 export type TaxProfileType = typeof TAX_PROFILES[number];
+/** Zod schema for TaxProfileType. */
 export const TaxProfileEnum: z.ZodType<TaxProfileType> = z.enum(TAX_PROFILES);
 
 const PRICE_FORMULAS = ["five_day_week", "fixed"] as const;
+/** Allowed values for pricing formula. */
 export type PriceFormulaType = typeof PRICE_FORMULAS[number];
+/** Zod schema for PriceFormulaType. */
 export const PriceFormulaEnum: z.ZodType<PriceFormulaType> = z.enum(PRICE_FORMULAS);
 
 const ITEM_TAX_PROFILES = [
   "tax_none", "tax_chicago_rental_tax", "tax_chicago_sales_tax", "tax_rantoul_sales_tax",
 ] as const;
+/** Allowed values for item-level tax profile. */
 export type ItemTaxProfileType = typeof ITEM_TAX_PROFILES[number];
+/** Zod schema for ItemTaxProfileType. */
 export const ItemTaxProfileEnum: z.ZodType<ItemTaxProfileType> = z.enum(ITEM_TAX_PROFILES);
 
 const INCLUSION_TYPES = ["default", "mandatory", "optional"] as const;
+/** Allowed values for component inclusion type. */
 export type InclusionTypeType = typeof INCLUSION_TYPES[number];
+/** Zod schema for InclusionTypeType. */
 export const InclusionTypeEnum: z.ZodType<InclusionTypeType> = z.enum(INCLUSION_TYPES);
 
 const COMPONENT_TYPES = ["rental", "sale", "service", "surcharge"] as const;
+/** Allowed values for component type. */
 export type ComponentTypeType = typeof COMPONENT_TYPES[number];
+/** Zod schema for ComponentTypeType. */
 export const ComponentTypeEnum: z.ZodType<ComponentTypeType> = z.enum(COMPONENT_TYPES);
 
 const COA_REVENUE_CODES = [
-  "2210", "2800", "4000", "4100", "4110", "4120", "4130", "4140", "4150",
-  "4200", "4210", "4700", "4800",
+  2210, 2800, 4000, 4100, 4110, 4120, 4130, 4140, 4150,
+  4200, 4210, 4700, 4800,
 ] as const;
+/** Allowed values for chart-of-accounts revenue code. */
 export type COARevenueType = typeof COA_REVENUE_CODES[number];
-export const COARevenueEnum: z.ZodType<COARevenueType> = z.enum(COA_REVENUE_CODES);
+/** Zod schema for COARevenueType. */
+export const COARevenueEnum: z.ZodType<COARevenueType> = z.union([
+  z.literal(2210), z.literal(2800), z.literal(4000), z.literal(4100),
+  z.literal(4110), z.literal(4120), z.literal(4130), z.literal(4140),
+  z.literal(4150), z.literal(4200), z.literal(4210), z.literal(4700),
+  z.literal(4800),
+]);
+
+const DOC_ITEM_TYPES = ["rental", "destination", "group", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+/** All item types accepted in order/invoice input schemas (includes structural dividers). */
+export type DocItemTypeType = typeof DOC_ITEM_TYPES[number];
+/** Zod schema for DocItemTypeType. */
+export const DocItemTypeEnum: z.ZodType<DocItemTypeType> = z.enum(DOC_ITEM_TYPES);
+
+const DOC_LINE_ITEM_TYPES = ["rental", "replacement", "sale", "service", "surcharge", "transaction_fee"] as const;
+/** Billable line item types stored in order/invoice documents (excludes destination/group dividers). */
+export type DocLineItemTypeType = typeof DOC_LINE_ITEM_TYPES[number];
+/** Zod schema for DocLineItemTypeType. */
+export const DocLineItemTypeEnum: z.ZodType<DocLineItemTypeType> = z.enum(DOC_LINE_ITEM_TYPES);
+
+const INVOICE_STATUSES = ["draft", "issued", "part_paid", "paid", "void"] as const;
+/** Possible invoice statuses. */
+export type InvoiceStatusType = typeof INVOICE_STATUSES[number];
+/** Zod schema for InvoiceStatusType. */
+export const InvoiceStatusEnum: z.ZodType<InvoiceStatusType> = z.enum(INVOICE_STATUSES);
 
 const OOS_REASONS = ["cleaning", "damaged", "maintenance", "lost"] as const;
+/** Allowed values for out-of-service reason. */
 export type OOSReasonType = typeof OOS_REASONS[number];
+/** Zod schema for OOSReasonType. */
 export const OOSReasonEnum: z.ZodType<OOSReasonType> = z.enum(OOS_REASONS);
 
 // ── Store breakdown (shared by InventoryLedger & StockSummary) ──────
 
+/** A single location within a store breakdown entry. */
 export interface StoreBreakdownLocation {
   uid_location: string;
   name: string;
@@ -169,6 +218,7 @@ export interface StoreBreakdownLocation {
   notes: NoteEntryType[];
 }
 
+/** A single store entry in a stock breakdown, containing its locations. */
 export interface StoreBreakdownEntry {
   uid_store: string;
   name: string;
@@ -178,6 +228,7 @@ export interface StoreBreakdownEntry {
   locations: StoreBreakdownLocation[];
 }
 
+/** Zod schema for StoreBreakdownLocation. */
 export const StoreBreakdownLocationSchema: z.ZodType<StoreBreakdownLocation> = z.strictObject({
   uid_location: z.string(),
   name: z.string(),
@@ -187,6 +238,7 @@ export const StoreBreakdownLocationSchema: z.ZodType<StoreBreakdownLocation> = z
   notes: z.array(NoteEntry).default([]),
 });
 
+/** Zod schema for StoreBreakdownEntry. */
 export const StoreBreakdownEntrySchema: z.ZodType<StoreBreakdownEntry> = z.strictObject({
   uid_store: z.string(),
   name: z.string(),
@@ -198,6 +250,7 @@ export const StoreBreakdownEntrySchema: z.ZodType<StoreBreakdownEntry> = z.stric
 
 // ── Address ─────────────────────────────────────────────────────────
 
+/** Zod schema for Address, nullable. */
 export const Address: z.ZodType<AddressType | null> = z.strictObject({
   city: z.string().default(""),
   country_name: z.string().default(""),
@@ -212,5 +265,4 @@ export const Address: z.ZodType<AddressType | null> = z.strictObject({
   user_coordinates: Coordinates.optional(),
 }).nullable().meta({
   pii: "mask",
-  initial: {"city":"","address_coordinates":null,"user_coordinates":null,"country_name":"","full":"","name":"","postcode":"","region":"","street":"","street2":"","mapbox_id":""},
 });

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
+/** An inbound webhook event stored for processing. */
 export interface WebhookEvent {
   id: string;
   event: string;
@@ -9,6 +10,7 @@ export interface WebhookEvent {
   payload: unknown;
 }
 
+/** Zod schema for WebhookEvent. */
 export const WebhookEventSchema: z.ZodType<WebhookEvent> = z.strictObject({
   id: z.string(),
   event: z.string(),

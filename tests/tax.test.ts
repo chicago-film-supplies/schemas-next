@@ -1,17 +1,17 @@
 import { assertEquals } from "@std/assert";
+import { getInitialValues } from "../src/initial.ts";
 import { TaxSchema, CreateTaxInput, UpdateTaxInput } from "../src/tax.ts";
 
+const taxBase = getInitialValues(TaxSchema) as Record<string, unknown>;
+
 const validTax = {
+  ...taxBase,
   uid: "test-chi-rental-tax",
   name: "Chicago Rental Tax",
   rate: 15,
-  type: "percent" as const,
-  active: true,
-  crms_id: null,
+  type: "percent",
   valid_from: "2026-01-01T00:00:00.000Z",
   valid_from_fs: null,
-  valid_to: null,
-  valid_to_fs: null,
   created_by: "test-user-1",
   updated_by: "test-user-1",
   created_at: null,

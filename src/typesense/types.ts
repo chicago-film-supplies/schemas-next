@@ -10,11 +10,13 @@ const TYPESENSE_FIELD_TYPES = [
   "float", "float[]",
   "bool", "bool[]",
   "object", "object[]",
+  "geopoint", "geopoint[]",
 ] as const;
 
 /** Field type in a Typesense collection schema. */
 export type TypesenseFieldType = typeof TYPESENSE_FIELD_TYPES[number];
 
+/** Zod schema for TypesenseFieldType. */
 export const TypesenseFieldTypeEnum: z.ZodType<TypesenseFieldType> =
   z.enum(TYPESENSE_FIELD_TYPES);
 
@@ -29,6 +31,7 @@ export interface TypesenseField {
   optional?: boolean;
 }
 
+/** Zod schema for TypesenseField. */
 export const TypesenseFieldSchema: z.ZodType<TypesenseField> = z.strictObject({
   name: z.string(),
   type: TypesenseFieldTypeEnum,
@@ -48,6 +51,7 @@ export interface TypesenseSchema {
   default_sorting_field?: string;
 }
 
+/** Zod schema for TypesenseSchema. */
 export const TypesenseSchemaSchema: z.ZodType<TypesenseSchema> = z.strictObject({
   name: z.string(),
   enable_nested_fields: z.boolean().optional(),
@@ -72,17 +76,20 @@ export interface TypesenseOneWaySynonym {
 /** A synonym rule for a Typesense collection. */
 export type TypesenseSynonym = TypesenseMultiWaySynonym | TypesenseOneWaySynonym;
 
+/** Zod schema for TypesenseMultiWaySynonym. */
 export const TypesenseMultiWaySynonymSchema: z.ZodType<TypesenseMultiWaySynonym> = z.strictObject({
   id: z.string(),
   synonyms: z.array(z.string()).min(2),
 });
 
+/** Zod schema for TypesenseOneWaySynonym. */
 export const TypesenseOneWaySynonymSchema: z.ZodType<TypesenseOneWaySynonym> = z.strictObject({
   id: z.string(),
   root: z.string(),
   synonyms: z.array(z.string()).min(1),
 });
 
+/** Zod schema for TypesenseSynonym. */
 export const TypesenseSynonymSchema: z.ZodType<TypesenseSynonym> = z.union([
   TypesenseOneWaySynonymSchema,
   TypesenseMultiWaySynonymSchema,
@@ -97,6 +104,7 @@ export interface TypesenseDisplayDefaults {
   facet: string[];
 }
 
+/** Zod schema for TypesenseDisplayDefaults. */
 export const TypesenseDisplayDefaultsSchema: z.ZodType<TypesenseDisplayDefaults> = z.strictObject({
   columns: z.array(z.string()),
   filters: z.record(z.string(), z.array(z.union([z.string(), z.boolean()]))),
@@ -121,6 +129,7 @@ export interface TypesenseCollectionConfig {
   enabled?: boolean;
 }
 
+/** Zod schema for TypesenseCollectionConfig. */
 export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfig> = z.strictObject({
   alias: z.string(),
   version: z.number(),
@@ -131,3 +140,33 @@ export const TypesenseCollectionConfigSchema: z.ZodType<TypesenseCollectionConfi
   displayDefaults: TypesenseDisplayDefaultsSchema,
   enabled: z.boolean().optional(),
 });
+
+/**
+ * Generate Typesense field definitions for a nested address object.
+ *
+ * Coordinates use the `geopoint` type with `[latitude, longitude]` order.
+ * The API translates Firestore `{latitude, longitude}` objects into this format.
+ */
+export function typesenseAddressFields(
+  prefix: string,
+  opts: { array?: boolean; sortFull?: boolean; parentOptional?: boolean } = {},
+): TypesenseField[] {
+  const t = (base: string): TypesenseFieldType =>
+    (opts.array ? `${base}[]` : base) as TypesenseFieldType;
+  const parentOptional = opts.parentOptional ?? true;
+
+  return [
+    { name: prefix, type: t("object"), ...(parentOptional && { optional: true }) },
+    { name: `${prefix}.full`, type: t("string"), stem: true, optional: true, ...(opts.sortFull && { sort: true }) },
+    { name: `${prefix}.name`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.city`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.region`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.street`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.street2`, type: t("string"), stem: true, optional: true },
+    { name: `${prefix}.postcode`, type: t("string"), optional: true },
+    { name: `${prefix}.country_name`, type: t("string"), facet: true, optional: true },
+    { name: `${prefix}.mapbox_id`, type: t("string"), index: false, optional: true },
+    { name: `${prefix}.address_coordinates`, type: t("geopoint"), optional: true },
+    { name: `${prefix}.user_coordinates`, type: t("geopoint"), optional: true },
+  ];
+}
