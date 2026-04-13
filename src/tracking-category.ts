@@ -45,12 +45,14 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
 
 /** Input type for creating a tracking category. */
 export interface CreateTrackingCategoryInputType {
+  uid: string;
   name: string;
   crms_product_group_id: number;
   crms_product_group_name: string;
 }
 /** Input schema for creating a tracking category. */
 export const CreateTrackingCategoryInput: z.ZodType<CreateTrackingCategoryInputType> = z.object({
+  uid: z.string(),
   name: z.string().min(1).max(100),
   crms_product_group_id: z.number(),
   crms_product_group_name: z.string(),

@@ -72,12 +72,14 @@ export const LocationSchema: z.ZodType<Location> = z.strictObject({
 
 /** Input type for creating a location. */
 export interface CreateLocationInputType {
+  uid: string;
   uid_store: string;
   name: string;
   uid_location_type?: string | null;
 }
 /** Input schema for creating a location. */
 export const CreateLocationInput: z.ZodType<CreateLocationInputType> = z.object({
+  uid: z.string(),
   uid_store: z.string(),
   name: z.string().min(1).max(100),
   uid_location_type: z.string().nullable().optional(),

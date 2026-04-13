@@ -39,12 +39,14 @@ export const StoreSchema: z.ZodType<Store> = z.strictObject({
 
 /** Input type for creating a store. */
 export interface CreateStoreInputType {
+  uid: string;
   name: string;
   crms_store_id: number;
   default?: boolean;
 }
 /** Input schema for creating a store. */
 export const CreateStoreInput: z.ZodType<CreateStoreInputType> = z.object({
+  uid: z.string(),
   name: z.string().min(1).max(100),
   crms_store_id: z.number(),
   default: z.boolean().optional(),
