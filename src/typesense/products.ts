@@ -3,11 +3,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 /** Typesense collection config for products. */
 export const products: TypesenseCollectionConfig = {
   alias: "products",
-  version: 12,
+  version: 13,
   firestoreCollection: "products",
-  collectionName: "products_v12",
+  collectionName: "products_v13",
   schema: {
-    name: "products_v12",
+    name: "products_v13",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -18,10 +18,10 @@ export const products: TypesenseCollectionConfig = {
       { name: "stock_method", type: "string", facet: true, sort: true, stem: true },
       { name: "active", type: "bool", sort: true, facet: true },
       { name: "component_only", type: "bool", sort: true, facet: true },
-      { name: "eligible_delivery", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_in_store_pickup", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_shipping_ground", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_shipping_air", type: "bool", sort: true, facet: true, optional: true },
+      { name: "eligible_delivery", type: "bool", sort: true, facet: true },
+      { name: "eligible_in_store_pickup", type: "bool", sort: true, facet: true },
+      { name: "eligible_shipping_ground", type: "bool", sort: true, facet: true },
+      { name: "eligible_shipping_air", type: "bool", sort: true, facet: true },
       { name: "price", type: "object", optional: true },
       { name: "price.base", type: "float", optional: true },
       { name: "price.replacement", type: "float", optional: true },

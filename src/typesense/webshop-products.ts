@@ -3,11 +3,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 /** Typesense collection config for webshop products. */
 export const webshopProducts: TypesenseCollectionConfig = {
   alias: "webshop-products",
-  version: 4,
+  version: 5,
   firestoreCollection: "webshop-products",
-  collectionName: "webshop-products_v4",
+  collectionName: "webshop-products_v5",
   schema: {
-    name: "webshop-products_v4",
+    name: "webshop-products_v5",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -17,10 +17,10 @@ export const webshopProducts: TypesenseCollectionConfig = {
       { name: "stock_method", type: "string", facet: true, sort: true, stem: true, optional: true },
       { name: "active", type: "bool", sort: true, facet: true },
       { name: "component_only", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_delivery", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_in_store_pickup", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_shipping_ground", type: "bool", sort: true, facet: true, optional: true },
-      { name: "eligible_shipping_air", type: "bool", sort: true, facet: true, optional: true },
+      { name: "eligible_delivery", type: "bool", sort: true, facet: true },
+      { name: "eligible_in_store_pickup", type: "bool", sort: true, facet: true },
+      { name: "eligible_shipping_ground", type: "bool", sort: true, facet: true },
+      { name: "eligible_shipping_air", type: "bool", sort: true, facet: true },
       { name: "price", type: "object" },
       { name: "price.base", type: "float", optional: true },
       { name: "price.replacement", type: "float", optional: true },

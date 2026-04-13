@@ -61,10 +61,10 @@ export interface WebshopProduct {
   stock_method?: StockMethodType;
   component_only?: boolean;
   description?: string;
-  eligible_delivery?: boolean;
-  eligible_in_store_pickup?: boolean;
-  eligible_shipping_ground?: boolean;
-  eligible_shipping_air?: boolean;
+  eligible_delivery: boolean;
+  eligible_in_store_pickup: boolean;
+  eligible_shipping_ground: boolean;
+  eligible_shipping_air: boolean;
   price: {
     base: number;
     replacement?: number | null;
@@ -118,10 +118,10 @@ export const WebshopProductSchema: z.ZodType<WebshopProduct> = z.strictObject({
   stock_method: StockMethodEnum.optional(),
   component_only: z.boolean().optional(),
   description: z.string().optional(),
-  eligible_delivery: z.boolean().optional(),
-  eligible_in_store_pickup: z.boolean().optional(),
-  eligible_shipping_ground: z.boolean().optional(),
-  eligible_shipping_air: z.boolean().optional(),
+  eligible_delivery: z.boolean().default(false),
+  eligible_in_store_pickup: z.boolean().default(false),
+  eligible_shipping_ground: z.boolean().default(false),
+  eligible_shipping_air: z.boolean().default(false),
   price: z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
