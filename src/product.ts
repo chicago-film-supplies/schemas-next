@@ -170,7 +170,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
     coa_revenue: COARevenueEnum.optional(),
     taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
-    discountable: z.boolean(),
+    discountable: z.boolean().default(true),
   }),
   shipping: z.strictObject({
     weight: z.number(),
