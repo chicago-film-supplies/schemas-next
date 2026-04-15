@@ -94,10 +94,10 @@ export interface Product {
   crms_linked_replacement_id?: number | null;
   crms_linked_replacement_rate_id?: number | null;
   description?: string;
-  eligible_delivery?: boolean;
-  eligible_in_store_pickup?: boolean;
-  eligible_shipping_ground?: boolean;
-  eligible_shipping_air?: boolean;
+  eligible_delivery: boolean;
+  eligible_in_store_pickup: boolean;
+  eligible_shipping_ground: boolean;
+  eligible_shipping_air: boolean;
   price: ProductPrice;
   shipping?: ProductShipping;
   alternates: ProductAlternate[];
@@ -160,17 +160,17 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   crms_linked_replacement_id: z.number().nullable().optional(),
   crms_linked_replacement_rate_id: z.number().nullable().optional(),
   description: z.string().optional(),
-  eligible_delivery: z.boolean().optional(),
-  eligible_in_store_pickup: z.boolean().optional(),
-  eligible_shipping_ground: z.boolean().optional(),
-  eligible_shipping_air: z.boolean().optional(),
+  eligible_delivery: z.boolean().default(true),
+  eligible_in_store_pickup: z.boolean().default(true),
+  eligible_shipping_ground: z.boolean().default(false),
+  eligible_shipping_air: z.boolean().default(false),
   price: z.strictObject({
     base: z.number(),
     replacement: z.number().nullable().optional(),
     coa_revenue: COARevenueEnum.optional(),
     taxes: z.array(TaxRef).default([]),
     formula: PriceFormulaEnum,
-    discountable: z.boolean(),
+    discountable: z.boolean().default(true),
   }),
   shipping: z.strictObject({
     weight: z.number(),
@@ -221,10 +221,10 @@ export interface CreateProductInputType {
   stock_method: StockMethodType;
   component_only: boolean;
   description: string;
-  eligible_delivery?: boolean;
-  eligible_in_store_pickup?: boolean;
-  eligible_shipping_ground?: boolean;
-  eligible_shipping_air?: boolean;
+  eligible_delivery: boolean;
+  eligible_in_store_pickup: boolean;
+  eligible_shipping_ground: boolean;
+  eligible_shipping_air: boolean;
   price: {
     base: number;
     replacement?: number | null;
@@ -274,10 +274,10 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   stock_method: StockMethodEnum,
   component_only: z.boolean(),
   description: z.string(),
-  eligible_delivery: z.boolean().optional(),
-  eligible_in_store_pickup: z.boolean().optional(),
-  eligible_shipping_ground: z.boolean().optional(),
-  eligible_shipping_air: z.boolean().optional(),
+  eligible_delivery: z.boolean(),
+  eligible_in_store_pickup: z.boolean(),
+  eligible_shipping_ground: z.boolean(),
+  eligible_shipping_air: z.boolean(),
   price: z.object({
     base: z.number(),
     replacement: z.number().nullable().optional(),
