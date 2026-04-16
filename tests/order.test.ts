@@ -423,6 +423,7 @@ Deno.test("OrderSchema validates a complete document", () => {
         price: {
           ...priceBase,
           base: 100,
+          replacement: 5000,
           chargeable_days: 5,
           subtotal: 200,
           subtotal_discounted: 200,
@@ -533,10 +534,36 @@ Deno.test("OrderSchema accepts all doc line item types", () => {
   for (const type of ["rental", "replacement", "sale", "service", "surcharge"]) {
     const doc = {
       ...minimalDoc,
-      items: [{ uid: "test-prod-1", type, name: "Thing" }],
+      items: [{
+        uid: "test-prod-1",
+        type,
+        name: "Thing",
+        ...(type === "rental" ? { price: { ...priceBase, replacement: 100 } } : {}),
+      }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `type "${type}" should be valid`);
   }
+});
+
+Deno.test("OrderSchema rejects rental without price.replacement", () => {
+  const doc = {
+    ...minimalDoc,
+    items: [{ uid: "test-prod-1", type: "rental", name: "Camera" }],
+  };
+  assertEquals(OrderSchema.safeParse(doc).success, false);
+});
+
+Deno.test("OrderSchema rejects rental with null price.replacement", () => {
+  const doc = {
+    ...minimalDoc,
+    items: [{
+      uid: "test-prod-1",
+      type: "rental",
+      name: "Camera",
+      price: { ...priceBase, replacement: null },
+    }],
+  };
+  assertEquals(OrderSchema.safeParse(doc).success, false);
 });
 
 Deno.test("OrderSchema rejects custom line item type", () => {
@@ -738,7 +765,13 @@ Deno.test("OrderSchema accepts valid inclusion_type values", () => {
   for (const val of ["default", "mandatory", "optional", null]) {
     const doc = {
       ...minimalDoc,
-      items: [{ uid: "test-prod-1", type: "rental", name: "Camera", inclusion_type: val }],
+      items: [{
+        uid: "test-prod-1",
+        type: "rental",
+        name: "Camera",
+        price: { ...priceBase, replacement: 100 },
+        inclusion_type: val,
+      }],
     };
     assertEquals(OrderSchema.safeParse(doc).success, true, `inclusion_type "${val}" should be valid`);
   }
