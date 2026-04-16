@@ -135,7 +135,7 @@ export interface ClientLogEntry {
 export const ClientLogEntrySchema: z.ZodType<ClientLogEntry> = z.object({
   level: z.enum(LOG_LEVELS),
   msg: z.string().max(100),
-  ts: z.string().datetime(),
+  ts: z.iso.datetime(),
   app: z.enum(CLIENT_APPS),
   page: z.string().max(500).optional(),
   request_id: z.string().max(100).optional(),
