@@ -3,11 +3,11 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 /** Typesense collection config for products. */
 export const products: TypesenseCollectionConfig = {
   alias: "products",
-  version: 13,
+  version: 14,
   firestoreCollection: "products",
-  collectionName: "products_v13",
+  collectionName: "products_v14",
   schema: {
-    name: "products_v13",
+    name: "products_v14",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
@@ -25,7 +25,7 @@ export const products: TypesenseCollectionConfig = {
       { name: "price", type: "object", optional: true },
       { name: "price.base", type: "float", optional: true },
       { name: "price.replacement", type: "float", optional: true },
-      { name: "price.coa_revenue", type: "string", facet: true, optional: true },
+      { name: "price.coa_revenue", type: "int32", facet: true, optional: true },
       { name: "price.taxes", type: "object[]", optional: true },
       { name: "price.taxes.uid", type: "string[]", facet: true, optional: true },
       { name: "price.taxes.name", type: "string[]", optional: true },
@@ -76,7 +76,7 @@ export const products: TypesenseCollectionConfig = {
       { name: "components.price", type: "object[]", optional: true },
       { name: "components.price.base", type: "float[]", optional: true },
       { name: "components.price.replacement", type: "float[]", optional: true },
-      { name: "components.price.coa_revenue", type: "string[]", facet: true, optional: true },
+      { name: "components.price.coa_revenue", type: "int32[]", facet: true, optional: true },
       { name: "components.price.taxes", type: "object[]", optional: true },
       { name: "components.price.taxes.uid", type: "string[]", optional: true },
       { name: "components.price.taxes.name", type: "string[]", optional: true },
@@ -100,7 +100,7 @@ export const products: TypesenseCollectionConfig = {
       { name: "component_of.price", type: "object[]", optional: true },
       { name: "component_of.price.base", type: "float[]", optional: true },
       { name: "component_of.price.replacement", type: "float[]", optional: true },
-      { name: "component_of.price.coa_revenue", type: "string[]", facet: true, optional: true },
+      { name: "component_of.price.coa_revenue", type: "int32[]", facet: true, optional: true },
       { name: "component_of.price.taxes", type: "object[]", optional: true },
       { name: "component_of.price.taxes.uid", type: "string[]", optional: true },
       { name: "component_of.price.taxes.name", type: "string[]", optional: true },

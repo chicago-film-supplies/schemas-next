@@ -373,7 +373,7 @@ export interface ProductDocumentComponent {
   price?: {
     base?: number;
     replacement?: number;
-    coa_revenue?: string;
+    coa_revenue?: number;
     taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
@@ -398,7 +398,7 @@ export interface ProductDocument {
   price?: {
     base?: number;
     replacement?: number;
-    coa_revenue?: string;
+    coa_revenue?: number;
     taxes?: Array<{ uid?: string; name?: string; rate?: number; type?: string }>;
     formula?: string;
     discountable?: boolean;
