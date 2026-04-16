@@ -265,6 +265,11 @@ export interface CreateProductInputType {
   updated_by?: string;
 }
 
+const RentalReplacementRequiredComponent = ComponentSchema.refine(
+  (c) => c.type !== "rental" || c.price.replacement != null,
+  { message: "price.replacement is required for rental components", path: ["price", "replacement"] },
+);
+
 /** Input schema for creating a product. */
 export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   uid: z.string(),
@@ -295,8 +300,8 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.array(UidNameRef).default([]),
-  components: z.array(ComponentSchema).default([]),
-  component_of: z.array(ComponentSchema).default([]),
+  components: z.array(RentalReplacementRequiredComponent).default([]),
+  component_of: z.array(RentalReplacementRequiredComponent).default([]),
   tags: z.array(UidNameRef).default([]),
   tracking_category_name: z.string().optional(),
   uid_tracking_category: z.string().nullable().optional(),

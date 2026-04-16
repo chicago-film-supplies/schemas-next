@@ -76,28 +76,65 @@ Deno.test("ProductSchema rejects additional properties", () => {
   assertEquals(ProductSchema.safeParse(doc).success, false);
 });
 
+const validCreateInput = {
+  uid: "test-product-1",
+  name: "Canon C300",
+  active: true,
+  type: "rental" as const,
+  stock_method: "serialized" as const,
+  component_only: false,
+  description: "",
+  eligible_delivery: true,
+  eligible_in_store_pickup: true,
+  eligible_shipping_ground: false,
+  eligible_shipping_air: false,
+  price: {
+    base: 500,
+    replacement: 5000,
+    taxes: [],
+    formula: "five_day_week" as const,
+    discountable: true,
+  },
+  webshop: { available: false },
+};
+
 Deno.test("CreateProductInput requires price.replacement for rental products", () => {
-  const input = {
-    uid: "test-product-1",
-    name: "Canon C300",
-    active: true,
-    type: "rental",
-    stock_method: "serialized",
-    component_only: false,
-    description: "",
-    eligible_delivery: true,
-    eligible_in_store_pickup: true,
-    eligible_shipping_ground: false,
-    eligible_shipping_air: false,
-    price: {
-      base: 500,
-      taxes: [],
-      formula: "five_day_week",
-      discountable: true,
-    },
-    webshop: { available: false },
-  };
+  const input = { ...validCreateInput, price: { ...validCreateInput.price, replacement: undefined } };
   assertEquals(CreateProductInput.safeParse(input).success, false);
-  assertEquals(CreateProductInput.safeParse({ ...input, price: { ...input.price, replacement: 5000 } }).success, true);
+  assertEquals(CreateProductInput.safeParse(validCreateInput).success, true);
   assertEquals(CreateProductInput.safeParse({ ...input, type: "sale" }).success, true);
+});
+
+Deno.test("CreateProductInput requires price.replacement for rental components", () => {
+  const rentalComponent = {
+    uid: "test-comp-1",
+    path: ["test-product-1"],
+    name: "Battery",
+    type: "rental" as const,
+    stock_method: "bulk" as const,
+    crms_id: 200,
+    quantity: 2,
+    price: {
+      base: 0,
+      taxes: [],
+      formula: "fixed" as const,
+      discountable: false,
+    },
+  };
+  assertEquals(CreateProductInput.safeParse({ ...validCreateInput, components: [rentalComponent] }).success, false);
+  assertEquals(
+    CreateProductInput.safeParse({
+      ...validCreateInput,
+      components: [{ ...rentalComponent, price: { ...rentalComponent.price, replacement: 100 } }],
+    }).success,
+    true,
+  );
+  assertEquals(
+    CreateProductInput.safeParse({ ...validCreateInput, components: [{ ...rentalComponent, type: "sale" }] }).success,
+    true,
+  );
+  assertEquals(
+    CreateProductInput.safeParse({ ...validCreateInput, component_of: [rentalComponent] }).success,
+    false,
+  );
 });
