@@ -442,7 +442,10 @@ export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject(
   crms_id: z.number().nullable().optional(),
   uid_delivery: z.string().nullable().optional(),
   uid_collection: z.string().nullable().optional(),
-});
+}).refine(
+  (item) => item.type !== "rental" || item.price?.replacement != null,
+  { message: "price.replacement is required for rental items", path: ["price", "replacement"] },
+);
 
 /** Destination divider item in the order document items array. */
 export interface OrderDocDestinationItemType {
