@@ -34,6 +34,10 @@ export interface Template {
   scope: TemplateScopeType;
   version: number;
   source: string;
+  source_header?: string;
+  source_footer?: string;
+  margin_top?: number;
+  margin_bottom?: number;
   source_filename: string;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
@@ -49,6 +53,10 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   scope: z.enum(TEMPLATE_SCOPES),
   version: z.int().min(0),
   source: z.string(),
+  source_header: z.string().optional(),
+  source_footer: z.string().optional(),
+  margin_top: z.number().min(0).max(5).optional(),
+  margin_bottom: z.number().min(0).max(5).optional(),
   source_filename: z.string(),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
@@ -82,6 +90,10 @@ export const TemplateInputSchema: z.ZodType<TemplateInputType> = z.object({
 export interface TemplateUpdateInputType {
   name?: string;
   source?: string;
+  source_header?: string;
+  source_footer?: string;
+  margin_top?: number;
+  margin_bottom?: number;
   source_filename?: string;
 }
 
@@ -89,6 +101,10 @@ export interface TemplateUpdateInputType {
 export const TemplateUpdateInputSchema: z.ZodType<TemplateUpdateInputType> = z.object({
   name: z.string().min(1).max(200).optional(),
   source: z.string().optional(),
+  source_header: z.string().optional(),
+  source_footer: z.string().optional(),
+  margin_top: z.number().min(0).max(5).optional(),
+  margin_bottom: z.number().min(0).max(5).optional(),
   source_filename: z.string().max(500).optional(),
 });
 
