@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { ProductSchema } from "../src/product.ts";
+import { CreateProductInput, ProductSchema } from "../src/product.ts";
 import { getInitialValues } from "../src/initial.ts";
 
 const base = getInitialValues(ProductSchema);
@@ -74,4 +74,30 @@ Deno.test("ProductSchema rejects missing required fields", () => {
 Deno.test("ProductSchema rejects additional properties", () => {
   const doc = { ...validProduct, bogus: true };
   assertEquals(ProductSchema.safeParse(doc).success, false);
+});
+
+Deno.test("CreateProductInput requires price.replacement for rental products", () => {
+  const input = {
+    uid: "test-product-1",
+    name: "Canon C300",
+    active: true,
+    type: "rental",
+    stock_method: "serialized",
+    component_only: false,
+    description: "",
+    eligible_delivery: true,
+    eligible_in_store_pickup: true,
+    eligible_shipping_ground: false,
+    eligible_shipping_air: false,
+    price: {
+      base: 500,
+      taxes: [],
+      formula: "five_day_week",
+      discountable: true,
+    },
+    webshop: { available: false },
+  };
+  assertEquals(CreateProductInput.safeParse(input).success, false);
+  assertEquals(CreateProductInput.safeParse({ ...input, price: { ...input.price, replacement: 5000 } }).success, true);
+  assertEquals(CreateProductInput.safeParse({ ...input, type: "sale" }).success, true);
 });
