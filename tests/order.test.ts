@@ -566,6 +566,19 @@ Deno.test("OrderSchema rejects rental with null price.replacement", () => {
   assertEquals(OrderSchema.safeParse(doc).success, false);
 });
 
+Deno.test("OrderSchema accepts rental with stock_method none and no price.replacement", () => {
+  const doc = {
+    ...minimalDoc,
+    items: [{
+      uid: "test-prod-1",
+      type: "rental",
+      name: "Service Fee",
+      stock_method: "none",
+    }],
+  };
+  assertEquals(OrderSchema.safeParse(doc).success, true);
+});
+
 Deno.test("OrderSchema rejects custom line item type", () => {
   const doc = {
     ...minimalDoc,

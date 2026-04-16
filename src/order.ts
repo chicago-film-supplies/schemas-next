@@ -443,7 +443,7 @@ export const OrderDocLineItem: z.ZodType<OrderDocLineItemType> = z.strictObject(
   uid_delivery: z.string().nullable().optional(),
   uid_collection: z.string().nullable().optional(),
 }).refine(
-  (item) => item.type !== "rental" || item.price?.replacement != null,
+  (item) => item.type !== "rental" || item.stock_method === "none" || item.price?.replacement != null,
   { message: "price.replacement is required for rental items", path: ["price", "replacement"] },
 );
 

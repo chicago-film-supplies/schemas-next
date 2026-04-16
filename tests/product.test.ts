@@ -103,6 +103,7 @@ Deno.test("CreateProductInput requires price.replacement for rental products", (
   assertEquals(CreateProductInput.safeParse(input).success, false);
   assertEquals(CreateProductInput.safeParse(validCreateInput).success, true);
   assertEquals(CreateProductInput.safeParse({ ...input, type: "sale" }).success, true);
+  assertEquals(CreateProductInput.safeParse({ ...input, stock_method: "none" }).success, true);
 });
 
 Deno.test("CreateProductInput requires price.replacement for rental components", () => {
@@ -136,5 +137,12 @@ Deno.test("CreateProductInput requires price.replacement for rental components",
   assertEquals(
     CreateProductInput.safeParse({ ...validCreateInput, component_of: [rentalComponent] }).success,
     false,
+  );
+  assertEquals(
+    CreateProductInput.safeParse({
+      ...validCreateInput,
+      components: [{ ...rentalComponent, stock_method: "none" }],
+    }).success,
+    true,
   );
 });

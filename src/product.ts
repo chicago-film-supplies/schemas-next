@@ -266,7 +266,7 @@ export interface CreateProductInputType {
 }
 
 const RentalReplacementRequiredComponent = ComponentSchema.refine(
-  (c) => c.type !== "rental" || c.price.replacement != null,
+  (c) => c.type !== "rental" || c.stock_method === "none" || c.price.replacement != null,
   { message: "price.replacement is required for rental components", path: ["price", "replacement"] },
 );
 
@@ -322,7 +322,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   }).optional(),
   updated_by: z.string().optional(),
 }).refine(
-  (p) => p.type !== "rental" || p.price.replacement != null,
+  (p) => p.type !== "rental" || p.stock_method === "none" || p.price.replacement != null,
   { message: "price.replacement is required for rental products", path: ["price", "replacement"] },
 );
 /** Input type for updating a product. */
