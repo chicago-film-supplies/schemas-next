@@ -143,7 +143,10 @@ export const ComponentSchema: z.ZodType<ProductComponent> = z.strictObject({
     formula: PriceFormulaEnum,
     discountable: z.boolean(),
   }),
-});
+}).refine(
+  (c) => c.type !== "rental" || c.stock_method === "none" || c.price.replacement != null,
+  { message: "price.replacement is required for rental components", path: ["price", "replacement"] },
+);
 
 /** Zod schema for a Product document. */
 export const ProductSchema: z.ZodType<Product> = z.strictObject({
@@ -202,7 +205,10 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,
-}).meta({
+}).refine(
+  (p) => p.type !== "rental" || p.stock_method === "none" || p.price.replacement != null,
+  { message: "price.replacement is required for rental products", path: ["price", "replacement"] },
+).meta({
   title: "Product",
   collection: "products",
   displayDefaults: {
@@ -265,11 +271,6 @@ export interface CreateProductInputType {
   updated_by?: string;
 }
 
-const RentalReplacementRequiredComponent = ComponentSchema.refine(
-  (c) => c.type !== "rental" || c.stock_method === "none" || c.price.replacement != null,
-  { message: "price.replacement is required for rental components", path: ["price", "replacement"] },
-);
-
 /** Input schema for creating a product. */
 export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
   uid: z.string(),
@@ -300,8 +301,8 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     air_un: z.number().nullable(),
   }).optional(),
   alternates: z.array(UidNameRef).default([]),
-  components: z.array(RentalReplacementRequiredComponent).default([]),
-  component_of: z.array(RentalReplacementRequiredComponent).default([]),
+  components: z.array(ComponentSchema).default([]),
+  component_of: z.array(ComponentSchema).default([]),
   tags: z.array(UidNameRef).default([]),
   tracking_category_name: z.string().optional(),
   uid_tracking_category: z.string().nullable().optional(),
