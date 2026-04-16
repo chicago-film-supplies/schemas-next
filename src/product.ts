@@ -316,7 +316,10 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     stores: z.array(TransactionStoreSchema),
   }).optional(),
   updated_by: z.string().optional(),
-});
+}).refine(
+  (p) => p.type !== "rental" || p.price.replacement != null,
+  { message: "price.replacement is required for rental products", path: ["price", "replacement"] },
+);
 /** Input type for updating a product. */
 export interface UpdateProductInputType {
   uid: string;
