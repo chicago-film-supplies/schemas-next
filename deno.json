@@ -1,6 +1,6 @@
 {
   "name": "@cfs/schemas",
-  "version": "1.14.0-beta.23",
+  "version": "0.0.0",
   "license": "MIT",
   "description": "Shared Zod 4 schemas for CFS Firestore collections, Typesense collections, propagation rules, and domain events.",
   "exports": {
@@ -35,7 +35,9 @@
     "./quote": "./src/quote.ts",
     "./template": "./src/template.ts",
     "./webhook-event": "./src/webhook-event.ts",
-    "./log": "./src/log.ts"
+    "./log": "./src/log.ts",
+    "./role": "./src/role.ts",
+    "./permissions": "./src/permissions.ts"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-run --allow-write tests/",

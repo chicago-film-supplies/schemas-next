@@ -225,6 +225,19 @@ export {
 } from "./tag.ts";
 
 export {
+  RoleSchema,
+  type Role,
+} from "./role.ts";
+
+export {
+  PERMISSIONS,
+  type Permission,
+  type RouteMethod,
+  type RouteManifest,
+  type RouteManifestEntry,
+} from "./permissions.ts";
+
+export {
   HolidayDatesSchema,
   type HolidayDates,
 } from "./holiday-dates.ts";
@@ -567,6 +580,7 @@ import type { RateLimit } from "./rate-limit.ts";
 import type { Session } from "./session.ts";
 import type { StockSummary } from "./stock-summary.ts";
 import type { Store } from "./store.ts";
+import type { Role } from "./role.ts";
 import type { Tag } from "./tag.ts";
 import type { Tax } from "./tax.ts";
 import type { TrackingCategory } from "./tracking-category.ts";
@@ -581,7 +595,7 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | Counter | DestinationDocType
   | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | Product | PublicStockSummary | Quote | RateLimit | Session | StockSummary | Tax | Template
+  | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
@@ -610,6 +624,7 @@ import { ProductSchema } from "./product.ts";
 import { QuoteSchema as QuoteSchema_ } from "./quote.ts";
 import { TemplateSchema as TemplateSchema_ } from "./template.ts";
 import { RateLimitSchema } from "./rate-limit.ts";
+import { RoleSchema } from "./role.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
 import { StockSummarySchema } from "./stock-summary.ts";
@@ -646,6 +661,7 @@ export const schemas: Record<string, z.ZodType> = {
   "quote": QuoteSchema_, "quotes": QuoteSchema_,
   "template": TemplateSchema_, "templates": TemplateSchema_,
   "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
+  "role": RoleSchema, "roles": RoleSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,
   "stock-summary": StockSummarySchema, "stock-summaries": StockSummarySchema,
