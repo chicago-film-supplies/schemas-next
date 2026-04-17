@@ -19,6 +19,8 @@ export const PERMISSIONS = [
   "products.update",
   "products.delete",
 
+  "webshopProducts.read",
+
   "contacts.create",
   "contacts.read",
   "contacts.update",

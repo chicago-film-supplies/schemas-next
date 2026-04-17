@@ -57,6 +57,7 @@ export interface User {
   email_verified: boolean;
   uid_customer?: string | null;
   roles?: string[];
+  token_version?: number;
   version: number;
   prefs_firestore: Record<string, FirestoreDisplayPrefs>;
   prefs_typesense: Record<string, TypesenseDisplayPrefs>;
@@ -72,6 +73,7 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   email_verified: z.boolean().default(false),
   uid_customer: z.string().nullable().optional(),
   roles: z.array(z.string()).optional(),
+  token_version: z.int().min(0).optional(),
   version: z.int().min(0).default(0),
   prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema),
   prefs_typesense: z.record(z.string(), TypesenseDisplayPrefsSchema),
