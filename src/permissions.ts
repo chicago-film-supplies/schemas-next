@@ -89,6 +89,15 @@ export const PERMISSIONS = [
   "orderEvents.create",
   "orderEvents.read",
 
+  "bookings.read",
+  "chartOfAccounts.read",
+  "dateHelpers.read",
+  "destinations.read",
+  "ledgers.read",
+  "outOfServiceRecords.read",
+  "stockSummaries.read",
+  "typesenseSync.read",
+
   "users.read",
   "users.update",
   "users.assignRoles",
