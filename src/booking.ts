@@ -124,7 +124,7 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   uid_order: z.string(),
   uid_product: z.string(),
   name: z.string(),
-  number: z.number(),
+  number: z.int().meta({ label: "Order #", linkTo: "orderDetail" }),
   type: ComponentTypeEnum,
   status: BookingStatus,
   quantity: z.number(),
@@ -175,8 +175,8 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   title: "Booking",
   collection: "bookings",
   displayDefaults: {
-    columns: ["order_number", "status", "organization", "quantity", "date_start", "date_end"],
+    columns: ["number", "status", "organization.name", "quantity", "dates.start", "dates.end"],
     filters: {},
-    sort: { column: "order_number", direction: "desc" },
+    sort: { column: "number", direction: "desc" },
   },
 });

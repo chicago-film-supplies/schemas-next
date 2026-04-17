@@ -100,7 +100,7 @@ export const StockSummarySchema: z.ZodType<StockSummary> = z.strictObject({
   title: "Stock Summary",
   collection: "stock-summaries",
   displayDefaults: {
-    columns: ["uid_product", "stores"],
+    columns: ["type", "summary_type", "quantity_available", "quantity_booked", "store_breakdown"],
     filters: {},
     sort: { column: null, direction: "desc" },
   },

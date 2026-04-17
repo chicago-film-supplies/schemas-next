@@ -70,7 +70,7 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   title: "Template",
   collection: "templates",
   displayDefaults: {
-    columns: ["name", "version"],
+    columns: ["name", "collection_target"],
     filters: {},
     sort: { column: null, direction: "desc" },
   },

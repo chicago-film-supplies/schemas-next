@@ -23,7 +23,7 @@ export const EmailVerificationSchema: z.ZodType<EmailVerification> = z.strictObj
   title: "Email Verification",
   collection: "email-verifications",
   displayDefaults: {
-    columns: ["email", "code"],
+    columns: ["email", "expiresAt"],
     filters: {},
     sort: { column: null, direction: "desc" },
   },
