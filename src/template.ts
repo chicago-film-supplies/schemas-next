@@ -38,6 +38,8 @@ export interface Template {
   source_footer?: string;
   margin_top?: number;
   margin_bottom?: number;
+  margin_left?: number;
+  margin_right?: number;
   source_filename: string;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
@@ -57,6 +59,8 @@ export const TemplateSchema: z.ZodType<Template> = z.strictObject({
   source_footer: z.string().optional(),
   margin_top: z.number().min(0).max(5).optional(),
   margin_bottom: z.number().min(0).max(5).optional(),
+  margin_left: z.number().min(0).max(5).optional(),
+  margin_right: z.number().min(0).max(5).optional(),
   source_filename: z.string(),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
@@ -94,6 +98,8 @@ export interface TemplateUpdateInputType {
   source_footer?: string;
   margin_top?: number;
   margin_bottom?: number;
+  margin_left?: number;
+  margin_right?: number;
   source_filename?: string;
 }
 
@@ -105,6 +111,8 @@ export const TemplateUpdateInputSchema: z.ZodType<TemplateUpdateInputType> = z.o
   source_footer: z.string().optional(),
   margin_top: z.number().min(0).max(5).optional(),
   margin_bottom: z.number().min(0).max(5).optional(),
+  margin_left: z.number().min(0).max(5).optional(),
+  margin_right: z.number().min(0).max(5).optional(),
   source_filename: z.string().max(500).optional(),
 });
 
