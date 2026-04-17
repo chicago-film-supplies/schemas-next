@@ -169,11 +169,35 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["customer_collecting", "customer_returning"], target: ["event_type"], transform: "getEventType(customerCollecting, customerReturning, position)" },
     ],
   },
+  {
+    id: "create-order:order-to-order-warehouse",
+    source: "orders",
+    target: "order-warehouses",
+    mode: "co-write",
+    invariant: "Warehouse clients see a sanitized order view — pricing, totals, invoices, tax profile, CRM/Xero ids, version, notes, and transaction_fee items are stripped",
+    transaction: "create-order",
+    fields: [
+      { source: ["uid"], target: ["uid"] },
+      { source: ["number"], target: ["number"] },
+      { source: ["status"], target: ["status"] },
+      { source: ["organization", "uid"], target: ["organization", "uid"] },
+      { source: ["organization", "name"], target: ["organization", "name"] },
+      { source: ["dates"], target: ["dates"] },
+      { source: ["destinations"], target: ["destinations"], transform: "full DocDestination with contacts retained" },
+      { source: ["items"], target: ["items"], transform: "strips price, inclusion_type, zero_priced, crms_id; drops transaction_fee items entirely" },
+      { source: ["subject"], target: ["subject"] },
+      { source: ["reference"], target: ["reference"] },
+      { source: ["customer_collecting"], target: ["customer_collecting"] },
+      { source: ["customer_returning"], target: ["customer_returning"] },
+      { source: ["query_by_items"], target: ["query_by_items"] },
+      { source: ["query_by_contacts"], target: ["query_by_contacts"] },
+    ],
+  },
 ];
 
 export const createOrderTransaction: TransactionDefinition = {
   id: "create-order",
-  description: "Creates an order with bookings, stock summaries, and order events in a single Firestore transaction. Skips bookings/events for draft/canceled status.",
+  description: "Creates an order with bookings, stock summaries, order events, and the sanitized warehouse view in a single Firestore transaction. Skips bookings/events for draft/canceled status.",
   steps: [
     "create-order:org-to-order",
     "create-order:products-to-order-items",
@@ -184,6 +208,7 @@ export const createOrderTransaction: TransactionDefinition = {
     "create-order:ledger-to-stock-summaries",
     "create-order:stock-to-public-stock",
     "create-order:order-to-order-events",
+    "create-order:order-to-order-warehouse",
   ],
 };
 
@@ -301,11 +326,35 @@ export const updateOrderRules: CollectionRule[] = [
       { source: ["customer_collecting", "customer_returning"], target: ["event_type"], transform: "getEventType(customerCollecting, customerReturning, position)" },
     ],
   },
+  {
+    id: "update-order:order-to-order-warehouse",
+    source: "orders",
+    target: "order-warehouses",
+    mode: "co-write",
+    invariant: "Warehouse view mirrors the order on every update — stripped of pricing, totals, invoices, tax profile, CRM/Xero ids, version, notes, and transaction_fee items",
+    transaction: "update-order",
+    fields: [
+      { source: ["uid"], target: ["uid"] },
+      { source: ["number"], target: ["number"] },
+      { source: ["status"], target: ["status"] },
+      { source: ["organization", "uid"], target: ["organization", "uid"] },
+      { source: ["organization", "name"], target: ["organization", "name"] },
+      { source: ["dates"], target: ["dates"] },
+      { source: ["destinations"], target: ["destinations"], transform: "full DocDestination with contacts retained" },
+      { source: ["items"], target: ["items"], transform: "strips price, inclusion_type, zero_priced, crms_id; drops transaction_fee items entirely" },
+      { source: ["subject"], target: ["subject"] },
+      { source: ["reference"], target: ["reference"] },
+      { source: ["customer_collecting"], target: ["customer_collecting"] },
+      { source: ["customer_returning"], target: ["customer_returning"] },
+      { source: ["query_by_items"], target: ["query_by_items"] },
+      { source: ["query_by_contacts"], target: ["query_by_contacts"] },
+    ],
+  },
 ];
 
 export const updateOrderTransaction: TransactionDefinition = {
   id: "update-order",
-  description: "Updates an order, diffing items/status/dates to create/update/delete bookings, recalculate stock summaries, and rebuild order events.",
+  description: "Updates an order, diffing items/status/dates to create/update/delete bookings, recalculate stock summaries, rebuild order events, and refresh the warehouse view.",
   steps: [
     "update-order:org-to-order",
     "update-order:order-self-derive",
@@ -314,6 +363,7 @@ export const updateOrderTransaction: TransactionDefinition = {
     "update-order:bookings-to-stock-summaries",
     "update-order:stock-to-public-stock",
     "update-order:order-to-order-events",
+    "update-order:order-to-order-warehouse",
     "update-order:items-to-invoices",
     "update-order:status-to-invoices",
   ],
