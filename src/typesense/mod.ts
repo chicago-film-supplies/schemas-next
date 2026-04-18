@@ -65,6 +65,7 @@ export { trackingCategories } from "./tracking-categories.ts";
 export { templates } from "./templates.ts";
 export { webshopProducts } from "./webshop-products.ts";
 
+import type { Permission } from "../permissions.ts";
 import type { TypesenseCollectionConfig } from "./types.ts";
 import { bookings } from "./bookings.ts";
 import { chartOfAccounts } from "./chart-of-accounts.ts";
@@ -128,3 +129,30 @@ export const typesenseEnabledCollections: Set<string> = new Set(
     .filter((s) => s.enabled !== false && s.firestoreCollection !== "")
     .map((s) => s.firestoreCollection),
 );
+
+/**
+ * Maps each Typesense alias to its `.search` RBAC permission.
+ *
+ * Used by the drift-guard test (every enabled alias must map to a cataloged
+ * permission) and by the api-cloudrun scoped-key minter (resolve which parent
+ * key to derive a user's scoped key from per granted `.search` permission).
+ *
+ * Disabled aliases (`enabled: false`, e.g. `bookings`) are omitted — no search
+ * UI surface is expected for them until they are provisioned in Typesense.
+ */
+export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permission>> = {
+  "chart-of-accounts": "chartOfAccounts.search",
+  "contacts": "contacts.search",
+  "destinations": "destinations.search",
+  "invoices": "invoices.search",
+  "locations": "locations.search",
+  "orders": "orders.search",
+  "order-warehouses": "orderWarehouses.search",
+  "organizations": "organizations.search",
+  "products": "products.search",
+  "stores": "stores.search",
+  "tags": "tags.search",
+  "templates": "templates.search",
+  "tracking-categories": "trackingCategories.search",
+  "webshop-products": "webshopProducts.search",
+};

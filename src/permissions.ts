@@ -13,23 +13,28 @@ export const PERMISSIONS = [
   "orders.read",
   "orders.update",
   "orders.delete",
+  "orders.search",
 
   "products.create",
   "products.read",
   "products.update",
   "products.delete",
+  "products.search",
 
   "webshopProducts.read",
+  "webshopProducts.search",
 
   "contacts.create",
   "contacts.read",
   "contacts.update",
   "contacts.delete",
+  "contacts.search",
 
   "organizations.create",
   "organizations.read",
   "organizations.update",
   "organizations.delete",
+  "organizations.search",
 
   "transactions.create",
   "transactions.read",
@@ -40,6 +45,7 @@ export const PERMISSIONS = [
   "invoices.read",
   "invoices.update",
   "invoices.delete",
+  "invoices.search",
 
   "quotes.create",
   "quotes.read",
@@ -50,6 +56,7 @@ export const PERMISSIONS = [
   "locations.read",
   "locations.update",
   "locations.delete",
+  "locations.search",
 
   "locationTypes.create",
   "locationTypes.read",
@@ -60,6 +67,7 @@ export const PERMISSIONS = [
   "stores.read",
   "stores.update",
   "stores.delete",
+  "stores.search",
 
   "taxes.create",
   "taxes.read",
@@ -70,11 +78,13 @@ export const PERMISSIONS = [
   "tags.read",
   "tags.update",
   "tags.delete",
+  "tags.search",
 
   "trackingCategories.create",
   "trackingCategories.read",
   "trackingCategories.update",
   "trackingCategories.delete",
+  "trackingCategories.search",
 
   "holidays.create",
   "holidays.read",
@@ -85,16 +95,20 @@ export const PERMISSIONS = [
   "templates.read",
   "templates.update",
   "templates.delete",
+  "templates.search",
 
   "orderEvents.create",
   "orderEvents.read",
 
   "bookings.read",
   "chartOfAccounts.read",
+  "chartOfAccounts.search",
   "dateHelpers.read",
   "destinations.read",
+  "destinations.search",
   "ledgers.read",
   "orderWarehouses.read",
+  "orderWarehouses.search",
   "outOfServiceRecords.read",
   "stockSummaries.read",
   "typesenseSync.read",
