@@ -71,14 +71,29 @@ export const updateContactRules: CollectionRule[] = [
       { source: ["phones"], target: ["destinations", "collection", "contact", "phones"] },
     ],
   },
+  {
+    id: "update-contact:orgs-change",
+    source: "contacts",
+    target: "organizations",
+    mode: "co-write",
+    invariant: "When a contact's org list changes, added/removed orgs update their contact back-references",
+    transaction: "update-contact",
+    fields: [
+      { source: [], target: ["contacts"], transform: "orgs added → add contact ref {uid, name, roles: []}" },
+      { source: [], target: ["contacts"], transform: "orgs removed → remove contact ref" },
+      { source: [], target: ["query_by_contacts"], transform: "orgs added → add contact uid" },
+      { source: [], target: ["query_by_contacts"], transform: "orgs removed → remove contact uid" },
+    ],
+  },
 ];
 
 export const updateContactTransaction: TransactionDefinition = {
   id: "update-contact",
-  description: "Updates a contact with name cascades to organizations and active order destinations, phone cascades to active orders.",
+  description: "Updates a contact with name cascades to organizations and active order destinations, phone cascades to active orders, and bidirectional org membership maintenance.",
   steps: [
     "update-contact:name-to-orgs",
     "update-contact:name-to-orders",
     "update-contact:phones-to-orders",
+    "update-contact:orgs-change",
   ],
 };
