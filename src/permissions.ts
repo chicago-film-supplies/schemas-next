@@ -125,6 +125,7 @@ export const PERMISSIONS = [
   "admin.reindex",
   "admin.validate",
   "admin.sync",
+  "admin.previewRole",
 ] as const;
 
 /** Union type of every permission string in the catalog. */
