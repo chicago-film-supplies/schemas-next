@@ -5,10 +5,10 @@ import { typesenseAddressFields } from "./types.ts";
  * Typesense collection config for the sanitized warehouse order view.
  *
  * Mirrors `orders` by uid but strips all pricing, totals, tax profile,
- * invoice refs, CRM/Xero ids, and financial line-item fields. Sorted
- * by delivery start (ascending-soonest is what warehouse wants; use
- * desc in display so upcoming-nearest shows first when filtered by
- * date range).
+ * invoice refs, CRM/Xero ids, and financial line-item fields. The default
+ * sort is `number` (non-optional, always set) because Typesense rejects
+ * optional fields as default_sorting_field; the warehouse UI overrides
+ * this at query time via `displayDefaults.sort` to order by delivery date.
  */
 export const orderWarehouses: TypesenseCollectionConfig = {
   alias: "order-warehouses",
@@ -67,7 +67,7 @@ export const orderWarehouses: TypesenseCollectionConfig = {
       { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
     ],
-    default_sorting_field: "dates.delivery_start_fs",
+    default_sorting_field: "number",
   },
   synonyms: [],
   displayDefaults: {
