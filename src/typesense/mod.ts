@@ -56,6 +56,7 @@ export { destinations } from "./destinations.ts";
 export { invoices } from "./invoices.ts";
 export { locations } from "./locations.ts";
 export { orders } from "./orders.ts";
+export { orderWarehouses } from "./order-warehouses.ts";
 export { organizations } from "./organizations.ts";
 export { products } from "./products.ts";
 export { stores } from "./stores.ts";
@@ -72,6 +73,7 @@ import { destinations } from "./destinations.ts";
 import { invoices } from "./invoices.ts";
 import { locations } from "./locations.ts";
 import { orders } from "./orders.ts";
+import { orderWarehouses } from "./order-warehouses.ts";
 import { organizations } from "./organizations.ts";
 import { products } from "./products.ts";
 import { stores } from "./stores.ts";
@@ -88,6 +90,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
   invoices,
   locations,
   orders,
+  orderWarehouses,
   organizations,
   products,
   stores,
@@ -106,6 +109,7 @@ export type TypesenseAlias =
   | "invoices"
   | "locations"
   | "orders"
+  | "order-warehouses"
   | "organizations"
   | "products"
   | "stores"

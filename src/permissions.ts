@@ -94,6 +94,7 @@ export const PERMISSIONS = [
   "dateHelpers.read",
   "destinations.read",
   "ledgers.read",
+  "orderWarehouses.read",
   "outOfServiceRecords.read",
   "stockSummaries.read",
   "typesenseSync.read",
