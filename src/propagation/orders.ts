@@ -249,7 +249,7 @@ export const updateOrderRules: CollectionRule[] = [
     source: "orders",
     target: "bookings",
     mode: "co-write",
-    invariant: "Bookings are diffed — created, updated, or deleted based on item/status/date changes",
+    invariant: "Bookings are diffed — created, updated, or deleted based on item/status/date/destination changes. Orphan bookings (bookings whose {order,product,destination} composite id no longer appears in the order) are deleted and their stock summaries zeroed.",
     transaction: "update-order",
     fields: [
       { source: ["uid"], target: ["uid_order"] },
