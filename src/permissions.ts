@@ -132,6 +132,7 @@ export const PERMISSIONS = [
   "comments.read",
   "comments.update",
   "comments.delete",
+  "comments.moderate",
   "comments.search",
   "comments.react",
 
