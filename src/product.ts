@@ -116,6 +116,7 @@ export interface Product {
   images?: string[];
   xero_id?: string | null;
   xero_tracking_option_id?: string;
+  defaultThreadId?: string;
   version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
@@ -202,6 +203,7 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   images: z.array(z.string()).optional(),
   xero_id: z.string().nullable().optional(),
   xero_tracking_option_id: z.string().optional(),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,

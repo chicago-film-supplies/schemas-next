@@ -175,6 +175,7 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "reference", type: "string" },
     { path: "customer_collecting", type: "boolean" },
     { path: "customer_returning", type: "boolean" },
+    { path: "defaultThreadId", type: "string?" },
     { path: "version", type: "number" },
   ],
   "invoices": [
@@ -299,6 +300,7 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "pdf_versions[].deleted_at", type: "Timestamp | null" },
     { path: "crms_id", type: "number? | null" },
     { path: "crms_opportunity_ids", type: "number[]?" },
+    { path: "defaultThreadId", type: "string?" },
     { path: "version", type: "number" },
     { path: "updated_by", type: "string" },
   ],

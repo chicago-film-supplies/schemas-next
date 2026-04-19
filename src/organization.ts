@@ -47,6 +47,7 @@ export interface Organization {
   contacts: OrganizationContactType[];
   query_by_contacts: string[];
   last_order?: FirestoreTimestampType | null;
+  defaultThreadId?: string;
   version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
@@ -67,6 +68,7 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   contacts: z.array(OrganizationContact).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   last_order: FirestoreTimestamp.nullable().optional(),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,

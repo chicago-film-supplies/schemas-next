@@ -116,6 +116,7 @@ export interface Transaction {
     stock_level_id: number | null;
     transaction_id: number | null;
   }>;
+  defaultThreadId?: string;
   version: number;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
@@ -169,6 +170,7 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     stock_level_id: z.number().nullable(),
     transaction_id: z.number().nullable(),
   })).default({}),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,

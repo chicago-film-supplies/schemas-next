@@ -38,6 +38,7 @@ export interface Contact extends NameParts {
   organizations: ContactOrganizationType[];
   query_by_organizations: string[];
   uid_user?: string;
+  defaultThreadId?: string;
   version: number;
   updated_by?: string;
   created_at?: FirestoreTimestampType;
@@ -54,6 +55,7 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   organizations: z.array(ContactOrganization).default([]),
   query_by_organizations: z.array(z.string()).default([]),
   uid_user: z.string().optional(),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   updated_by: z.string().optional(),
   ...TimestampFields,

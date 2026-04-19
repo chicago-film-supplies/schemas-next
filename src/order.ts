@@ -618,6 +618,7 @@ export interface Order {
   reference?: string | null;
   customer_collecting?: boolean;
   customer_returning?: boolean;
+  defaultThreadId?: string;
   version: number;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
@@ -644,6 +645,7 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   reference: z.string().max(255).nullable().default(null),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   ...TimestampFields,
 }).meta({

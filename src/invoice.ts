@@ -247,6 +247,7 @@ export interface Invoice {
   crms_id?: number | null;
   /** @deprecated Legacy CRMS field — not set on new invoices. */
   crms_opportunity_ids?: number[];
+  defaultThreadId?: string;
   version: number;
   updated_by: string;
   created_at?: FirestoreTimestampType;
@@ -292,6 +293,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   })).default([]),
   crms_id: z.number().nullable().optional(),
   crms_opportunity_ids: z.array(z.number()).optional(),
+  defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   updated_by: z.string(),
   ...TimestampFields,

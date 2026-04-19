@@ -58,6 +58,7 @@ export interface OrderEvent {
   item_uids: string[];
   item_count: number;
   expires_at: FirestoreTimestampType;
+  defaultThreadId?: string;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -81,6 +82,7 @@ export const OrderEventSchema: z.ZodType<OrderEvent> = z.strictObject({
   item_uids: z.array(z.string()).default([]),
   item_count: z.int().min(0),
   expires_at: FirestoreTimestamp,
+  defaultThreadId: z.string().optional(),
   created_at: FirestoreTimestamp.optional(),
   updated_at: FirestoreTimestamp.optional(),
 }).meta({
