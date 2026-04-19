@@ -26,9 +26,9 @@ export const comments: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["creator_name", "body_text", "created_at"],
+    columns: ["sources.collection", "creator_name", "body_text", "updated_at"],
     filters: {},
-    sort: { column: "created_at", direction: "desc" },
+    sort: { column: "updated_at", direction: "desc" },
     group: null,
     facet: [],
   },

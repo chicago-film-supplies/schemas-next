@@ -301,7 +301,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   title: "Invoice",
   collection: "invoices",
   displayDefaults: {
-    columns: ["number", "organization.name", "status", "subject"],
+    columns: ["number", "organization.name", "reference", "subject", "status"],
     filters: { status: [] },
     sort: { column: "number", direction: "desc" },
   },

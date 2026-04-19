@@ -37,7 +37,7 @@ export const TrackingCategorySchema: z.ZodType<TrackingCategory> = z.strictObjec
   title: "Tracking Category",
   collection: "tracking-categories",
   displayDefaults: {
-    columns: ["name", "count"],
+    columns: ["name", "count", "products"],
     filters: {},
     sort: { column: "name", direction: "asc" },
   },

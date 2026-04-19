@@ -59,7 +59,7 @@ export const ThreadSchema: z.ZodType<Thread> = z.strictObject({
   title: "Thread",
   collection: "threads",
   displayDefaults: {
-    columns: ["title", "last_message_at", "comment_count"],
+    columns: ["sources.collection", "title", "last_message_at", "comment_count"],
     filters: {},
     sort: { column: "last_message_at", direction: "desc" },
   },

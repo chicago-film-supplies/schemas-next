@@ -125,7 +125,7 @@ export const products: TypesenseCollectionConfig = {
     { id: "can-bin", synonyms: ["can", "bin"] },
   ],
   displayDefaults: {
-    columns: ["type", "name", "tags.name", "components.name"],
+    columns: ["name", "type", "tracking_category_name", "tags.name", "components.name", "component_of.name", "alternates.name"],
     filters: { type: ["rental", "sale", "service"], active: [true] },
     sort: { column: "name", direction: "asc" },
     group: null,

@@ -43,9 +43,9 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   title: "Invite",
   collection: "invites",
   displayDefaults: {
-    columns: ["email", "first_name", "middle_name", "last_name", "roles", "used"],
+    columns: ["email", "first_name", "last_name", "roles", "used"],
     filters: {},
-    sort: { column: null, direction: "desc" },
+    sort: { column: "updated_at", direction: "desc" },
   },
 });
 

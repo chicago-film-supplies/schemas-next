@@ -29,7 +29,7 @@ export const trackingCategories: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["name", "count"],
+    columns: ["name", "count", "products.name"],
     filters: {},
     sort: { column: "name", direction: "asc" },
     group: null,

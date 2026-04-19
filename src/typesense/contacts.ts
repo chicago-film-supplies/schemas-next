@@ -31,7 +31,7 @@ export const contacts: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["first_name", "middle_name", "last_name", "emails", "phones", "organizations"],
+    columns: ["first_name", "last_name", "emails", "phones", "organizations.name"],
     filters: {},
     sort: { column: "first_name", direction: "asc" },
     group: null,

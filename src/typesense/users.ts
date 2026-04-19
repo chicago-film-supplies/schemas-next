@@ -27,7 +27,7 @@ export const users: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["email", "first_name", "middle_name", "last_name", "roles"],
+    columns: ["email", "first_name", "last_name", "roles"],
     filters: {},
     sort: { column: "email", direction: "asc" },
     group: null,

@@ -33,7 +33,7 @@ export const RoleSchema: z.ZodType<Role> = z.strictObject({
   title: "Role",
   collection: "roles",
   displayDefaults: {
-    columns: ["name", "label"],
+    columns: ["name", "label", "description", "permissions"],
     filters: {},
     sort: { column: "name", direction: "asc" },
   },

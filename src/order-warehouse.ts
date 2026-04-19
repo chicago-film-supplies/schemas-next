@@ -160,8 +160,8 @@ export const OrderWarehouseSchema: z.ZodType<OrderWarehouse> = z.strictObject({
   title: "Order (Warehouse)",
   collection: "order-warehouses",
   displayDefaults: {
-    columns: ["number", "organization.name", "subject", "status"],
+    columns: ["number", "organization.name", "subject", "dates.delivery_start", "dates.collection_start", "status"],
     filters: { status: [] },
-    sort: { column: "number", direction: "desc" },
+    sort: { column: "dates.delivery_start", direction: "desc" },
   },
 }) as z.ZodType<OrderWarehouse>;

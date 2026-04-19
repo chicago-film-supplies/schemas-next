@@ -23,9 +23,9 @@ export const tags: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["name", "count"],
+    columns: ["name", "count", "products.name"],
     filters: {},
-    sort: { column: "count", direction: "desc" },
+    sort: { column: "name", direction: "asc" },
     group: null,
     facet: [],
   },

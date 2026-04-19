@@ -63,9 +63,9 @@ export const CommentSchema: z.ZodType<Comment> = z.strictObject({
   title: "Comment",
   collection: "comments",
   displayDefaults: {
-    columns: ["creator_name", "body_text", "created_at"],
+    columns: ["sources.collection", "creator_name", "body_text", "updated_at"],
     filters: {},
-    sort: { column: "created_at", direction: "asc" },
+    sort: { column: "updated_at", direction: "desc" },
   },
 });
 

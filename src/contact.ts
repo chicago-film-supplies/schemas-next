@@ -63,7 +63,7 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   title: "Contact",
   collection: "contacts",
   displayDefaults: {
-    columns: ["first_name", "middle_name", "last_name", "emails", "phones"],
+    columns: ["first_name", "last_name", "emails", "phones", "organizations.name"],
     filters: {},
     sort: { column: "first_name", direction: "asc" },
   },

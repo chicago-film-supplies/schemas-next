@@ -652,7 +652,7 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   title: "Order",
   collection: "orders",
   displayDefaults: {
-    columns: ["number", "organization.name", "subject", "status"],
+    columns: ["number", "organization.name", "subject", "dates.delivery_start", "dates.collection_start", "status"],
     filters: { status: [] },
     sort: { column: "number", direction: "desc" },
   },

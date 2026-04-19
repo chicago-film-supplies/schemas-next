@@ -178,7 +178,7 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
   title: "Transaction",
   collection: "transactions",
   displayDefaults: {
-    columns: ["date", "quantity", "source.type", "type", "reference"],
+    columns: ["date", "quantity", "total_cost", "source.type", "type", "reference"],
     filters: {},
     sort: { column: "date", direction: "desc" },
   },
