@@ -12,6 +12,8 @@ import {
   type FirestoreTimestampType,
   type NameParts,
   NamePartsFields,
+  NamePartsFieldsPartial,
+  type PartialNameParts,
   TimestampFields,
 } from "./common.ts";
 
@@ -60,8 +62,11 @@ export const CreateInviteInput: z.ZodType<CreateInviteInputType> = z.object({
   roles: z.array(z.string()).min(1),
 });
 
-/** Input to POST /auth/accept-invite. */
-export interface AcceptInviteInputType {
+/**
+ * Input to POST /auth/accept-invite. Name fields override the invite's
+ * captured values — each is optional; omitted means "keep the invite's value".
+ */
+export interface AcceptInviteInputType extends PartialNameParts {
   token: string;
   password: string;
 }
@@ -70,4 +75,5 @@ export interface AcceptInviteInputType {
 export const AcceptInviteInput: z.ZodType<AcceptInviteInputType> = z.object({
   token: z.string().min(1).meta({ pii: "redact" }),
   password: z.string().min(8).max(128).meta({ pii: "redact" }),
+  ...NamePartsFieldsPartial,
 });
