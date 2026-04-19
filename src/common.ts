@@ -56,6 +56,49 @@ export const Phone: z.ZodType<string> = z
   .meta({ pii: "mask" });
 
 /**
+ * Split name fields shared across Contact, User, Invite, and any schema
+ * embedding a contact reference. `first_name` is required; the rest are optional.
+ */
+export interface NameParts {
+  first_name: string;
+  middle_name?: string;
+  last_name?: string;
+  pronunciation?: string;
+}
+
+/**
+ * Fields object — spread into a parent `z.strictObject()` (documents) or
+ * `z.object()` (inputs) to attach the standard split-name fields.
+ */
+export const NamePartsFields: {
+  first_name: z.ZodType<string>;
+  middle_name: z.ZodType<string | undefined>;
+  last_name: z.ZodType<string | undefined>;
+  pronunciation: z.ZodType<string | undefined>;
+} = {
+  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+};
+
+/**
+ * Variant of `NamePartsFields` where every field is optional — use for partial
+ * update input schemas (PUT endpoints) where callers may omit `first_name`.
+ */
+export const NamePartsFieldsPartial: {
+  first_name: z.ZodType<string | undefined>;
+  middle_name: z.ZodType<string | undefined>;
+  last_name: z.ZodType<string | undefined>;
+  pronunciation: z.ZodType<string | undefined>;
+} = {
+  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }).optional(),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+};
+
+/**
  * Coordinates object (latitude/longitude).
  */
 export interface CoordinatesType {

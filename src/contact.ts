@@ -2,7 +2,15 @@
  * Contact document schema — Firestore collection: contacts
  */
 import { z } from "zod";
-import { Email, type FirestoreTimestampType, Phone, TimestampFields } from "./common.ts";
+import {
+  Email,
+  type FirestoreTimestampType,
+  type NameParts,
+  NamePartsFields,
+  NamePartsFieldsPartial,
+  Phone,
+  TimestampFields,
+} from "./common.ts";
 
 /**
  * Organization reference embedded in a contact document.
@@ -21,12 +29,8 @@ export const ContactOrganization: z.ZodType<ContactOrganizationType> = z.strictO
 /**
  * Full contact document schema (Firestore document shape).
  */
-export interface Contact {
+export interface Contact extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   crms_id?: number;
   emails: string[];
   phones: string[];
@@ -42,10 +46,7 @@ export interface Contact {
 /** Zod schema for a full contact Firestore document. */
 export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   uid: z.string(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   crms_id: z.number().optional(),
   emails: z.array(Email).default([]),
   phones: z.array(Phone).default([]),
@@ -68,12 +69,8 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
 /**
  * Input schema for POST /contacts — what the endpoint accepts.
  */
-export interface CreateContactInputType {
+export interface CreateContactInputType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   emails?: string[];
   phones?: string[];
   organizations?: ContactOrganizationType[];
@@ -82,10 +79,7 @@ export interface CreateContactInputType {
 /** Input schema for creating a contact. */
 export const CreateContactInput: z.ZodType<CreateContactInputType> = z.object({
   uid: z.string(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),
@@ -109,10 +103,7 @@ export interface UpdateContactInputType {
 /** Input schema for updating a contact. */
 export const UpdateContactInput: z.ZodType<UpdateContactInputType> = z.object({
   uid: z.string().optional(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }).optional(),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFieldsPartial,
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),

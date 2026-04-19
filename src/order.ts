@@ -13,6 +13,8 @@ import {
   type FirestoreTimestampType,
   InclusionTypeEnum,
   type InclusionTypeType,
+  type NameParts,
+  NamePartsFields,
   Phone,
   PriceFormulaEnum,
   type PriceFormulaType,
@@ -65,44 +67,30 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
  * Contact reference embedded in a destination endpoint.
  * When present (not null), uid and first_name are required.
  */
-export interface DestinationContactType {
+export interface DestinationContactType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   phones?: string[];
 }
 
 /** Zod schema for destination contact reference. */
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
-  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   phones: z.array(Phone).optional(),
 });
 
 /**
  * Contact reference in a destination endpoint (document schema — uid & first_name required).
  */
-export interface DocDestinationContactType {
+export interface DocDestinationContactType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   phones?: string[];
 }
 
 /** Zod schema for destination contact reference (document version). */
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
-  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   phones: z.array(Phone).default([]),
 });
 

@@ -6,6 +6,8 @@ import {
   Address,
   type AddressType,
   type FirestoreTimestampType,
+  type NameParts,
+  NamePartsFields,
   TimestampFields,
   UidNameRef,
   type UidNameRefType,
@@ -18,21 +20,14 @@ import {
  * Typesense `destinations_v5` collection can index the same `first_name /
  * middle_name / last_name / pronunciation` fields without an adapter.
  */
-export interface DestinationContactRefType {
+export interface DestinationContactRefType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
 }
 
 /** Zod schema for a contact reference embedded in a destination. */
 export const DestinationContactRef: z.ZodType<DestinationContactRefType> = z.strictObject({
   uid: z.string(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
 });
 
 /** Full Firestore document for a destination (a physical address used in orders). */

@@ -6,16 +6,19 @@
  * user with roles taken from the invite and marks it used.
  */
 import { z } from "zod";
-import { Email, FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
+import {
+  Email,
+  FirestoreTimestamp,
+  type FirestoreTimestampType,
+  type NameParts,
+  NamePartsFields,
+  TimestampFields,
+} from "./common.ts";
 
 /** Full Firestore document for a single-use invite. */
-export interface Invite {
+export interface Invite extends NameParts {
   uid: string;
   email: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   roles: string[];
   invited_by: string;
   used: boolean;
@@ -28,10 +31,7 @@ export interface Invite {
 export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   uid: z.string().min(1),
   email: Email,
-  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   roles: z.array(z.string()).default([]),
   invited_by: z.string().min(1),
   used: z.boolean().default(false),
@@ -48,22 +48,15 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
 });
 
 /** Input to POST /admin/users/invite. */
-export interface CreateInviteInputType {
+export interface CreateInviteInputType extends NameParts {
   email: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   roles: string[];
 }
 
 /** Input schema for POST /admin/users/invite. */
 export const CreateInviteInput: z.ZodType<CreateInviteInputType> = z.object({
   email: Email,
-  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   roles: z.array(z.string()).min(1),
 });
 

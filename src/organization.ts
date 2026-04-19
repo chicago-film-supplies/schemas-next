@@ -8,6 +8,8 @@ import {
   Email,
   FirestoreTimestamp,
   type FirestoreTimestampType,
+  type NameParts,
+  NamePartsFields,
   Phone,
   TaxProfileEnum,
   type TaxProfileType,
@@ -17,22 +19,15 @@ import {
 /**
  * Contact reference embedded in an organization document.
  */
-export interface OrganizationContactType {
+export interface OrganizationContactType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   roles: string[];
 }
 
 /** Zod schema for a contact reference embedded in an organization. */
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   roles: z.array(z.string()).default([]),
 });
 
@@ -88,12 +83,8 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
 /**
  * New contact data submitted inline when creating/updating an organization.
  */
-export interface NewContactInputType {
+export interface NewContactInputType extends NameParts {
   uid: string;
-  first_name: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   emails?: string[];
   phones?: string[];
 }
@@ -101,10 +92,7 @@ export interface NewContactInputType {
 /** Zod schema for new contact data submitted inline with an organization. */
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
-  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
-  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
-  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
+  ...NamePartsFields,
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });
