@@ -274,7 +274,9 @@ export {
 
 export {
   DestinationSchema,
+  DestinationContactRef,
   type Destination as DestinationDoc,
+  type DestinationContactRefType,
 } from "./destination.ts";
 
 export {

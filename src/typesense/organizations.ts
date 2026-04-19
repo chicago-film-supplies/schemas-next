@@ -4,11 +4,11 @@ import { typesenseAddressFields } from "./types.ts";
 /** Typesense collection config for organizations. */
 export const organizations: TypesenseCollectionConfig = {
   alias: "organizations",
-  version: 9,
+  version: 10,
   firestoreCollection: "organizations",
-  collectionName: "organizations_v9",
+  collectionName: "organizations_v10",
   schema: {
-    name: "organizations_v9",
+    name: "organizations_v10",
     enable_nested_fields: true,
     token_separators: ["(", ")", "-", "+", " "],
     fields: [
@@ -24,7 +24,10 @@ export const organizations: TypesenseCollectionConfig = {
       ...typesenseAddressFields("billing_address", { sortFull: true, parentOptional: false }),
       { name: "contacts", type: "object[]" },
       { name: "contacts.uid", type: "string[]", facet: false, optional: true },
-      { name: "contacts.name", type: "string[]", stem: true, facet: false, optional: true },
+      { name: "contacts.first_name", type: "string[]", stem: true, facet: false, optional: true },
+      { name: "contacts.middle_name", type: "string[]", stem: true, facet: false, optional: true },
+      { name: "contacts.last_name", type: "string[]", stem: true, facet: false, optional: true },
+      { name: "contacts.pronunciation", type: "string[]", stem: true, facet: false, optional: true },
       { name: "contacts.roles", type: "string[]", facet: false, optional: true },
       { name: "updated_by", type: "string", facet: false, optional: true, sort: true },
       { name: "last_order", type: "int64", sort: true, index: true, facet: false, optional: true },

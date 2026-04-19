@@ -36,6 +36,7 @@ export type {
   InvoiceDocument,
   LocationDocument,
   OrderDocument,
+  OrderWarehouseDocument,
   OrganizationDocument,
   ProductDocument,
   ProductDocumentComponent,

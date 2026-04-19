@@ -113,7 +113,10 @@ export interface ChartOfAccountsDocument {
 export interface ContactDocument {
   id: string;
   uid: string;
-  name: string;
+  first_name: string;
+  middle_name?: string;
+  last_name?: string;
+  pronunciation?: string;
   crms_id?: number;
   crms_id_str?: string;
   emails: string[];
@@ -145,7 +148,10 @@ export interface DestinationDocument {
   }>;
   contacts?: Array<{
     uid?: string;
-    name?: string;
+    first_name?: string;
+    middle_name?: string;
+    last_name?: string;
+    pronunciation?: string;
   }>;
   created_at?: number;
   updated_at: number;
@@ -275,7 +281,10 @@ export interface OrderDocument {
       instructions?: string;
       contact?: {
         uid?: string;
-        name?: string;
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        pronunciation?: string;
       };
     };
     collection?: {
@@ -284,7 +293,10 @@ export interface OrderDocument {
       instructions?: string;
       contact?: {
         uid?: string;
-        name?: string;
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        pronunciation?: string;
       };
     };
   }>;
@@ -328,6 +340,79 @@ export interface OrderDocument {
   updated_at: number;
 }
 
+// ── Order Warehouses ────────────────────────────────────────────────
+
+/**
+ * Typesense document type for the sanitized warehouse order view.
+ *
+ * Mirrors `OrderDocument` but strips pricing, totals, tax profile,
+ * invoice refs, CRM/Xero ids, and financial line-item fields.
+ */
+export interface OrderWarehouseDocument {
+  id: string;
+  uid: string;
+  number: number;
+  number_str?: string;
+  status: string;
+  customer_collecting?: boolean;
+  customer_returning?: boolean;
+  subject?: string;
+  reference?: string;
+  organization: {
+    uid?: string;
+    name: string;
+  };
+  dates: {
+    delivery_start_fs?: number;
+    delivery_end_fs?: number;
+    collection_start_fs?: number;
+    collection_end_fs?: number;
+    charge_start_fs?: number;
+    charge_end_fs?: number;
+  };
+  destinations: Array<{
+    delivery?: {
+      uid?: string;
+      address?: TypesenseAddressFields;
+      instructions?: string;
+      contact?: {
+        uid?: string;
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        pronunciation?: string;
+      };
+    };
+    collection?: {
+      uid?: string;
+      address?: TypesenseAddressFields;
+      instructions?: string;
+      contact?: {
+        uid?: string;
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        pronunciation?: string;
+      };
+    };
+  }>;
+  items?: Array<{
+    uid?: string;
+    name?: string;
+    quantity?: number;
+    type?: string;
+    description?: string;
+    stock_method?: string;
+    path?: string[];
+    uid_delivery?: string;
+    uid_collection?: string;
+    order_number?: number;
+    uid_order?: string;
+  }>;
+  created_at?: number;
+  updated_at: number;
+}
+
 // ── Organizations ───────────────────────────────────────────────────
 
 /** Typesense document type for organizations. */
@@ -345,7 +430,10 @@ export interface OrganizationDocument {
   billing_address: TypesenseAddressFields;
   contacts: Array<{
     uid?: string;
-    name?: string;
+    first_name?: string;
+    middle_name?: string;
+    last_name?: string;
+    pronunciation?: string;
     roles?: string[];
   }>;
   updated_by?: string;
@@ -598,7 +686,9 @@ export interface UserDocument {
   uid: string;
   email: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   roles?: string[];
   email_verified: boolean;
   uid_contact?: string;
@@ -617,6 +707,7 @@ export type TypesenseDocument =
   | InvoiceDocument
   | LocationDocument
   | OrderDocument
+  | OrderWarehouseDocument
   | OrganizationDocument
   | ProductDocument
   | StoreDocument
@@ -635,6 +726,7 @@ export interface TypesenseDocumentMap {
   invoices: InvoiceDocument;
   locations: LocationDocument;
   orders: OrderDocument;
+  "order-warehouses": OrderWarehouseDocument;
   organizations: OrganizationDocument;
   products: ProductDocument;
   stores: StoreDocument;
