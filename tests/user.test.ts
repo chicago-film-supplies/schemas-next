@@ -192,3 +192,45 @@ Deno.test("UserSchema defaults version to 0", () => {
     assertEquals(result.data.version, 0);
   }
 });
+
+Deno.test("UserSchema accepts middle_name and pronunciation", () => {
+  const result = UserSchema.safeParse({
+    ...base,
+    middle_name: "Quincy",
+    last_name: "Hughes",
+    pronunciation: "AL-iks HYOOZ",
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("UserSchema rejects empty middle_name", () => {
+  const result = UserSchema.safeParse({ ...base, middle_name: "" });
+  assertEquals(result.success, false);
+});
+
+Deno.test("UserSchema rejects pronunciation longer than 100 chars", () => {
+  const result = UserSchema.safeParse({ ...base, pronunciation: "x".repeat(101) });
+  assertEquals(result.success, false);
+});
+
+Deno.test("CreateUserInput accepts middle_name and pronunciation", () => {
+  const result = CreateUserInput.safeParse({
+    email: "test@example.com",
+    first_name: "Alex",
+    middle_name: "Quincy",
+    last_name: "Hughes",
+    pronunciation: "AL-iks",
+    password: "supersecret",
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("UpdateUserInput accepts middle_name only", () => {
+  const result = UpdateUserInput.safeParse({ middle_name: "Quincy", version: 3 });
+  assertEquals(result.success, true);
+});
+
+Deno.test("UpdateUserInput accepts pronunciation only", () => {
+  const result = UpdateUserInput.safeParse({ pronunciation: "AL-iks", version: 3 });
+  assertEquals(result.success, true);
+});

@@ -54,7 +54,9 @@ export interface User {
   uid: string;
   email: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   password_hash: string;
   email_verified: boolean;
   uid_contact?: string | null;
@@ -73,7 +75,9 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   uid: z.string(),
   email: Email,
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   password_hash: z.string().min(1).meta({ pii: "redact" }),
   email_verified: z.boolean().default(false),
   uid_contact: z.string().nullable().optional(),
@@ -88,7 +92,7 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   title: "User",
   collection: "users",
   displayDefaults: {
-    columns: ["email", "first_name", "last_name", "roles"],
+    columns: ["email", "first_name", "middle_name", "last_name", "roles"],
     filters: {},
     sort: { column: "email", direction: "asc" },
   },
@@ -100,7 +104,9 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
 export interface CreateUserInputType {
   email: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   password: string;
   roles?: string[];
   uid_contact?: string | null;
@@ -110,7 +116,9 @@ export interface CreateUserInputType {
 export const CreateUserInput: z.ZodType<CreateUserInputType> = z.object({
   email: Email,
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   password: z.string().min(8).max(128).meta({ pii: "redact" }),
   roles: z.array(z.string()).optional(),
   uid_contact: z.string().nullable().optional(),
@@ -120,7 +128,9 @@ export const CreateUserInput: z.ZodType<CreateUserInputType> = z.object({
 export interface UpdateUserInputType {
   email?: string;
   first_name?: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   uid_contact?: string | null;
   version: number;
   prefs_firestore?: Record<string, FirestoreDisplayPrefs>;
@@ -131,7 +141,9 @@ export interface UpdateUserInputType {
 export const UpdateUserInput: z.ZodType<UpdateUserInputType> = z.object({
   email: Email.optional(),
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   uid_contact: z.string().nullable().optional(),
   version: z.int().min(0),
   prefs_firestore: z.record(z.string(), FirestoreDisplayPrefsSchema).optional(),

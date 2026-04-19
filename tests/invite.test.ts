@@ -81,3 +81,30 @@ Deno.test("AcceptInviteInput accepts valid payload", () => {
   });
   assertEquals(result.success, true);
 });
+
+Deno.test("InviteSchema accepts middle_name and pronunciation", () => {
+  const result = InviteSchema.safeParse({
+    uid: "token-hex-abc",
+    email: "invited@example.com",
+    first_name: "Invited",
+    middle_name: "Quincy",
+    last_name: "User",
+    pronunciation: "in-VITE-ed",
+    roles: ["admin"],
+    invited_by: "user-1",
+    expires_at: { _seconds: 1700000000, _nanoseconds: 0 },
+  });
+  assertEquals(result.success, true);
+});
+
+Deno.test("CreateInviteInput accepts middle_name and pronunciation", () => {
+  const result = CreateInviteInput.safeParse({
+    email: "a@b.com",
+    first_name: "A",
+    middle_name: "Q",
+    last_name: "B",
+    pronunciation: "AY",
+    roles: ["admin"],
+  });
+  assertEquals(result.success, true);
+});

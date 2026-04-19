@@ -37,10 +37,12 @@ export const updateUserRules: CollectionRule[] = [
     mode: "fan-out",
     invariant: "A user's name stays in sync with its linked contact's name",
     transaction: "update-user",
-    trigger: "first_name/last_name change on a user with uid_contact set",
+    trigger: "first_name/middle_name/last_name/pronunciation change on a user with uid_contact set",
     fields: [
       { source: ["first_name"], target: ["first_name"] },
+      { source: ["middle_name"], target: ["middle_name"] },
       { source: ["last_name"], target: ["last_name"] },
+      { source: ["pronunciation"], target: ["pronunciation"] },
     ],
   },
 ];

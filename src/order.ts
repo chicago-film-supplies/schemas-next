@@ -68,7 +68,9 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
 export interface DestinationContactType {
   uid: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   phones?: string[];
 }
 
@@ -76,7 +78,9 @@ export interface DestinationContactType {
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   phones: z.array(Phone).optional(),
 });
 
@@ -86,7 +90,9 @@ export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
 export interface DocDestinationContactType {
   uid: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   phones?: string[];
 }
 
@@ -94,7 +100,9 @@ export interface DocDestinationContactType {
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   phones: z.array(Phone).default([]),
 });
 

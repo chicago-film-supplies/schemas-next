@@ -24,7 +24,9 @@ export const ContactOrganization: z.ZodType<ContactOrganizationType> = z.strictO
 export interface Contact {
   uid: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   crms_id?: number;
   emails: string[];
   phones: string[];
@@ -41,7 +43,9 @@ export interface Contact {
 export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   uid: z.string(),
   first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   crms_id: z.number().optional(),
   emails: z.array(Email).default([]),
   phones: z.array(Phone).default([]),
@@ -55,7 +59,7 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   title: "Contact",
   collection: "contacts",
   displayDefaults: {
-    columns: ["first_name", "last_name", "emails", "phones"],
+    columns: ["first_name", "middle_name", "last_name", "emails", "phones"],
     filters: {},
     sort: { column: "first_name", direction: "asc" },
   },
@@ -67,7 +71,9 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
 export interface CreateContactInputType {
   uid: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   emails?: string[];
   phones?: string[];
   organizations?: ContactOrganizationType[];
@@ -77,7 +83,9 @@ export interface CreateContactInputType {
 export const CreateContactInput: z.ZodType<CreateContactInputType> = z.object({
   uid: z.string(),
   first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),
@@ -89,7 +97,9 @@ export const CreateContactInput: z.ZodType<CreateContactInputType> = z.object({
 export interface UpdateContactInputType {
   uid?: string;
   first_name?: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   emails?: string[];
   phones?: string[];
   organizations?: ContactOrganizationType[];
@@ -100,7 +110,9 @@ export interface UpdateContactInputType {
 export const UpdateContactInput: z.ZodType<UpdateContactInputType> = z.object({
   uid: z.string().optional(),
   first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }).optional(),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
   organizations: z.array(ContactOrganization).optional(),

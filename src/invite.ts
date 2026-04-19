@@ -13,7 +13,9 @@ export interface Invite {
   uid: string;
   email: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   roles: string[];
   invited_by: string;
   used: boolean;
@@ -27,7 +29,9 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   uid: z.string().min(1),
   email: Email,
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   roles: z.array(z.string()).default([]),
   invited_by: z.string().min(1),
   used: z.boolean().default(false),
@@ -37,7 +41,7 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   title: "Invite",
   collection: "invites",
   displayDefaults: {
-    columns: ["email", "first_name", "last_name", "roles", "used"],
+    columns: ["email", "first_name", "middle_name", "last_name", "roles", "used"],
     filters: {},
     sort: { column: null, direction: "desc" },
   },
@@ -47,7 +51,9 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
 export interface CreateInviteInputType {
   email: string;
   first_name: string;
+  middle_name?: string;
   last_name?: string;
+  pronunciation?: string;
   roles: string[];
 }
 
@@ -55,7 +61,9 @@ export interface CreateInviteInputType {
 export const CreateInviteInput: z.ZodType<CreateInviteInputType> = z.object({
   email: Email,
   first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  middle_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
+  pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
   roles: z.array(z.string()).min(1),
 });
 

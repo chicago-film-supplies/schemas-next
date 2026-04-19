@@ -99,3 +99,65 @@ Deno.test("UpdateContactInput rejects empty first_name", () => {
   const input = { first_name: "", version: 1 };
   assertEquals(UpdateContactInput.safeParse(input).success, false);
 });
+
+Deno.test("ContactSchema accepts middle_name and pronunciation", () => {
+  const doc = {
+    uid: "test-abc-123",
+    first_name: "John",
+    middle_name: "Quincy",
+    last_name: "Doe",
+    pronunciation: "JON QUIN-see DOH",
+    emails: [],
+    phones: [],
+    organizations: [],
+    query_by_organizations: [],
+  };
+  assertEquals(ContactSchema.safeParse(doc).success, true);
+});
+
+Deno.test("ContactSchema rejects empty middle_name", () => {
+  const doc = {
+    uid: "test-abc-123",
+    first_name: "John",
+    middle_name: "",
+    emails: [],
+    phones: [],
+    organizations: [],
+    query_by_organizations: [],
+  };
+  assertEquals(ContactSchema.safeParse(doc).success, false);
+});
+
+Deno.test("ContactSchema rejects pronunciation longer than 100 chars", () => {
+  const doc = {
+    uid: "test-abc-123",
+    first_name: "John",
+    pronunciation: "x".repeat(101),
+    emails: [],
+    phones: [],
+    organizations: [],
+    query_by_organizations: [],
+  };
+  assertEquals(ContactSchema.safeParse(doc).success, false);
+});
+
+Deno.test("CreateContactInput accepts middle_name and pronunciation", () => {
+  const input = {
+    uid: "test-abc-123",
+    first_name: "John",
+    middle_name: "Quincy",
+    last_name: "Doe",
+    pronunciation: "JON QUIN-see DOH",
+  };
+  assertEquals(CreateContactInput.safeParse(input).success, true);
+});
+
+Deno.test("UpdateContactInput accepts middle_name only", () => {
+  const input = { middle_name: "Quincy", version: 2 };
+  assertEquals(UpdateContactInput.safeParse(input).success, true);
+});
+
+Deno.test("UpdateContactInput accepts pronunciation only", () => {
+  const input = { pronunciation: "JON DOH", version: 2 };
+  assertEquals(UpdateContactInput.safeParse(input).success, true);
+});

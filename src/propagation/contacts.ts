@@ -18,7 +18,9 @@ export const createContactRules: CollectionRule[] = [
     fields: [
       { source: ["uid"], target: ["contacts", "uid"] },
       { source: ["first_name"], target: ["contacts", "first_name"] },
+      { source: ["middle_name"], target: ["contacts", "middle_name"] },
       { source: ["last_name"], target: ["contacts", "last_name"] },
+      { source: ["pronunciation"], target: ["contacts", "pronunciation"] },
       { source: ["uid"], target: ["query_by_contacts"] },
     ],
   },
@@ -56,7 +58,9 @@ export const updateContactRules: CollectionRule[] = [
     transaction: "update-contact",
     fields: [
       { source: ["first_name"], target: ["contacts", "first_name"] },
+      { source: ["middle_name"], target: ["contacts", "middle_name"] },
       { source: ["last_name"], target: ["contacts", "last_name"] },
+      { source: ["pronunciation"], target: ["contacts", "pronunciation"] },
     ],
   },
   {
@@ -69,9 +73,13 @@ export const updateContactRules: CollectionRule[] = [
     trigger: "name change — targets active orders (not canceled/complete)",
     fields: [
       { source: ["first_name"], target: ["destinations", "delivery", "contact", "first_name"] },
+      { source: ["middle_name"], target: ["destinations", "delivery", "contact", "middle_name"] },
       { source: ["last_name"], target: ["destinations", "delivery", "contact", "last_name"] },
+      { source: ["pronunciation"], target: ["destinations", "delivery", "contact", "pronunciation"] },
       { source: ["first_name"], target: ["destinations", "collection", "contact", "first_name"] },
+      { source: ["middle_name"], target: ["destinations", "collection", "contact", "middle_name"] },
       { source: ["last_name"], target: ["destinations", "collection", "contact", "last_name"] },
+      { source: ["pronunciation"], target: ["destinations", "collection", "contact", "pronunciation"] },
     ],
   },
   {
@@ -95,7 +103,7 @@ export const updateContactRules: CollectionRule[] = [
     invariant: "When a contact's org list changes, added/removed orgs update their contact back-references",
     transaction: "update-contact",
     fields: [
-      { source: [], target: ["contacts"], transform: "orgs added → add contact ref {uid, first_name, last_name, roles: []}" },
+      { source: [], target: ["contacts"], transform: "orgs added → add contact ref {uid, first_name, middle_name, last_name, pronunciation, roles: []}" },
       { source: [], target: ["contacts"], transform: "orgs removed → remove contact ref" },
       { source: [], target: ["query_by_contacts"], transform: "orgs added → add contact uid" },
       { source: [], target: ["query_by_contacts"], transform: "orgs removed → remove contact uid" },
@@ -108,10 +116,12 @@ export const updateContactRules: CollectionRule[] = [
     mode: "fan-out",
     invariant: "A contact's name stays in sync with its linked user's name",
     transaction: "update-contact",
-    trigger: "first_name/last_name change on a contact with uid_user set",
+    trigger: "first_name/middle_name/last_name/pronunciation change on a contact with uid_user set",
     fields: [
       { source: ["first_name"], target: ["first_name"] },
+      { source: ["middle_name"], target: ["middle_name"] },
       { source: ["last_name"], target: ["last_name"] },
+      { source: ["pronunciation"], target: ["pronunciation"] },
     ],
   },
 ];
