@@ -196,6 +196,7 @@ export {
   type FirestoreFieldValue,
   type UidNameRefType,
   type NameParts,
+  type PartialNameParts,
   type NoteEntryType,
   type ProductTypeType,
   type StockMethodType,

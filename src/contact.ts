@@ -8,6 +8,7 @@ import {
   type NameParts,
   NamePartsFields,
   NamePartsFieldsPartial,
+  type PartialNameParts,
   Phone,
   TimestampFields,
 } from "./common.ts";
@@ -88,12 +89,8 @@ export const CreateContactInput: z.ZodType<CreateContactInputType> = z.object({
 /**
  * Input schema for PUT /contacts/:uid — partial update.
  */
-export interface UpdateContactInputType {
+export interface UpdateContactInputType extends PartialNameParts {
   uid?: string;
-  first_name?: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   emails?: string[];
   phones?: string[];
   organizations?: ContactOrganizationType[];

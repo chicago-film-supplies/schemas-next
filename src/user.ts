@@ -8,6 +8,7 @@ import {
   type NameParts,
   NamePartsFields,
   NamePartsFieldsPartial,
+  type PartialNameParts,
   TimestampFields,
 } from "./common.ts";
 
@@ -118,12 +119,8 @@ export const CreateUserInput: z.ZodType<CreateUserInputType> = z.object({
 });
 
 /** Payload for PUT /users/:uid — full-doc replace; server-managed fields excluded. */
-export interface UpdateUserInputType {
+export interface UpdateUserInputType extends PartialNameParts {
   email?: string;
-  first_name?: string;
-  middle_name?: string;
-  last_name?: string;
-  pronunciation?: string;
   uid_contact?: string | null;
   version: number;
   prefs_firestore?: Record<string, FirestoreDisplayPrefs>;

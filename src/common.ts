@@ -67,6 +67,17 @@ export interface NameParts {
 }
 
 /**
+ * All-optional variant of `NameParts` — use for partial update input types
+ * (PUT endpoints) where callers may omit `first_name`.
+ */
+export interface PartialNameParts {
+  first_name?: string;
+  middle_name?: string;
+  last_name?: string;
+  pronunciation?: string;
+}
+
+/**
  * Fields object — spread into a parent `z.strictObject()` (documents) or
  * `z.object()` (inputs) to attach the standard split-name fields.
  */
