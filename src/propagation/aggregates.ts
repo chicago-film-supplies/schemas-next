@@ -53,6 +53,12 @@ export const aggregates: AggregateDefinition[] = [
     description: "Shared lookup data referenced by other aggregates — low velocity, high fan-out on change",
   },
   {
+    id: "threads",
+    root: "threads",
+    members: ["comments"],
+    description: "Conversation primitive — every order, invoice, contact, organization, order-event, product, transaction, and role carries a default thread cowritten on creation. Comments (Tiptap JSON + plain-text mirror) belong to a thread; threads carry 1..N polymorphic source refs so one conversation can surface on multiple detail pages (e.g. an order-event thread appears on both the event and its parent order).",
+  },
+  {
     id: "infrastructure",
     root: "",
     members: ["sessions", "email-verifications", "password-resets", "rate-limits", "typesense-config", "cache-geocodes", "webhook-events"],

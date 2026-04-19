@@ -107,6 +107,25 @@ export interface ChartOfAccountsDocument {
   updated_at: number;
 }
 
+// ── Comments ────────────────────────────────────────────────────────
+
+/** Typesense document type for comments. */
+export interface CommentDocument {
+  id: string;
+  uid: string;
+  uid_thread: string;
+  sources: Array<{
+    collection?: string;
+    uid?: string;
+  }>;
+  body_text: string;
+  uid_creator: string;
+  creator_name?: string;
+  deleted_at?: number;
+  created_at: number;
+  updated_at?: number;
+}
+
 // ── Contacts ────────────────────────────────────────────────────────
 
 /** Typesense document type for contacts. */
@@ -249,7 +268,6 @@ export interface OrderDocument {
   customer_returning?: boolean;
   subject?: string;
   reference?: string;
-  notes?: string;
   crms_status?: string;
   invoices?: Array<{
     uid?: string;
@@ -702,6 +720,7 @@ export interface UserDocument {
 export type TypesenseDocument =
   | BookingDocument
   | ChartOfAccountsDocument
+  | CommentDocument
   | ContactDocument
   | DestinationDocument
   | InvoiceDocument
@@ -721,6 +740,7 @@ export type TypesenseDocument =
 export interface TypesenseDocumentMap {
   bookings: BookingDocument;
   "chart-of-accounts": ChartOfAccountsDocument;
+  comments: CommentDocument;
   contacts: ContactDocument;
   destinations: DestinationDocument;
   invoices: InvoiceDocument;

@@ -9,8 +9,6 @@ import {
   type ComponentTypeType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
-  NoteEntry,
-  type NoteEntryType,
 } from "./common.ts";
 
 const BOOKING_STATUSES = [
@@ -31,7 +29,6 @@ export interface BookingStoreLocation {
   name: string;
   quantity: number;
   default: boolean;
-  notes: NoteEntryType[];
 }
 
 /** A store and its locations assigned to a booking. */
@@ -107,7 +104,6 @@ const BookingStoreLocationSchema: z.ZodType<BookingStoreLocation> = z.strictObje
   name: z.string(),
   quantity: z.number(),
   default: z.boolean(),
-  notes: z.array(NoteEntry).default([]),
 });
 
 const BookingStoreSchema: z.ZodType<BookingStore> = z.strictObject({

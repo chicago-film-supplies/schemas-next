@@ -123,6 +123,18 @@ export const PERMISSIONS = [
   "roles.read",
   "roles.edit",
 
+  "threads.create",
+  "threads.read",
+  "threads.update",
+  "threads.search",
+
+  "comments.create",
+  "comments.read",
+  "comments.update",
+  "comments.delete",
+  "comments.search",
+  "comments.react",
+
   "uploads.sign",
 
   "admin.reindex",

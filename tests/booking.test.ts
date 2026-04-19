@@ -56,7 +56,6 @@ Deno.test("BookingSchema validates with stores", () => {
         name: "Shelf A",
         quantity: 5,
         default: true,
-        notes: [{ note: "Handle with care" }],
       }],
     }],
     query_by_uid_store: ["test-store-1"],

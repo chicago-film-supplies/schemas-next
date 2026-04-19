@@ -445,7 +445,6 @@ Deno.test("OrderSchema validates a complete document", () => {
     crms_status: "active",
     subject: "Film shoot",
     reference: "PO-123",
-    notes: "Handle with care",
     customer_collecting: true,
     customer_returning: false,
   };

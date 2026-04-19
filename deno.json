@@ -38,7 +38,9 @@
     "./webhook-event": "./src/webhook-event.ts",
     "./log": "./src/log.ts",
     "./role": "./src/role.ts",
-    "./permissions": "./src/permissions.ts"
+    "./permissions": "./src/permissions.ts",
+    "./thread": "./src/thread.ts",
+    "./comment": "./src/comment.ts"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-run --allow-write tests/",

@@ -173,7 +173,6 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "crms_status", type: "string?" },
     { path: "subject", type: "string" },
     { path: "reference", type: "string" },
-    { path: "notes", type: "string" },
     { path: "customer_collecting", type: "boolean" },
     { path: "customer_returning", type: "boolean" },
     { path: "version", type: "number" },

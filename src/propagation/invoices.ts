@@ -38,8 +38,12 @@ export const createInvoiceRules: CollectionRule[] = [
 
 export const createInvoiceTransaction: TransactionDefinition = {
   id: "create-invoice",
-  description: "Creates an invoice and co-writes invoice summary to each referenced order",
-  steps: ["create-invoice:invoice-to-orders"],
+  description: "Creates an invoice, co-writes invoice summary to each referenced order, and cowrites a default thread.",
+  steps: [
+    "create-invoice:invoice-to-orders",
+    "cowrite-thread:invoices-to-thread",
+    "cowrite-thread:thread-to-invoices",
+  ],
 };
 
 // ── update-invoice (status → orders) ────────────────────────────────

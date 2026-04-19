@@ -5,8 +5,6 @@ import { z } from "zod";
 import {
   FirestoreTimestamp,
   type FirestoreTimestampType,
-  NoteEntry,
-  type NoteEntryType,
   OOSReasonEnum,
   type OOSReasonType,
   TimestampFields,
@@ -38,7 +36,6 @@ export interface OOSTransaction {
   crms_stock_level_id?: number | null;
   date: string;
   date_fs?: FirestoreTimestampType;
-  notes?: string | null;
   out_of_service_uid: string;
   quantity: number;
   stock_level_uid?: string;
@@ -72,7 +69,6 @@ export interface OutOfServiceRecord {
   stores?: OOSStore[];
   query_by_uid_store?: string[];
   query_by_uid_location?: string[];
-  notes?: NoteEntryType[];
   transactions?: OOSTransaction[];
   version: number;
   created_at?: FirestoreTimestampType;
@@ -99,7 +95,6 @@ const OOSTransactionSchema: z.ZodType<OOSTransaction> = z.strictObject({
   crms_stock_level_id: z.number().nullable().optional(),
   date: z.string(),
   date_fs: FirestoreTimestamp,
-  notes: z.string().nullable().optional(),
   out_of_service_uid: z.string(),
   quantity: z.number(),
   stock_level_uid: z.string().optional(),
@@ -132,7 +127,6 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
   stores: z.array(OOSStoreSchema).default([]).optional(),
   query_by_uid_store: z.array(z.string()).default([]).optional(),
   query_by_uid_location: z.array(z.string()).default([]).optional(),
-  notes: z.array(NoteEntry).optional(),
   transactions: z.array(OOSTransactionSchema).optional(),
   version: z.int().min(0).default(0),
   ...TimestampFields,

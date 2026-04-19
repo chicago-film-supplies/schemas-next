@@ -2,6 +2,7 @@ import { assertEquals } from "@std/assert";
 import {
   bookings,
   chartOfAccounts,
+  comments,
   contacts,
   destinations,
   invoices,
@@ -13,6 +14,7 @@ import {
   stores,
   tags,
   templates,
+  threads,
   trackingCategories,
   typesenseSchemas,
   type TypesenseAlias,
@@ -23,6 +25,7 @@ import {
 const allConfigs = [
   bookings,
   chartOfAccounts,
+  comments,
   contacts,
   destinations,
   invoices,
@@ -34,6 +37,7 @@ const allConfigs = [
   stores,
   tags,
   templates,
+  threads,
   trackingCategories,
   users,
   webshopProducts,

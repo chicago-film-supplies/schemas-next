@@ -39,10 +39,12 @@ export const createContactRules: CollectionRule[] = [
 
 export const createContactTransaction: TransactionDefinition = {
   id: "create-contact",
-  description: "Creates a contact with bidirectional organization cross-references and optional user link.",
+  description: "Creates a contact with bidirectional organization cross-references, optional user link, and a cowritten default thread.",
   steps: [
     "create-contact:contact-to-orgs",
     "create-contact:link-to-user",
+    "cowrite-thread:contacts-to-thread",
+    "cowrite-thread:thread-to-contacts",
   ],
 };
 

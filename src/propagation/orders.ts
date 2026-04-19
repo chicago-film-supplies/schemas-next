@@ -197,7 +197,7 @@ export const createOrderRules: CollectionRule[] = [
 
 export const createOrderTransaction: TransactionDefinition = {
   id: "create-order",
-  description: "Creates an order with bookings, stock summaries, order events, and the sanitized warehouse view in a single Firestore transaction. Skips bookings/events for draft/canceled status.",
+  description: "Creates an order with bookings, stock summaries, order events, and the sanitized warehouse view in a single Firestore transaction. Skips bookings/events for draft/canceled status. Cowrites default threads for the order and each order-event.",
   steps: [
     "create-order:org-to-order",
     "create-order:products-to-order-items",
@@ -209,6 +209,10 @@ export const createOrderTransaction: TransactionDefinition = {
     "create-order:stock-to-public-stock",
     "create-order:order-to-order-events",
     "create-order:order-to-order-warehouse",
+    "cowrite-thread:orders-to-thread",
+    "cowrite-thread:thread-to-orders",
+    "cowrite-thread:order-events-to-thread",
+    "cowrite-thread:thread-to-order-events",
   ],
 };
 

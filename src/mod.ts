@@ -175,7 +175,6 @@ export {
   UidNameRef,
   NamePartsFields,
   NamePartsFieldsPartial,
-  NoteEntry,
   ProductTypeEnum,
   StockMethodEnum,
   TaxProfileEnum,
@@ -197,7 +196,6 @@ export {
   type UidNameRefType,
   type NameParts,
   type PartialNameParts,
-  type NoteEntryType,
   type ProductTypeType,
   type StockMethodType,
   type TaxProfileType,
@@ -256,6 +254,29 @@ export {
   RoleSchema,
   type Role,
 } from "./role.ts";
+
+export {
+  ThreadSchema,
+  ThreadSource,
+  UpdateThreadInput,
+  type Thread,
+  type ThreadSourceType,
+  type UpdateThreadInputType,
+} from "./thread.ts";
+
+export {
+  CommentSchema,
+  CommentBody,
+  CreateCommentInput,
+  UpdateCommentInput,
+  CommentReactionInput,
+  type Comment,
+  type CommentBodyJson,
+  type CreateCommentInputType,
+  type UpdateCommentInputType,
+  type CommentReactionInputType,
+  type ReactionActionType,
+} from "./comment.ts";
 
 export {
   PERMISSIONS,
@@ -528,6 +549,18 @@ export {
   createLocationTransaction,
   updateLocationTransactionalRules,
   updateLocationTransaction,
+  threadCowriteRules,
+  threadOrderRules,
+  threadInvoiceRules,
+  threadContactRules,
+  threadOrganizationRules,
+  threadProductRules,
+  threadTransactionRules,
+  threadOrderEventRules,
+  threadRoleRules,
+  createRoleTransaction,
+  createCommentRules,
+  createCommentTransaction,
 } from "./propagation/mod.ts";
 
 // ── Domain events ───────────────────────────────────────────────────
@@ -576,6 +609,12 @@ export type {
   TransactionUpdated,
   OutOfServiceRecordCreated,
   OutOfServiceRecordUpdated,
+  // Threads aggregate
+  ThreadCreated,
+  ThreadUpdated,
+  CommentCreated,
+  CommentUpdated,
+  CommentDeleted,
   // Reference data
   TagCreated,
   TagUpdated,
@@ -591,6 +630,7 @@ export type {
 
 // ── Union of all Firestore document types ───────────────────────────
 
+import type { Comment } from "./comment.ts";
 import type { Counter } from "./counter.ts";
 import type { Booking } from "./booking.ts";
 import type { CacheGeocodes } from "./cache-geocodes.ts";
@@ -619,6 +659,7 @@ import type { Session } from "./session.ts";
 import type { StockSummary } from "./stock-summary.ts";
 import type { Store } from "./store.ts";
 import type { Role } from "./role.ts";
+import type { Thread } from "./thread.ts";
 import type { Tag } from "./tag.ts";
 import type { Tax } from "./tax.ts";
 import type { TrackingCategory } from "./tracking-category.ts";
@@ -630,11 +671,11 @@ import type { WebshopProduct } from "./webshop-product.ts";
 
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
-  | Booking | CacheGeocodes | ChartOfAccounts | Contact | Counter | DestinationDocType
+  | Booking | CacheGeocodes | ChartOfAccounts | Comment | Contact | Counter | DestinationDocType
   | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invite | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
-  | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
+  | Store | Tag | Thread | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
 // ── Schema record keyed by collection name ─────────────────────────
@@ -642,6 +683,7 @@ export type SchemaDocType =
 import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
+import { CommentSchema } from "./comment.ts";
 import { CounterSchema as CounterSchema_ } from "./counter.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
 import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
@@ -671,6 +713,7 @@ import { StockSummarySchema } from "./stock-summary.ts";
 import { StoreSchema } from "./store.ts";
 import { TagSchema } from "./tag.ts";
 import { TaxSchema as TaxSchema_ } from "./tax.ts";
+import { ThreadSchema } from "./thread.ts";
 import { TrackingCategorySchema } from "./tracking-category.ts";
 import { TransactionSchema } from "./transaction.ts";
 import { UserSchema } from "./user.ts";
@@ -684,6 +727,7 @@ export const schemas: Record<string, z.ZodType> = {
   "counter": CounterSchema_, "counters": CounterSchema_,
   "cache-geocodes": CacheGeocodesSchema,
   "chart-of-accounts": ChartOfAccountsSchema,
+  "comment": CommentSchema, "comments": CommentSchema,
   "contact": ContactSchema, "contacts": ContactSchema,
   "destination": DestinationSchema, "destinations": DestinationSchema,
   "email-verification": EmailVerificationSchema, "email-verifications": EmailVerificationSchema,
@@ -710,6 +754,7 @@ export const schemas: Record<string, z.ZodType> = {
   "store": StoreSchema, "stores": StoreSchema,
   "tag": TagSchema, "tags": TagSchema,
   "tax": TaxSchema_, "taxes": TaxSchema_,
+  "thread": ThreadSchema, "threads": ThreadSchema,
   "tracking-category": TrackingCategorySchema, "tracking-categories": TrackingCategorySchema,
   "transaction": TransactionSchema, "transactions": TransactionSchema,
   "user": UserSchema, "users": UserSchema,

@@ -110,6 +110,23 @@ export {
   updateLocationRules,
 } from "./reference-data.ts";
 
+// ── Threads & comments rules ─────────────────────────────────────────
+
+export {
+  threadCowriteRules,
+  threadOrderRules,
+  threadInvoiceRules,
+  threadContactRules,
+  threadOrganizationRules,
+  threadProductRules,
+  threadTransactionRules,
+  threadOrderEventRules,
+  threadRoleRules,
+  createRoleTransaction,
+  createCommentRules,
+  createCommentTransaction,
+} from "./threads.ts";
+
 // ── Convenience arrays ───────────────────────────────────────────────
 
 import type { CollectionRule, TransactionDefinition } from "./types.ts";
@@ -124,6 +141,12 @@ import { createLocationRules, createLocationTransaction, updateLocationTransacti
 import { createInvoiceRules, createInvoiceTransaction, updateInvoiceOrderRules, updateInvoiceTransaction, updateOrderInvoiceRules } from "./invoices.ts";
 import { updateTaxRules } from "./taxes.ts";
 import { updateTagRules, deleteTagRules, updateTrackingCategoryRules, updateLocationTypeRules, updateLocationRules } from "./reference-data.ts";
+import {
+  threadCowriteRules,
+  createCommentRules,
+  createCommentTransaction,
+  createRoleTransaction,
+} from "./threads.ts";
 
 export const transactions: TransactionDefinition[] = [
   createOrderTransaction,
@@ -143,6 +166,8 @@ export const transactions: TransactionDefinition[] = [
   updateLocationTransaction,
   createInvoiceTransaction,
   updateInvoiceTransaction,
+  createRoleTransaction,
+  createCommentTransaction,
 ];
 
 /** All propagation rules across all transactions and cascades. */
@@ -172,4 +197,6 @@ export const rules: CollectionRule[] = [
   ...createLocationRules,
   ...updateLocationTransactionalRules,
   ...updateLocationRules,
+  ...threadCowriteRules,
+  ...createCommentRules,
 ];

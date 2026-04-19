@@ -31,6 +31,7 @@ export type {
   TypesenseAddressFields,
   BookingDocument,
   ChartOfAccountsDocument,
+  CommentDocument,
   ContactDocument,
   DestinationDocument,
   InvoiceDocument,
@@ -53,6 +54,7 @@ export type {
 
 export { bookings } from "./bookings.ts";
 export { chartOfAccounts } from "./chart-of-accounts.ts";
+export { comments } from "./comments.ts";
 export { contacts } from "./contacts.ts";
 export { destinations } from "./destinations.ts";
 export { invoices } from "./invoices.ts";
@@ -65,6 +67,7 @@ export { stores } from "./stores.ts";
 export { tags } from "./tags.ts";
 export { trackingCategories } from "./tracking-categories.ts";
 export { templates } from "./templates.ts";
+export { threads } from "./threads.ts";
 export { users } from "./users.ts";
 export { webshopProducts } from "./webshop-products.ts";
 
@@ -72,6 +75,7 @@ import type { Permission } from "../permissions.ts";
 import type { TypesenseCollectionConfig } from "./types.ts";
 import { bookings } from "./bookings.ts";
 import { chartOfAccounts } from "./chart-of-accounts.ts";
+import { comments } from "./comments.ts";
 import { contacts } from "./contacts.ts";
 import { destinations } from "./destinations.ts";
 import { invoices } from "./invoices.ts";
@@ -84,12 +88,14 @@ import { stores } from "./stores.ts";
 import { tags } from "./tags.ts";
 import { trackingCategories } from "./tracking-categories.ts";
 import { templates } from "./templates.ts";
+import { threads } from "./threads.ts";
 import { users } from "./users.ts";
 import { webshopProducts } from "./webshop-products.ts";
 
 const allSchemas: TypesenseCollectionConfig[] = [
   bookings,
   chartOfAccounts,
+  comments,
   contacts,
   destinations,
   invoices,
@@ -101,6 +107,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
   stores,
   tags,
   templates,
+  threads,
   trackingCategories,
   users,
   webshopProducts,
@@ -110,6 +117,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
 export type TypesenseAlias =
   | "bookings"
   | "chart-of-accounts"
+  | "comments"
   | "contacts"
   | "destinations"
   | "invoices"
@@ -121,6 +129,7 @@ export type TypesenseAlias =
   | "stores"
   | "tags"
   | "templates"
+  | "threads"
   | "tracking-categories"
   | "users"
   | "webshop-products";
@@ -148,6 +157,7 @@ export const typesenseEnabledCollections: Set<string> = new Set(
  */
 export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permission>> = {
   "chart-of-accounts": "chartOfAccounts.search",
+  "comments": "comments.search",
   "contacts": "contacts.search",
   "destinations": "destinations.search",
   "invoices": "invoices.search",
@@ -159,6 +169,7 @@ export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permissi
   "stores": "stores.search",
   "tags": "tags.search",
   "templates": "templates.search",
+  "threads": "threads.search",
   "tracking-categories": "trackingCategories.search",
   "users": "users.search",
   "webshop-products": "webshopProducts.search",

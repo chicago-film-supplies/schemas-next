@@ -76,6 +76,16 @@ export type {
   OutOfServiceRecordUpdated,
 } from "./transactions.ts";
 
+// ── Threads aggregate ───────────────────────────────────────────────
+
+export type {
+  ThreadCreated,
+  ThreadUpdated,
+  CommentCreated,
+  CommentUpdated,
+  CommentDeleted,
+} from "./threads.ts";
+
 // ── Reference data ──────────────────────────────────────────────────
 
 export type {

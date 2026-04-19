@@ -154,22 +154,6 @@ export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
   name: z.string().min(1).max(100).meta({ pii: "none" }),
 });
 
-/**
- * Note entry used in store/location breakdowns.
- */
-export interface NoteEntryType {
-  note: string;
-  updated_at?: FirestoreTimestampType;
-  updated_by?: string;
-}
-
-/** Zod schema for a note entry. */
-export const NoteEntry: z.ZodType<NoteEntryType> = z.strictObject({
-  note: z.string(),
-  updated_at: FirestoreTimestamp.optional(),
-  updated_by: z.string().optional(),
-});
-
 // ── Shared enums ────────────────────────────────────────────────────
 
 const RATE_TYPES = ["percent", "flat"] as const;
@@ -269,7 +253,6 @@ export interface StoreBreakdownLocation {
   quantity: number;
   default: boolean;
   max: number | null;
-  notes: NoteEntryType[];
 }
 
 /** A single store entry in a stock breakdown, containing its locations. */
@@ -289,7 +272,6 @@ export const StoreBreakdownLocationSchema: z.ZodType<StoreBreakdownLocation> = z
   quantity: z.number(),
   default: z.boolean(),
   max: z.number().nullable(),
-  notes: z.array(NoteEntry).default([]),
 });
 
 /** Zod schema for StoreBreakdownEntry. */

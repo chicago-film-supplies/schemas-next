@@ -67,7 +67,6 @@ Deno.test("TransactionSchema validates with stores", () => {
         quantity: 20,
         transactionQuantity: 10,
         default: true,
-        notes: [],
         max: null,
       }],
     }],

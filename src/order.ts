@@ -308,7 +308,6 @@ export interface CreateOrderInputType {
   items?: OrderItemType[];
   subject?: string;
   reference?: string | null;
-  notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
 }
@@ -329,7 +328,6 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
     .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
 });
@@ -347,7 +345,6 @@ export interface UpdateOrderInputType {
   items?: OrderItemType[];
   subject?: string;
   reference?: string | null;
-  notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
   version: number;
@@ -369,7 +366,6 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
     .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  notes: z.string().meta({ pii: "mask" }).optional(),
   customer_collecting: z.boolean().optional(),
   customer_returning: z.boolean().optional(),
   version: z.int().min(0),
@@ -620,7 +616,6 @@ export interface Order {
   crms_status?: string;
   subject?: string;
   reference?: string | null;
-  notes?: string;
   customer_collecting?: boolean;
   customer_returning?: boolean;
   version: number;
@@ -647,7 +642,6 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   crms_status: z.string().optional(),
   subject: z.string().default(""),
   reference: z.string().max(255).nullable().default(null),
-  notes: z.string().meta({ pii: "mask" }).default(""),
   customer_collecting: z.boolean().default(false),
   customer_returning: z.boolean().default(false),
   version: z.int().min(0).default(0),
