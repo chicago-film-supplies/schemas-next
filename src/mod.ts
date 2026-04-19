@@ -30,13 +30,24 @@ export {
 
 export {
   UserSchema,
+  CreateUserInput,
   UpdateUserInput,
   type User,
   type DisplaySort,
   type FirestoreDisplayPrefs,
   type TypesenseDisplayPrefs,
+  type CreateUserInputType,
   type UpdateUserInputType,
 } from "./user.ts";
+
+export {
+  InviteSchema,
+  CreateInviteInput,
+  AcceptInviteInput,
+  type Invite,
+  type CreateInviteInputType,
+  type AcceptInviteInputType,
+} from "./invite.ts";
 
 export {
   typesenseDisplayDefaults,
@@ -492,6 +503,12 @@ export {
   createContactTransaction,
   updateContactRules,
   updateContactTransaction,
+  createUserRules,
+  createUserTransaction,
+  updateUserRules,
+  updateUserTransaction,
+  deleteUserRules,
+  deleteUserTransaction,
   createInvoiceRules,
   createInvoiceTransaction,
   updateInvoiceOrderRules,
@@ -579,6 +596,7 @@ import type { OrderEvent } from "./order-event.ts";
 import type { OrderWarehouse } from "./order-warehouse.ts";
 import type { HolidayDates } from "./holiday-dates.ts";
 import type { InventoryLedger } from "./inventory-ledger.ts";
+import type { Invite } from "./invite.ts";
 import type { Invoice } from "./invoice.ts";
 import type { Location } from "./location.ts";
 import type { LocationType } from "./location-type.ts";
@@ -607,7 +625,7 @@ import type { WebshopProduct } from "./webshop-product.ts";
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
   | Booking | CacheGeocodes | ChartOfAccounts | Contact | Counter | DestinationDocType
-  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invoice | Location
+  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invite | Invoice | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
   | Store | Tag | TrackingCategory | Transaction | TypesenseConfig | User
@@ -628,6 +646,7 @@ import { OrderEventSchema as OrderEventSchema_ } from "./order-event.ts";
 import { OrderWarehouseSchema } from "./order-warehouse.ts";
 import { HolidayDatesSchema } from "./holiday-dates.ts";
 import { InventoryLedgerSchema } from "./inventory-ledger.ts";
+import { InviteSchema } from "./invite.ts";
 import { InvoiceSchema } from "./invoice.ts";
 import { LocationSchema } from "./location.ts";
 import { LocationTypeSchema } from "./location-type.ts";
@@ -664,6 +683,7 @@ export const schemas: Record<string, z.ZodType> = {
   "email-verification": EmailVerificationSchema, "email-verifications": EmailVerificationSchema,
   "holiday-dates": HolidayDatesSchema,
   "inventory-ledger": InventoryLedgerSchema, "inventory-ledgers": InventoryLedgerSchema,
+  "invite": InviteSchema, "invites": InviteSchema,
   "invoice": InvoiceSchema, "invoices": InvoiceSchema,
   "location": LocationSchema, "locations": LocationSchema,
   "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,

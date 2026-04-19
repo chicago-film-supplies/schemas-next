@@ -135,14 +135,14 @@ Deno.test("CreateOrderInput accepts destination with complete contact", () => {
     dates: validDates,
     tax_profile: "tax_applied",
     destinations: [{
-      delivery: { uid: "test-dest-1", contact: { uid: "test-contact-1", name: "Jane", phones: ["312-555-0100"] } },
+      delivery: { uid: "test-dest-1", contact: { uid: "test-contact-1", first_name: "Jane", last_name: "Doe", phones: ["312-555-0100"] } },
       collection: { uid: "test-dest-2" },
     }],
   };
   assertEquals(CreateOrderInput.safeParse(input).success, true);
 });
 
-Deno.test("CreateOrderInput rejects destination contact missing name", () => {
+Deno.test("CreateOrderInput rejects destination contact missing first_name", () => {
   const input = {
     uid: "test-order-1",
     organization: { uid: "test-org-1" },
@@ -666,7 +666,8 @@ Deno.test("OrderSchema validates destination with contact", () => {
         instructions: "Ring bell",
         contact: {
           uid: "test-contact-1",
-          name: "John Doe",
+          first_name: "John",
+          last_name: "Doe",
           phones: ["1234567890"],
         },
       },

@@ -14,6 +14,7 @@
     "./email-verification": "./src/email-verification.ts",
     "./holiday-dates": "./src/holiday-dates.ts",
     "./inventory-ledger": "./src/inventory-ledger.ts",
+    "./invite": "./src/invite.ts",
     "./invoice": "./src/invoice.ts",
     "./location": "./src/location.ts",
     "./location-type": "./src/location-type.ts",

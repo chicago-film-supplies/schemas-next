@@ -42,7 +42,7 @@ Deno.test("getInitialValues — produces object for sub-schemas", () => {
 
 Deno.test("getInitialValues — strings default to empty string", () => {
   const result = getInitialValues(ContactSchema);
-  assertEquals(result.name, "");
+  assertEquals(result.first_name, "");
   assertEquals(result.uid, "");
 });
 

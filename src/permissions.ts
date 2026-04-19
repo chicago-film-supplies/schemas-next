@@ -115,6 +115,9 @@ export const PERMISSIONS = [
 
   "users.read",
   "users.update",
+  "users.delete",
+  "users.invite",
+  "users.search",
   "users.assignRoles",
 
   "roles.read",

@@ -16,6 +16,7 @@ import {
   trackingCategories,
   typesenseSchemas,
   type TypesenseAlias,
+  users,
   webshopProducts,
 } from "../src/typesense/mod.ts";
 
@@ -34,6 +35,7 @@ const allConfigs = [
   tags,
   templates,
   trackingCategories,
+  users,
   webshopProducts,
 ];
 

@@ -17,17 +17,30 @@ export const createContactRules: CollectionRule[] = [
     transaction: "create-contact",
     fields: [
       { source: ["uid"], target: ["contacts", "uid"] },
-      { source: ["name"], target: ["contacts", "name"] },
+      { source: ["first_name"], target: ["contacts", "first_name"] },
+      { source: ["last_name"], target: ["contacts", "last_name"] },
       { source: ["uid"], target: ["query_by_contacts"] },
+    ],
+  },
+  {
+    id: "create-contact:link-to-user",
+    source: "contacts",
+    target: "users",
+    mode: "co-write",
+    invariant: "When a contact is created with an email matching an existing user, link bidirectionally",
+    transaction: "create-contact",
+    fields: [
+      { source: ["uid"], target: ["uid_contact"] },
     ],
   },
 ];
 
 export const createContactTransaction: TransactionDefinition = {
   id: "create-contact",
-  description: "Creates a contact with bidirectional organization cross-references.",
+  description: "Creates a contact with bidirectional organization cross-references and optional user link.",
   steps: [
     "create-contact:contact-to-orgs",
+    "create-contact:link-to-user",
   ],
 };
 
@@ -42,7 +55,8 @@ export const updateContactRules: CollectionRule[] = [
     invariant: "Organizations display contact names in their contacts list",
     transaction: "update-contact",
     fields: [
-      { source: ["name"], target: ["contacts", "name"] },
+      { source: ["first_name"], target: ["contacts", "first_name"] },
+      { source: ["last_name"], target: ["contacts", "last_name"] },
     ],
   },
   {
@@ -54,8 +68,10 @@ export const updateContactRules: CollectionRule[] = [
     transaction: "update-contact",
     trigger: "name change — targets active orders (not canceled/complete)",
     fields: [
-      { source: ["name"], target: ["destinations", "delivery", "contact", "name"] },
-      { source: ["name"], target: ["destinations", "collection", "contact", "name"] },
+      { source: ["first_name"], target: ["destinations", "delivery", "contact", "first_name"] },
+      { source: ["last_name"], target: ["destinations", "delivery", "contact", "last_name"] },
+      { source: ["first_name"], target: ["destinations", "collection", "contact", "first_name"] },
+      { source: ["last_name"], target: ["destinations", "collection", "contact", "last_name"] },
     ],
   },
   {
@@ -79,21 +95,35 @@ export const updateContactRules: CollectionRule[] = [
     invariant: "When a contact's org list changes, added/removed orgs update their contact back-references",
     transaction: "update-contact",
     fields: [
-      { source: [], target: ["contacts"], transform: "orgs added → add contact ref {uid, name, roles: []}" },
+      { source: [], target: ["contacts"], transform: "orgs added → add contact ref {uid, first_name, last_name, roles: []}" },
       { source: [], target: ["contacts"], transform: "orgs removed → remove contact ref" },
       { source: [], target: ["query_by_contacts"], transform: "orgs added → add contact uid" },
       { source: [], target: ["query_by_contacts"], transform: "orgs removed → remove contact uid" },
+    ],
+  },
+  {
+    id: "update-contact:name-to-user",
+    source: "contacts",
+    target: "users",
+    mode: "fan-out",
+    invariant: "A contact's name stays in sync with its linked user's name",
+    transaction: "update-contact",
+    trigger: "first_name/last_name change on a contact with uid_user set",
+    fields: [
+      { source: ["first_name"], target: ["first_name"] },
+      { source: ["last_name"], target: ["last_name"] },
     ],
   },
 ];
 
 export const updateContactTransaction: TransactionDefinition = {
   id: "update-contact",
-  description: "Updates a contact with name cascades to organizations and active order destinations, phone cascades to active orders, and bidirectional org membership maintenance.",
+  description: "Updates a contact with name cascades to organizations, active order destinations, and linked user; phone cascades to active orders; and bidirectional org membership maintenance.",
   steps: [
     "update-contact:name-to-orgs",
     "update-contact:name-to-orders",
     "update-contact:phones-to-orders",
     "update-contact:orgs-change",
+    "update-contact:name-to-user",
   ],
 };

@@ -590,6 +590,22 @@ export interface WebshopProductDocument {
   created_at?: number;
 }
 
+// ── Users ───────────────────────────────────────────────────────────
+
+/** Typesense document type for users. */
+export interface UserDocument {
+  id: string;
+  uid: string;
+  email: string;
+  first_name: string;
+  last_name?: string;
+  roles?: string[];
+  email_verified: boolean;
+  uid_contact?: string;
+  created_at?: number;
+  updated_at: number;
+}
+
 // ── Union and map ───────────────────────────────────────────────────
 
 /** Union of all Typesense document types. */
@@ -607,6 +623,7 @@ export type TypesenseDocument =
   | TagDocument
   | TemplateDocument
   | TrackingCategoryDocument
+  | UserDocument
   | WebshopProductDocument;
 
 /** Map from collection alias to its document type. */
@@ -624,5 +641,6 @@ export interface TypesenseDocumentMap {
   tags: TagDocument;
   templates: TemplateDocument;
   "tracking-categories": TrackingCategoryDocument;
+  users: UserDocument;
   "webshop-products": WebshopProductDocument;
 }

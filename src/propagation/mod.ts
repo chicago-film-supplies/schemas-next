@@ -66,6 +66,17 @@ export {
   updateContactTransaction,
 } from "./contacts.ts";
 
+// ── User rules ───────────────────────────────────────────────────────
+
+export {
+  createUserRules,
+  createUserTransaction,
+  updateUserRules,
+  updateUserTransaction,
+  deleteUserRules,
+  deleteUserTransaction,
+} from "./users.ts";
+
 // ── Invoice rules ───────────────────────────────────────────────────
 
 export {
@@ -108,6 +119,7 @@ import { createTransactionRules, createTransactionTransaction, updateTransaction
 import { createProductRules, createProductTransaction, updateProductRules, updateProductOrderRules, updateProductTransaction } from "./products.ts";
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
 import { createContactRules, createContactTransaction, updateContactRules, updateContactTransaction } from "./contacts.ts";
+import { createUserRules, createUserTransaction, updateUserRules, updateUserTransaction, deleteUserRules, deleteUserTransaction } from "./users.ts";
 import { createLocationRules, createLocationTransaction, updateLocationTransactionalRules, updateLocationTransaction } from "./locations.ts";
 import { createInvoiceRules, createInvoiceTransaction, updateInvoiceOrderRules, updateInvoiceTransaction, updateOrderInvoiceRules } from "./invoices.ts";
 import { updateTaxRules } from "./taxes.ts";
@@ -124,6 +136,9 @@ export const transactions: TransactionDefinition[] = [
   updateOrganizationTransaction,
   createContactTransaction,
   updateContactTransaction,
+  createUserTransaction,
+  updateUserTransaction,
+  deleteUserTransaction,
   createLocationTransaction,
   updateLocationTransaction,
   createInvoiceTransaction,
@@ -143,6 +158,9 @@ export const rules: CollectionRule[] = [
   ...updateOrganizationRules,
   ...createContactRules,
   ...updateContactRules,
+  ...createUserRules,
+  ...updateUserRules,
+  ...deleteUserRules,
   ...createInvoiceRules,
   ...updateInvoiceOrderRules,
   ...updateOrderInvoiceRules,

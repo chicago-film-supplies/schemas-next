@@ -19,14 +19,16 @@ import {
  */
 export interface OrganizationContactType {
   uid: string;
-  name: string;
+  first_name: string;
+  last_name?: string;
   roles: string[];
 }
 
 /** Zod schema for a contact reference embedded in an organization. */
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
+  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   roles: z.array(z.string()).default([]),
 });
 
@@ -84,7 +86,8 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
  */
 export interface NewContactInputType {
   uid: string;
-  name: string;
+  first_name: string;
+  last_name?: string;
   emails?: string[];
   phones?: string[];
 }
@@ -92,7 +95,8 @@ export interface NewContactInputType {
 /** Zod schema for new contact data submitted inline with an organization. */
 export const NewContactInput: z.ZodType<NewContactInputType> = z.object({
   uid: z.string(),
-  name: z.string().min(1, "Contact name is required").max(100).meta({ pii: "mask" }),
+  first_name: z.string().min(1, "First name is required").max(50).meta({ pii: "mask" }),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   emails: z.array(Email).optional(),
   phones: z.array(Phone).optional(),
 });

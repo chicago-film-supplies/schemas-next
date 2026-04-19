@@ -43,6 +43,7 @@ export type {
   TagDocument,
   TemplateDocument,
   TrackingCategoryDocument,
+  UserDocument,
   WebshopProductDocument,
   WebshopProductDocumentComponent,
   TypesenseDocument,
@@ -63,6 +64,7 @@ export { stores } from "./stores.ts";
 export { tags } from "./tags.ts";
 export { trackingCategories } from "./tracking-categories.ts";
 export { templates } from "./templates.ts";
+export { users } from "./users.ts";
 export { webshopProducts } from "./webshop-products.ts";
 
 import type { Permission } from "../permissions.ts";
@@ -81,6 +83,7 @@ import { stores } from "./stores.ts";
 import { tags } from "./tags.ts";
 import { trackingCategories } from "./tracking-categories.ts";
 import { templates } from "./templates.ts";
+import { users } from "./users.ts";
 import { webshopProducts } from "./webshop-products.ts";
 
 const allSchemas: TypesenseCollectionConfig[] = [
@@ -98,6 +101,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
   tags,
   templates,
   trackingCategories,
+  users,
   webshopProducts,
 ];
 
@@ -117,6 +121,7 @@ export type TypesenseAlias =
   | "tags"
   | "templates"
   | "tracking-categories"
+  | "users"
   | "webshop-products";
 
 /** All Typesense collection configs keyed by alias. */
@@ -154,5 +159,6 @@ export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permissi
   "tags": "tags.search",
   "templates": "templates.search",
   "tracking-categories": "trackingCategories.search",
+  "users": "users.search",
   "webshop-products": "webshopProducts.search",
 };

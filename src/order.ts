@@ -63,34 +63,38 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
 
 /**
  * Contact reference embedded in a destination endpoint.
- * When present (not null), uid and name are required.
+ * When present (not null), uid and first_name are required.
  */
 export interface DestinationContactType {
   uid: string;
-  name: string;
+  first_name: string;
+  last_name?: string;
   phones?: string[];
 }
 
 /** Zod schema for destination contact reference. */
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
-  name: z.string().min(1).max(100).meta({ pii: "mask" }),
+  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   phones: z.array(Phone).optional(),
 });
 
 /**
- * Contact reference in a destination endpoint (document schema — uid & name required).
+ * Contact reference in a destination endpoint (document schema — uid & first_name required).
  */
 export interface DocDestinationContactType {
   uid: string;
-  name: string;
+  first_name: string;
+  last_name?: string;
   phones?: string[];
 }
 
 /** Zod schema for destination contact reference (document version). */
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
-  name: z.string().min(1).max(100).meta({ pii: "mask" }),
+  first_name: z.string().min(1).max(50).meta({ pii: "mask" }),
+  last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   phones: z.array(Phone).default([]),
 });
 
