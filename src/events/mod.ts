@@ -97,6 +97,16 @@ export type {
   ListDeleted,
 } from "./cards.ts";
 
+// ── Recurrences aggregate ───────────────────────────────────────────
+
+export type {
+  RecurrenceCreated,
+  RecurrenceUpdated,
+  RecurrenceDeleted,
+  HorizonMaterialized,
+  HorizonMaterializedData,
+} from "./recurrences.ts";
+
 // ── Reference data ──────────────────────────────────────────────────
 
 export type {

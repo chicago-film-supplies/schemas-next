@@ -26,6 +26,7 @@
     "./password-reset": "./src/password-reset.ts",
     "./product": "./src/product.ts",
     "./public-stock-summary": "./src/public-stock-summary.ts",
+    "./recurrence": "./src/recurrence.ts",
     "./session": "./src/session.ts",
     "./stock-summary": "./src/stock-summary.ts",
     "./store": "./src/store.ts",

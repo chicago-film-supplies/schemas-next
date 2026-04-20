@@ -294,6 +294,25 @@ export {
 } from "./card.ts";
 
 export {
+  RecurrenceSchema,
+  RecurrencePrototype,
+  RecurrenceRule,
+  RecurrenceFreqEnum,
+  RecurrenceStatusEnum,
+  RecurrenceWeekdayEnum,
+  CreateRecurrenceInput,
+  UpdateRecurrenceInput,
+  type Recurrence,
+  type RecurrencePrototypeType,
+  type RecurrenceRuleType,
+  type RecurrenceFreq,
+  type RecurrenceStatus,
+  type RecurrenceWeekday,
+  type CreateRecurrenceInputType,
+  type UpdateRecurrenceInputType,
+} from "./recurrence.ts";
+
+export {
   PERMISSIONS,
   type Permission,
   type RouteMethod,
@@ -580,6 +599,25 @@ export {
   createCardTransaction,
   deleteCardRules,
   deleteCardTransaction,
+  recurrenceRules,
+  createRecurrenceRules,
+  createRecurrenceTransaction,
+  materializeHorizonRules,
+  materializeHorizonTransaction,
+  updateRecurrenceRules,
+  updateRecurrenceTransaction,
+  deleteRecurrenceRules,
+  deleteRecurrenceTransaction,
+  updateCardScopeFollowingRules,
+  updateCardScopeFollowingTransaction,
+  updateCardScopeAllRules,
+  updateCardScopeAllTransaction,
+  deleteCardScopeThisRules,
+  deleteCardScopeThisTransaction,
+  deleteCardScopeFollowingRules,
+  deleteCardScopeFollowingTransaction,
+  deleteCardScopeAllRules,
+  deleteCardScopeAllTransaction,
 } from "./propagation/mod.ts";
 
 // ── Domain events ───────────────────────────────────────────────────
@@ -641,6 +679,12 @@ export type {
   ListCreated,
   ListUpdated,
   ListDeleted,
+  // Recurrences aggregate
+  RecurrenceCreated,
+  RecurrenceUpdated,
+  RecurrenceDeleted,
+  HorizonMaterialized,
+  HorizonMaterializedData,
   // Reference data
   TagCreated,
   TagUpdated,
@@ -661,6 +705,7 @@ import type { Comment } from "./comment.ts";
 import type { Counter } from "./counter.ts";
 import type { Booking } from "./booking.ts";
 import type { List } from "./list.ts";
+import type { Recurrence } from "./recurrence.ts";
 import type { CacheGeocodes } from "./cache-geocodes.ts";
 import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
@@ -701,7 +746,7 @@ export type SchemaDocType =
   | Booking | CacheGeocodes | Card | ChartOfAccounts | Comment | Contact | Counter | DestinationDocType
   | EmailVerification | HolidayDates | InventoryLedger | Invite | Invoice | List | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
-  | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
+  | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Recurrence | Role | Session | StockSummary | Tax | Template
   | Store | Tag | Thread | TrackingCategory | Transaction | TypesenseConfig | User
   | WebhookEvent | WebshopProduct;
 
@@ -734,6 +779,7 @@ import { ProductSchema } from "./product.ts";
 import { QuoteSchema as QuoteSchema_ } from "./quote.ts";
 import { TemplateSchema as TemplateSchema_ } from "./template.ts";
 import { RateLimitSchema } from "./rate-limit.ts";
+import { RecurrenceSchema } from "./recurrence.ts";
 import { RoleSchema } from "./role.ts";
 import { PublicStockSummarySchema } from "./public-stock-summary.ts";
 import { SessionSchema } from "./session.ts";
@@ -776,6 +822,7 @@ export const schemas: Record<string, z.ZodType> = {
   "quote": QuoteSchema_, "quotes": QuoteSchema_,
   "template": TemplateSchema_, "templates": TemplateSchema_,
   "rate-limit": RateLimitSchema, "rate-limits": RateLimitSchema,
+  "recurrence": RecurrenceSchema, "recurrences": RecurrenceSchema,
   "role": RoleSchema, "roles": RoleSchema,
   "public-stock-summary": PublicStockSummarySchema, "public-stock-summaries": PublicStockSummarySchema,
   "session": SessionSchema, "sessions": SessionSchema,

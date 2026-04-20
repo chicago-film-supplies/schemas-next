@@ -136,6 +136,30 @@ export {
   deleteCardTransaction,
 } from "./cards.ts";
 
+// ── Recurrences rules ────────────────────────────────────────────────
+
+export {
+  recurrenceRules,
+  createRecurrenceRules,
+  createRecurrenceTransaction,
+  materializeHorizonRules,
+  materializeHorizonTransaction,
+  updateRecurrenceRules,
+  updateRecurrenceTransaction,
+  deleteRecurrenceRules,
+  deleteRecurrenceTransaction,
+  updateCardScopeFollowingRules,
+  updateCardScopeFollowingTransaction,
+  updateCardScopeAllRules,
+  updateCardScopeAllTransaction,
+  deleteCardScopeThisRules,
+  deleteCardScopeThisTransaction,
+  deleteCardScopeFollowingRules,
+  deleteCardScopeFollowingTransaction,
+  deleteCardScopeAllRules,
+  deleteCardScopeAllTransaction,
+} from "./recurrences.ts";
+
 // ── Convenience arrays ───────────────────────────────────────────────
 
 import type { CollectionRule, TransactionDefinition } from "./types.ts";
@@ -161,6 +185,18 @@ import {
   createCardTransaction,
   deleteCardTransaction,
 } from "./cards.ts";
+import {
+  recurrenceRules,
+  createRecurrenceTransaction,
+  materializeHorizonTransaction,
+  updateRecurrenceTransaction,
+  deleteRecurrenceTransaction,
+  updateCardScopeFollowingTransaction,
+  updateCardScopeAllTransaction,
+  deleteCardScopeThisTransaction,
+  deleteCardScopeFollowingTransaction,
+  deleteCardScopeAllTransaction,
+} from "./recurrences.ts";
 
 export const transactions: TransactionDefinition[] = [
   createOrderTransaction,
@@ -184,6 +220,15 @@ export const transactions: TransactionDefinition[] = [
   createCommentTransaction,
   createCardTransaction,
   deleteCardTransaction,
+  createRecurrenceTransaction,
+  materializeHorizonTransaction,
+  updateRecurrenceTransaction,
+  deleteRecurrenceTransaction,
+  updateCardScopeFollowingTransaction,
+  updateCardScopeAllTransaction,
+  deleteCardScopeThisTransaction,
+  deleteCardScopeFollowingTransaction,
+  deleteCardScopeAllTransaction,
 ];
 
 /** All propagation rules across all transactions and cascades. */
@@ -216,4 +261,5 @@ export const rules: CollectionRule[] = [
   ...threadCowriteRules,
   ...createCommentRules,
   ...cardRules,
+  ...recurrenceRules,
 ];

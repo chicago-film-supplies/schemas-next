@@ -19,6 +19,7 @@ const validCard = {
   locked: ["card", "subject", "sources"],
   recurrence_parent_uid: null,
   recurrence_index: null,
+  recurrence_overrides: [],
   created_by: { uid: "user-1", name: "Alex" },
   updated_by: { uid: "user-1", name: "Alex" },
   created_at: null,
@@ -81,4 +82,23 @@ Deno.test("UpdateCardInput accepts position-only patch", () => {
 
 Deno.test("UpdateCardInput accepts status change", () => {
   assertEquals(UpdateCardInput.safeParse({ status: "active" }).success, true);
+});
+
+Deno.test("CardSchema defaults recurrence_overrides to []", () => {
+  const { recurrence_overrides: _omit, ...doc } = validCard;
+  const parsed = CardSchema.safeParse(doc);
+  assertEquals(parsed.success, true);
+  if (parsed.success) {
+    assertEquals(parsed.data.recurrence_overrides, []);
+  }
+});
+
+Deno.test("CardSchema accepts a recurring-instance card with overrides", () => {
+  const doc = {
+    ...validCard,
+    recurrence_parent_uid: "rec-1",
+    recurrence_index: 3,
+    recurrence_overrides: ["date", "subject"],
+  };
+  assertEquals(CardSchema.safeParse(doc).success, true);
 });

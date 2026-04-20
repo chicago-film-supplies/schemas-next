@@ -16,9 +16,13 @@
  * prevent users from editing the subject or deleting the card while the
  * underlying order still exists.
  *
- * Recurrence fields (`recurrence_parent_uid`, `recurrence_index`) are
- * reserved but always null in the initial rollout; the recurrence follow-up
- * PR materializes instances without a breaking schema change.
+ * Recurrence fields:
+ * - `recurrence_parent_uid` + `recurrence_index` — when non-null, the card
+ *   was materialized from a `recurrences/{uid}` prototype.
+ * - `recurrence_overrides` — iCal-style override markers. Field names
+ *   listed here were user-edited on this specific instance (via
+ *   `PATCH /cards/{uid}?recurrence_scope=this`) and must not be clobbered
+ *   when the parent recurrence's prototype updates fan out to siblings.
  */
 import { z } from "zod";
 import {
@@ -122,6 +126,7 @@ export interface Card {
   locked: CardLockKey[];
   recurrence_parent_uid: string | null;
   recurrence_index: number | null;
+  recurrence_overrides: string[];
   created_by: ActorRefType;
   updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
@@ -147,6 +152,7 @@ export const CardSchema: z.ZodType<Card> = z.strictObject({
   locked: z.array(CardLockKeyEnum).default([]),
   recurrence_parent_uid: z.string().nullable(),
   recurrence_index: z.int().nullable(),
+  recurrence_overrides: z.array(z.string()).default([]),
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
