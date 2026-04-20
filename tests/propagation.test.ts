@@ -49,6 +49,9 @@ import {
   createCommentRules,
   createCommentTransaction,
   createRoleTransaction,
+  cardRules,
+  createCardTransaction,
+  deleteCardTransaction,
 } from "../src/propagation/mod.ts";
 import { schemas } from "../src/mod.ts";
 
@@ -89,6 +92,7 @@ Deno.test("rules array contains all individual rule sets", () => {
     ...updateOrderInvoiceRules,
     ...threadCowriteRules,
     ...createCommentRules,
+    ...cardRules,
   ];
   assertEquals(rules.length, allRuleSets.length);
   for (const rule of allRuleSets) {
@@ -132,6 +136,8 @@ Deno.test("transactions array contains all individual transactions", () => {
     updateInvoiceTransaction,
     createRoleTransaction,
     createCommentTransaction,
+    createCardTransaction,
+    deleteCardTransaction,
   ];
   assertEquals(transactions.length, allTransactions.length);
   for (const txn of allTransactions) {

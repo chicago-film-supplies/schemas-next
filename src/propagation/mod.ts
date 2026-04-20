@@ -127,6 +127,16 @@ export {
   createCommentTransaction,
 } from "./threads.ts";
 
+// ── Cards rules ──────────────────────────────────────────────────────
+
+export {
+  cardRules,
+  createCardRules,
+  createCardTransaction,
+  deleteCardRules,
+  deleteCardTransaction,
+} from "./cards.ts";
+
 // ── Convenience arrays ───────────────────────────────────────────────
 
 import type { CollectionRule, TransactionDefinition } from "./types.ts";
@@ -147,6 +157,11 @@ import {
   createCommentTransaction,
   createRoleTransaction,
 } from "./threads.ts";
+import {
+  cardRules,
+  createCardTransaction,
+  deleteCardTransaction,
+} from "./cards.ts";
 
 export const transactions: TransactionDefinition[] = [
   createOrderTransaction,
@@ -168,6 +183,8 @@ export const transactions: TransactionDefinition[] = [
   updateInvoiceTransaction,
   createRoleTransaction,
   createCommentTransaction,
+  createCardTransaction,
+  deleteCardTransaction,
 ];
 
 /** All propagation rules across all transactions and cascades. */
@@ -199,4 +216,5 @@ export const rules: CollectionRule[] = [
   ...updateLocationRules,
   ...threadCowriteRules,
   ...createCommentRules,
+  ...cardRules,
 ];

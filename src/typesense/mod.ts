@@ -53,6 +53,7 @@ export type {
 } from "./documents.ts";
 
 export { bookings } from "./bookings.ts";
+export { cards } from "./cards.ts";
 export { chartOfAccounts } from "./chart-of-accounts.ts";
 export { comments } from "./comments.ts";
 export { contacts } from "./contacts.ts";
@@ -74,6 +75,7 @@ export { webshopProducts } from "./webshop-products.ts";
 import type { Permission } from "../permissions.ts";
 import type { TypesenseCollectionConfig } from "./types.ts";
 import { bookings } from "./bookings.ts";
+import { cards } from "./cards.ts";
 import { chartOfAccounts } from "./chart-of-accounts.ts";
 import { comments } from "./comments.ts";
 import { contacts } from "./contacts.ts";
@@ -94,6 +96,7 @@ import { webshopProducts } from "./webshop-products.ts";
 
 const allSchemas: TypesenseCollectionConfig[] = [
   bookings,
+  cards,
   chartOfAccounts,
   comments,
   contacts,
@@ -116,6 +119,7 @@ const allSchemas: TypesenseCollectionConfig[] = [
 /** Union of all Typesense collection alias names. */
 export type TypesenseAlias =
   | "bookings"
+  | "cards"
   | "chart-of-accounts"
   | "comments"
   | "contacts"
@@ -156,6 +160,7 @@ export const typesenseEnabledCollections: Set<string> = new Set(
  * UI surface is expected for them until they are provisioned in Typesense.
  */
 export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permission>> = {
+  "cards": "cards.search",
   "chart-of-accounts": "chartOfAccounts.search",
   "comments": "comments.search",
   "contacts": "contacts.search",

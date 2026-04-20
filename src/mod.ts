@@ -281,6 +281,30 @@ export {
 } from "./comment.ts";
 
 export {
+  ListSchema,
+  CreateListInput,
+  UpdateListInput,
+  type List,
+  type CreateListInputType,
+  type UpdateListInputType,
+} from "./list.ts";
+
+export {
+  CardSchema,
+  CardAttachment,
+  CardLockKeyEnum,
+  CardStatusEnum,
+  CreateCardInput,
+  UpdateCardInput,
+  type Card,
+  type CardAttachmentType,
+  type CardLockKey,
+  type CardStatus,
+  type CreateCardInputType,
+  type UpdateCardInputType,
+} from "./card.ts";
+
+export {
   PERMISSIONS,
   type Permission,
   type RouteMethod,
@@ -563,6 +587,11 @@ export {
   createRoleTransaction,
   createCommentRules,
   createCommentTransaction,
+  cardRules,
+  createCardRules,
+  createCardTransaction,
+  deleteCardRules,
+  deleteCardTransaction,
 } from "./propagation/mod.ts";
 
 // ── Domain events ───────────────────────────────────────────────────
@@ -617,6 +646,13 @@ export type {
   CommentCreated,
   CommentUpdated,
   CommentDeleted,
+  // Cards aggregate
+  CardCreated,
+  CardUpdated,
+  CardDeleted,
+  ListCreated,
+  ListUpdated,
+  ListDeleted,
   // Reference data
   TagCreated,
   TagUpdated,
@@ -632,9 +668,11 @@ export type {
 
 // ── Union of all Firestore document types ───────────────────────────
 
+import type { Card } from "./card.ts";
 import type { Comment } from "./comment.ts";
 import type { Counter } from "./counter.ts";
 import type { Booking } from "./booking.ts";
+import type { List } from "./list.ts";
 import type { CacheGeocodes } from "./cache-geocodes.ts";
 import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
@@ -673,8 +711,8 @@ import type { WebshopProduct } from "./webshop-product.ts";
 
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
-  | Booking | CacheGeocodes | ChartOfAccounts | Comment | Contact | Counter | DestinationDocType
-  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invite | Invoice | Location
+  | Booking | CacheGeocodes | Card | ChartOfAccounts | Comment | Contact | Counter | DestinationDocType
+  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invite | Invoice | List | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
   | Store | Tag | Thread | TrackingCategory | Transaction | TypesenseConfig | User
@@ -685,7 +723,9 @@ export type SchemaDocType =
 import { z } from "zod";
 
 import { BookingSchema } from "./booking.ts";
+import { CardSchema } from "./card.ts";
 import { CommentSchema } from "./comment.ts";
+import { ListSchema } from "./list.ts";
 import { CounterSchema as CounterSchema_ } from "./counter.ts";
 import { CacheGeocodesSchema } from "./cache-geocodes.ts";
 import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
@@ -726,6 +766,7 @@ import { WebshopProductSchema } from "./webshop-product.ts";
 /** All document schemas keyed by singular and plural collection names. */
 export const schemas: Record<string, z.ZodType> = {
   "booking": BookingSchema, "bookings": BookingSchema,
+  "card": CardSchema, "cards": CardSchema,
   "counter": CounterSchema_, "counters": CounterSchema_,
   "cache-geocodes": CacheGeocodesSchema,
   "chart-of-accounts": ChartOfAccountsSchema,
@@ -737,6 +778,7 @@ export const schemas: Record<string, z.ZodType> = {
   "inventory-ledger": InventoryLedgerSchema, "inventory-ledgers": InventoryLedgerSchema,
   "invite": InviteSchema, "invites": InviteSchema,
   "invoice": InvoiceSchema, "invoices": InvoiceSchema,
+  "list": ListSchema, "lists": ListSchema,
   "location": LocationSchema, "locations": LocationSchema,
   "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,
   "order": OrderSchema, "orders": OrderSchema,

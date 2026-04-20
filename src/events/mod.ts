@@ -86,6 +86,17 @@ export type {
   CommentDeleted,
 } from "./threads.ts";
 
+// ── Cards aggregate ─────────────────────────────────────────────────
+
+export type {
+  CardCreated,
+  CardUpdated,
+  CardDeleted,
+  ListCreated,
+  ListUpdated,
+  ListDeleted,
+} from "./cards.ts";
+
 // ── Reference data ──────────────────────────────────────────────────
 
 export type {

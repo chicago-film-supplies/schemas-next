@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import {
   bookings,
+  cards,
   chartOfAccounts,
   comments,
   contacts,
@@ -24,6 +25,7 @@ import {
 
 const allConfigs = [
   bookings,
+  cards,
   chartOfAccounts,
   comments,
   contacts,

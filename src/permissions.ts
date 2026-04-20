@@ -100,6 +100,22 @@ export const PERMISSIONS = [
   "orderEvents.create",
   "orderEvents.read",
 
+  "lists.create",
+  "lists.read",
+  "lists.update",
+  "lists.delete",
+
+  "cards.create",
+  "cards.read",
+  "cards.update",
+  "cards.delete",
+  "cards.search",
+
+  "recurrences.create",
+  "recurrences.read",
+  "recurrences.update",
+  "recurrences.delete",
+
   "bookings.read",
   "chartOfAccounts.read",
   "chartOfAccounts.search",
