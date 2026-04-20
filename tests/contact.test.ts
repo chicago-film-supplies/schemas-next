@@ -5,6 +5,8 @@ import {
   UpdateContactInput,
 } from "../src/contact.ts";
 
+const actor = { uid: "test-user-1", name: "Test User" };
+
 Deno.test("ContactSchema validates a complete contact document", () => {
   const doc = {
     uid: "test-abc-123",
@@ -14,6 +16,8 @@ Deno.test("ContactSchema validates a complete contact document", () => {
     phones: ["1234567890"],
     organizations: [{ uid: "test-org-1", name: "Acme" }],
     query_by_organizations: ["test-org-1"],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, true);
 });
@@ -26,6 +30,8 @@ Deno.test("ContactSchema accepts contact without last_name", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, true);
 });
@@ -43,6 +49,8 @@ Deno.test("ContactSchema rejects empty first_name", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, false);
 });
@@ -55,6 +63,8 @@ Deno.test("ContactSchema rejects additional properties", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
     bogus: true,
   };
   assertEquals(ContactSchema.safeParse(doc).success, false);
@@ -69,6 +79,8 @@ Deno.test("ContactSchema allows optional crms_id", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, true);
 });
@@ -111,6 +123,8 @@ Deno.test("ContactSchema accepts middle_name and pronunciation", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, true);
 });
@@ -124,6 +138,8 @@ Deno.test("ContactSchema rejects empty middle_name", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, false);
 });
@@ -137,6 +153,8 @@ Deno.test("ContactSchema rejects pronunciation longer than 100 chars", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: actor,
+    updated_by: actor,
   };
   assertEquals(ContactSchema.safeParse(doc).success, false);
 });

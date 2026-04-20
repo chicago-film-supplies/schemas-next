@@ -8,8 +8,8 @@ const validThread = {
   last_message_at: null,
   last_message_preview: "",
   comment_count: 0,
-  uid_creator: "user-1",
-  updated_by: "user-1",
+  created_by: { uid: "user-1", name: "Alex" },
+  updated_by: { uid: "user-1", name: "Alex" },
   created_at: null,
   updated_at: null,
 };

@@ -45,7 +45,8 @@ const validInvoice = {
     total: 500,
     amount_due: 500,
   },
-  updated_by: "test-user-1",
+  created_by: { uid: "test-user-1", name: "Test User" },
+  updated_by: { uid: "test-user-1", name: "Test User" },
 };
 
 Deno.test("InvoiceSchema validates a complete document", () => {

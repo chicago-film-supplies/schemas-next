@@ -3,6 +3,8 @@
  */
 import { z } from "zod";
 import {
+  ActorRef,
+  type ActorRefType,
   Address,
   type AddressType,
   Email,
@@ -49,7 +51,8 @@ export interface Organization {
   last_order?: FirestoreTimestampType | null;
   defaultThreadId?: string;
   version: number;
-  updated_by?: string;
+  created_by: ActorRefType;
+  updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -70,7 +73,8 @@ export const OrganizationSchema: z.ZodType<Organization> = z.strictObject({
   last_order: FirestoreTimestamp.nullable().optional(),
   defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
-  updated_by: z.string().optional(),
+  created_by: ActorRef,
+  updated_by: ActorRef,
   ...TimestampFields,
 }).meta({
   title: "Organization",

@@ -154,6 +154,26 @@ export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
   name: z.string().min(1).max(100).meta({ pii: "none" }),
 });
 
+/**
+ * Actor reference — embedded `{uid, name}` for `created_by` / `updated_by` /
+ * `deleted_by` fields across document schemas. The `name` is denormalized at
+ * write time by the server: `[first_name, middle_name, last_name].filter(Boolean).join(" ")`,
+ * with pronunciation (if present) appended in parentheses. Non-human actors
+ * (e.g. integrations, scheduled jobs) use a synthetic uid such as `"manager-bot"`
+ * with a matching display name. Name changes on the source user fan out via
+ * the `update-user:name-to-actor-refs` propagation rule.
+ */
+export interface ActorRefType {
+  uid: string;
+  name: string;
+}
+
+/** Zod schema for an actor reference. */
+export const ActorRef: z.ZodType<ActorRefType> = z.strictObject({
+  uid: z.string().min(1),
+  name: z.string().min(1).max(250).meta({ pii: "mask" }),
+});
+
 // ── Shared enums ────────────────────────────────────────────────────
 
 const RATE_TYPES = ["percent", "flat"] as const;

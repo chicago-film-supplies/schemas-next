@@ -41,6 +41,8 @@ Deno.test("ContactSchema shows custom error for empty first_name", () => {
     phones: [],
     organizations: [],
     query_by_organizations: [],
+    created_by: { uid: "test-user-1", name: "Test User" },
+    updated_by: { uid: "test-user-1", name: "Test User" },
   };
   const result = ContactSchema.safeParse(doc);
   assertEquals(result.success, false);
@@ -70,6 +72,8 @@ Deno.test("OrganizationSchema shows custom error for empty name", () => {
     billing_address: null,
     contacts: [],
     query_by_contacts: [],
+    created_by: { uid: "test-user-1", name: "Test User" },
+    updated_by: { uid: "test-user-1", name: "Test User" },
   };
   const result = OrganizationSchema.safeParse(doc);
   assertEquals(result.success, false);

@@ -4,6 +4,8 @@
 import { z } from "zod";
 import { type TransactionStore, TransactionStoreSchema } from "./transaction.ts";
 import {
+  ActorRef,
+  type ActorRefType,
   COARevenueEnum,
   type COARevenueType,
   ComponentTypeEnum,
@@ -118,7 +120,8 @@ export interface Product {
   xero_tracking_option_id?: string;
   defaultThreadId?: string;
   version: number;
-  updated_by?: string;
+  created_by: ActorRefType;
+  updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -205,7 +208,8 @@ export const ProductSchema: z.ZodType<Product> = z.strictObject({
   xero_tracking_option_id: z.string().optional(),
   defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
-  updated_by: z.string().optional(),
+  created_by: ActorRef,
+  updated_by: ActorRef,
   ...TimestampFields,
 }).refine(
   (p) => p.type !== "rental" || p.stock_method === "none" || p.price.replacement != null,
@@ -270,7 +274,6 @@ export interface CreateProductInputType {
     reference: string;
     stores: TransactionStore[];
   };
-  updated_by?: string;
 }
 
 /** Input schema for creating a product. */
@@ -323,7 +326,6 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     reference: z.string(),
     stores: z.array(TransactionStoreSchema),
   }).optional(),
-  updated_by: z.string().optional(),
 }).refine(
   (p) => p.type !== "rental" || p.stock_method === "none" || p.price.replacement != null,
   { message: "price.replacement is required for rental products", path: ["price", "replacement"] },
@@ -369,7 +371,6 @@ export interface UpdateProductInputType {
     description?: string | null;
   };
   version: number;
-  updated_by?: string;
 }
 
 /** Input schema for updating a product. */
@@ -413,5 +414,4 @@ export const UpdateProductInput: z.ZodType<UpdateProductInputType> = z.object({
     description: z.string().nullable().optional(),
   }).optional(),
   version: z.int().min(0),
-  updated_by: z.string().optional(),
 });

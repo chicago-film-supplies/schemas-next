@@ -3,6 +3,8 @@
  */
 import { z } from "zod";
 import {
+  ActorRef,
+  type ActorRefType,
   Address,
   type AddressType,
   COARevenueEnum,
@@ -240,7 +242,7 @@ export interface Invoice {
     version: number;
     uploadcare_uuid: string;
     created_at: FirestoreTimestampType;
-    created_by: string;
+    created_by: ActorRefType;
     deleted_at: FirestoreTimestampType | null;
   }>;
   /** @deprecated Legacy CRMS field — not set on new invoices. */
@@ -249,7 +251,8 @@ export interface Invoice {
   crms_opportunity_ids?: number[];
   defaultThreadId?: string;
   version: number;
-  updated_by: string;
+  created_by: ActorRefType;
+  updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -288,14 +291,15 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
     version: z.number(),
     uploadcare_uuid: z.string(),
     created_at: FirestoreTimestamp,
-    created_by: z.string(),
+    created_by: ActorRef,
     deleted_at: FirestoreTimestamp.nullable(),
   })).default([]),
   crms_id: z.number().nullable().optional(),
   crms_opportunity_ids: z.array(z.number()).optional(),
   defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
-  updated_by: z.string(),
+  created_by: ActorRef,
+  updated_by: ActorRef,
   ...TimestampFields,
 }).meta({
   title: "Invoice",

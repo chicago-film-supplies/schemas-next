@@ -6,6 +6,8 @@
  */
 import { z } from "zod";
 import {
+  ActorRef,
+  type ActorRefType,
   FirestoreTimestamp,
   type FirestoreTimestampType,
   RateTypeEnum,
@@ -25,8 +27,8 @@ export interface Tax {
   valid_to: string | null;
   valid_to_fs: FirestoreTimestampType | null;
   version: number;
-  created_by: string;
-  updated_by: string;
+  created_by: ActorRefType;
+  updated_by: ActorRefType;
   created_at: FirestoreTimestampType;
   updated_at: FirestoreTimestampType;
 }
@@ -44,8 +46,8 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   valid_to: z.string().nullable().default(null),
   valid_to_fs: FirestoreTimestamp.nullable().default(null),
   version: z.int().min(0).default(0),
-  created_by: z.string(),
-  updated_by: z.string(),
+  created_by: ActorRef,
+  updated_by: ActorRef,
   created_at: FirestoreTimestamp,
   updated_at: FirestoreTimestamp,
 }).meta({

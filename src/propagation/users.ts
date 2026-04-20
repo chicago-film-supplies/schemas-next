@@ -45,12 +45,27 @@ export const updateUserRules: CollectionRule[] = [
       { source: ["pronunciation"], target: ["pronunciation"] },
     ],
   },
+  {
+    id: "update-user:name-to-actor-refs",
+    source: "users",
+    target: "*",
+    mode: "fan-out",
+    invariant: "A user's display name stays in sync with every doc's created_by/updated_by/deleted_by.name (across every collection carrying an ActorRef) so activity feeds, threads, and comments never render a stale name",
+    transaction: "update-user",
+    trigger: "first_name/middle_name/last_name/pronunciation change on a user — rewrite actor.name wherever actor.uid matches",
+    fields: [
+      { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["created_by", "name"], transform: "ActorRef.name — [first, middle, last].filter(Boolean).join(\" \") with \" (pronunciation)\" appended when pronunciation is set" },
+      { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["updated_by", "name"], transform: "same formula as created_by.name" },
+      { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["deleted_by", "name"], transform: "same formula as created_by.name; only where deleted_by is non-null" },
+      { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["pdf_versions", "created_by", "name"], transform: "invoices-only — rewrite the name on matching pdf_versions[].created_by entries" },
+    ],
+  },
 ];
 
 export const updateUserTransaction: TransactionDefinition = {
   id: "update-user",
-  description: "Updates a user with name cascade to a linked contact (if any).",
-  steps: ["update-user:name-to-contact"],
+  description: "Updates a user with name cascade to a linked contact (if any) and fan-out to ActorRef names on every doc carrying created_by/updated_by/deleted_by.",
+  steps: ["update-user:name-to-contact", "update-user:name-to-actor-refs"],
 };
 
 // ── delete-user ───────────────────────────────────────────────────

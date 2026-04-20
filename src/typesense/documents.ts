@@ -7,6 +7,12 @@
 
 // ── Shared ─────────────────────────────────────────────────────────
 
+/** Shared actor reference (uid + denormalized display name) across Typesense document types. */
+export interface TypesenseActorRef {
+  uid?: string;
+  name?: string;
+}
+
 /**
  * Shared address fields used across Typesense document types.
  *
@@ -103,7 +109,8 @@ export interface ChartOfAccountsDocument {
   type: string;
   default_tax_profile: string;
   description?: string;
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   updated_at: number;
 }
 
@@ -119,8 +126,9 @@ export interface CommentDocument {
     uid?: string;
   }>;
   body_text: string;
-  uid_creator: string;
-  creator_name?: string;
+  created_by: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
+  deleted_by?: TypesenseActorRef;
   deleted_at?: number;
   created_at: number;
   updated_at?: number;
@@ -144,7 +152,8 @@ export interface ContactDocument {
     uid?: string;
     name?: string;
   }>;
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   created_at?: number;
   updated_at: number;
 }
@@ -219,7 +228,8 @@ export interface InvoiceDocument {
   };
   crms_opportunity_ids?: number[];
   xero_id?: string;
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   date_fs: number;
   due_date_fs?: number;
   created_at?: number;
@@ -454,7 +464,8 @@ export interface OrganizationDocument {
     pronunciation?: string;
     roles?: string[];
   }>;
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   last_order?: number;
   created_at?: number;
   updated_at: number;
@@ -546,7 +557,8 @@ export interface ProductDocument {
   query_by_component_of?: string[];
   crms_stock_level_ids?: number[];
   images?: string[];
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   updated_at: number;
   created_at?: number;
 }
@@ -582,8 +594,9 @@ export interface TagDocument {
     uid?: string;
     name?: string;
   }>;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   updated_at: number;
-  updated_by?: string;
 }
 
 // ── Templates ───────────────────────────────────────────────────────
@@ -622,7 +635,8 @@ export interface TrackingCategoryDocument {
     uid?: string;
     name?: string;
   }>;
-  updated_by?: string;
+  created_by?: TypesenseActorRef;
+  updated_by?: TypesenseActorRef;
   updated_at: number;
 }
 

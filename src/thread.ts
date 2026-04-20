@@ -12,7 +12,7 @@
  * lives on each entity's delete path, not here).
  */
 import { z } from "zod";
-import { FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
+import { ActorRef, type ActorRefType, FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
 
 // ── Source reference ────────────────────────────────────────────────
 
@@ -38,8 +38,8 @@ export interface Thread {
   last_message_at: FirestoreTimestampType | null;
   last_message_preview: string;
   comment_count: number;
-  uid_creator: string;
-  updated_by: string;
+  created_by: ActorRefType;
+  updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -52,8 +52,8 @@ export const ThreadSchema: z.ZodType<Thread> = z.strictObject({
   last_message_at: FirestoreTimestamp.nullable(),
   last_message_preview: z.string().max(280).meta({ pii: "mask" }).default(""),
   comment_count: z.int().min(0).default(0),
-  uid_creator: z.string(),
-  updated_by: z.string().default(""),
+  created_by: ActorRef,
+  updated_by: ActorRef,
   ...TimestampFields,
 }).meta({
   title: "Thread",

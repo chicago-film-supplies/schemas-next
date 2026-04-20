@@ -39,7 +39,7 @@ function cowriteRulesFor({ collection, transaction }: ThreadCowriteConfig): Coll
       fields: [
         { source: ["uid"], target: ["sources", "uid"] },
         { source: [], target: ["sources", "collection"], transform: `literal "${collection}"` },
-        { source: [], target: ["uid_creator"], transform: "acting user's uid from session" },
+        { source: [], target: ["created_by"], transform: "ActorRef of acting user from session ({uid, name})" },
         { source: [], target: ["title"], transform: "null — default thread" },
         { source: [], target: ["comment_count"], transform: "0" },
       ],

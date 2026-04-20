@@ -3,6 +3,7 @@ import { CreateProductInput, ProductSchema } from "../src/product.ts";
 import { getInitialValues } from "../src/initial.ts";
 
 const base = getInitialValues(ProductSchema);
+const actor = { uid: "test-user-1", name: "Test User" };
 const validProduct = {
   ...base,
   uid: "test-product-1",
@@ -12,6 +13,8 @@ const validProduct = {
   price: { ...(base.price as Record<string, unknown>), base: 500, replacement: 5000, taxes: [{ uid: "test-chi-rental-tax", name: "Chicago Rental Tax", rate: 15, type: "percent" }], discountable: true },
   tags: [{ uid: "test-t1", name: "Camera" }],
   webshop: { available: true },
+  created_by: actor,
+  updated_by: actor,
 };
 
 Deno.test("ProductSchema validates a complete document", () => {

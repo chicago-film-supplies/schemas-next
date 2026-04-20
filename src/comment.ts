@@ -11,7 +11,7 @@
  * audit. Reads filter `deleted_at == null`; Typesense filters `deleted_at:=0`.
  */
 import { z } from "zod";
-import { FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
+import { ActorRef, type ActorRefType, FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
 import { ThreadSource, type ThreadSourceType } from "./thread.ts";
 
 // ── Body (Tiptap JSON) ──────────────────────────────────────────────
@@ -36,11 +36,10 @@ export interface Comment {
   body: CommentBodyJson;
   body_text: string;
   reactions: Record<string, string[]>;
-  uid_creator: string;
-  creator_name: string;
+  created_by: ActorRefType;
   deleted_at: FirestoreTimestampType | null;
-  deleted_by: string | null;
-  updated_by: string;
+  deleted_by: ActorRefType | null;
+  updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
   updated_at?: FirestoreTimestampType;
 }
@@ -53,17 +52,16 @@ export const CommentSchema: z.ZodType<Comment> = z.strictObject({
   body: CommentBody,
   body_text: z.string().meta({ pii: "mask" }).default(""),
   reactions: z.record(z.string(), z.array(z.string())).default({}),
-  uid_creator: z.string(),
-  creator_name: z.string().max(200).meta({ pii: "mask" }).default(""),
+  created_by: ActorRef,
   deleted_at: FirestoreTimestamp.nullable(),
-  deleted_by: z.string().nullable(),
-  updated_by: z.string().default(""),
+  deleted_by: ActorRef.nullable(),
+  updated_by: ActorRef,
   ...TimestampFields,
 }).meta({
   title: "Comment",
   collection: "comments",
   displayDefaults: {
-    columns: ["sources.collection", "creator_name", "body_text", "updated_at"],
+    columns: ["sources.collection", "created_by.name", "body_text", "updated_at"],
     filters: {},
     sort: { column: "updated_at", direction: "desc" },
   },

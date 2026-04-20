@@ -18,11 +18,10 @@ const validComment = {
   body: tiptapBody,
   body_text: "Hello",
   reactions: {},
-  uid_creator: "user-1",
-  creator_name: "Alex",
+  created_by: { uid: "user-1", name: "Alex" },
   deleted_at: null,
   deleted_by: null,
-  updated_by: "user-1",
+  updated_by: { uid: "user-1", name: "Alex" },
   created_at: null,
   updated_at: null,
 };
@@ -45,7 +44,7 @@ Deno.test("CommentSchema accepts soft-deleted comment", () => {
   const doc = {
     ...validComment,
     deleted_at: null,
-    deleted_by: "user-2",
+    deleted_by: { uid: "user-2", name: "Bob" },
   };
   assertEquals(CommentSchema.safeParse(doc).success, true);
 });
