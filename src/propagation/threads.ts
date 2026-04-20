@@ -3,7 +3,7 @@
  *
  * On every create-<X> transaction we cowrite a default `threads` doc for the
  * parent and embed the thread's `uid` back onto the parent as `defaultThreadId`.
- * OrderEvents get two sources (the event itself + its parent order) so the
+ * Event cards (see propagation/cards.ts) get two sources (the card + its parent order) so the
  * thread surfaces on both detail pages.
  *
  * Comments derive thread counters (`comment_count`, `last_message_at`,
@@ -90,41 +90,6 @@ export const threadTransactionRules: CollectionRule[] = cowriteRulesFor({
   transaction: "create-transaction",
 });
 
-/**
- * Order events are cowritten inside the `create-order` transaction (no
- * standalone create-order-event endpoint). Their thread carries two sources
- * so it appears on both the order-event and the parent order's detail view.
- */
-export const threadOrderEventRules: CollectionRule[] = [
-  {
-    id: "cowrite-thread:order-events-to-thread",
-    source: "order-events",
-    target: "threads",
-    mode: "co-write",
-    invariant: "Each order-event cowrites its own thread with two sources (the event itself + its parent order) so the thread surfaces on both detail views",
-    transaction: "create-order",
-    fields: [
-      { source: ["uid"], target: ["sources", "uid"], transform: "sources[0] — the order-event itself" },
-      { source: [], target: ["sources", "collection"], transform: `sources[0].collection — literal "order-events"` },
-      { source: ["uid_order"], target: ["sources", "uid"], transform: `sources[1] — the parent order so the thread appears on both detail views` },
-      { source: [], target: ["sources", "collection"], transform: `sources[1].collection — literal "orders"` },
-      { source: [], target: ["uid_creator"], transform: "acting user's uid from session" },
-      { source: [], target: ["title"], transform: "null — default thread" },
-    ],
-  },
-  {
-    id: "cowrite-thread:thread-to-order-events",
-    source: "threads",
-    target: "order-events",
-    mode: "embed",
-    invariant: "The cowritten thread's uid is embedded on the order-event so the detail view can resolve its default thread without a query",
-    transaction: "create-order",
-    fields: [
-      { source: ["uid"], target: ["defaultThreadId"] },
-    ],
-  },
-];
-
 // ── Role transaction (new — role creation is promoted to a transaction) ─
 
 export const threadRoleRules: CollectionRule[] = cowriteRulesFor({
@@ -156,7 +121,6 @@ export const threadCowriteRules: CollectionRule[] = [
   ...threadOrganizationRules,
   ...threadProductRules,
   ...threadTransactionRules,
-  ...threadOrderEventRules,
   ...threadRoleRules,
 ];
 

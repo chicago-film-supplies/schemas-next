@@ -120,7 +120,6 @@ export {
   threadOrganizationRules,
   threadProductRules,
   threadTransactionRules,
-  threadOrderEventRules,
   threadRoleRules,
   createRoleTransaction,
   createCommentRules,

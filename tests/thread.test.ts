@@ -22,7 +22,7 @@ Deno.test("ThreadSchema accepts multi-source threads", () => {
   const doc = {
     ...validThread,
     sources: [
-      { collection: "order-events", uid: "event-1" },
+      { collection: "cards", uid: "card-1" },
       { collection: "orders", uid: "order-1" },
     ],
   };

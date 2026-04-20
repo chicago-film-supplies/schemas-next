@@ -131,17 +131,6 @@ export {
 } from "./order.ts";
 
 export {
-  OrderEventSchema,
-  OrderEventResponseSchema,
-  OrderEventsQueryInput,
-  type OrderEvent,
-  type OrderEventResponse,
-  type OrderEventsQueryInputType,
-  type EventTypeType,
-  type EventPositionType,
-} from "./order-event.ts";
-
-export {
   OrderWarehouseSchema,
   OrderWarehouseItem,
   OrderWarehouseLineItem,
@@ -582,7 +571,6 @@ export {
   threadOrganizationRules,
   threadProductRules,
   threadTransactionRules,
-  threadOrderEventRules,
   threadRoleRules,
   createRoleTransaction,
   createCommentRules,
@@ -678,7 +666,6 @@ import type { ChartOfAccounts } from "./chart-of-accounts.ts";
 import type { Contact } from "./contact.ts";
 import type { Destination as DestinationDocType } from "./destination.ts";
 import type { EmailVerification } from "./email-verification.ts";
-import type { OrderEvent } from "./order-event.ts";
 import type { OrderWarehouse } from "./order-warehouse.ts";
 import type { HolidayDates } from "./holiday-dates.ts";
 import type { InventoryLedger } from "./inventory-ledger.ts";
@@ -712,7 +699,7 @@ import type { WebshopProduct } from "./webshop-product.ts";
 /** Union of all Firestore document types. Use with validateBeforeWrite. */
 export type SchemaDocType =
   | Booking | CacheGeocodes | Card | ChartOfAccounts | Comment | Contact | Counter | DestinationDocType
-  | EmailVerification | OrderEvent | HolidayDates | InventoryLedger | Invite | Invoice | List | Location
+  | EmailVerification | HolidayDates | InventoryLedger | Invite | Invoice | List | Location
   | LocationType | Order | Organization | OutOfServiceRecord | PasswordReset
   | OrderWarehouse | Product | PublicStockSummary | Quote | RateLimit | Role | Session | StockSummary | Tax | Template
   | Store | Tag | Thread | TrackingCategory | Transaction | TypesenseConfig | User
@@ -732,7 +719,6 @@ import { ChartOfAccountsSchema } from "./chart-of-accounts.ts";
 import { ContactSchema } from "./contact.ts";
 import { DestinationSchema } from "./destination.ts";
 import { EmailVerificationSchema } from "./email-verification.ts";
-import { OrderEventSchema as OrderEventSchema_ } from "./order-event.ts";
 import { OrderWarehouseSchema } from "./order-warehouse.ts";
 import { HolidayDatesSchema } from "./holiday-dates.ts";
 import { InventoryLedgerSchema } from "./inventory-ledger.ts";
@@ -782,7 +768,6 @@ export const schemas: Record<string, z.ZodType> = {
   "location": LocationSchema, "locations": LocationSchema,
   "location-type": LocationTypeSchema, "location-types": LocationTypeSchema,
   "order": OrderSchema, "orders": OrderSchema,
-  "order-event": OrderEventSchema_, "order-events": OrderEventSchema_,
   "order-warehouse": OrderWarehouseSchema, "order-warehouses": OrderWarehouseSchema,
   "organization": OrganizationSchema, "organizations": OrganizationSchema,
   "out-of-service-record": OutOfServiceRecordSchema, "out-of-service": OutOfServiceRecordSchema,

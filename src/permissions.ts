@@ -97,9 +97,6 @@ export const PERMISSIONS = [
   "templates.delete",
   "templates.search",
 
-  "orderEvents.create",
-  "orderEvents.read",
-
   "lists.create",
   "lists.read",
   "lists.update",
