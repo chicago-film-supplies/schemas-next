@@ -141,6 +141,25 @@ export interface AddressType {
 }
 
 /**
+ * A `{collection, uid}` pointer to any Firestore document. Used polymorphically
+ * by Thread, Comment, and Card to reference the source docs they belong to.
+ *
+ * Lives here (not in thread.ts where it originated) because it's a shared
+ * primitive — the "thread" prefix misled readers into thinking it was
+ * thread-specific.
+ */
+export interface DocSourceType {
+  collection: string;
+  uid: string;
+}
+
+/** Zod schema for a polymorphic doc reference. */
+export const DocSource: z.ZodType<DocSourceType> = z.strictObject({
+  collection: z.string().min(1),
+  uid: z.string().min(1),
+});
+
+/**
  * Generic uid + name reference used across many collections.
  */
 export interface UidNameRefType {

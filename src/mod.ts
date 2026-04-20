@@ -168,6 +168,7 @@ export {
 export {
   Address,
   Coordinates,
+  DocSource,
   Email,
   Phone,
   FirestoreTimestamp,
@@ -191,6 +192,7 @@ export {
   DocLineItemTypeEnum,
   type AddressType,
   type CoordinatesType,
+  type DocSourceType,
   type FirestoreTimestampType,
   type FirestoreTimestampValue,
   type FirestoreFieldValue,
@@ -259,10 +261,8 @@ export {
 
 export {
   ThreadSchema,
-  ThreadSource,
   UpdateThreadInput,
   type Thread,
-  type ThreadSourceType,
   type UpdateThreadInputType,
 } from "./thread.ts";
 

@@ -11,8 +11,15 @@
  * audit. Reads filter `deleted_at == null`; Typesense filters `deleted_at:=0`.
  */
 import { z } from "zod";
-import { ActorRef, type ActorRefType, FirestoreTimestamp, type FirestoreTimestampType, TimestampFields } from "./common.ts";
-import { ThreadSource, type ThreadSourceType } from "./thread.ts";
+import {
+  ActorRef,
+  type ActorRefType,
+  DocSource,
+  type DocSourceType,
+  FirestoreTimestamp,
+  type FirestoreTimestampType,
+  TimestampFields,
+} from "./common.ts";
 
 // ── Body (Tiptap JSON) ──────────────────────────────────────────────
 
@@ -32,7 +39,7 @@ export const CommentBody: z.ZodType<CommentBodyJson> = z.record(z.string(), z.un
 export interface Comment {
   uid: string;
   uid_thread: string;
-  sources: ThreadSourceType[];
+  sources: DocSourceType[];
   body: CommentBodyJson;
   body_text: string;
   reactions: Record<string, string[]>;
@@ -48,7 +55,7 @@ export interface Comment {
 export const CommentSchema: z.ZodType<Comment> = z.strictObject({
   uid: z.string(),
   uid_thread: z.string(),
-  sources: z.array(ThreadSource).min(1),
+  sources: z.array(DocSource).min(1),
   body: CommentBody,
   body_text: z.string().meta({ pii: "mask" }).default(""),
   reactions: z.record(z.string(), z.array(z.string())).default({}),
