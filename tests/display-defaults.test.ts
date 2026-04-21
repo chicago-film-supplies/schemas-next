@@ -150,7 +150,7 @@ Deno.test("booking.number carries label + linkTo meta", () => {
   const meta = z.globalRegistry.get(numberField) as
     | { label?: string; linkTo?: string }
     | undefined;
-  assertEquals(meta?.label, "Order #");
+  assertEquals(meta?.label, "#");
   assertEquals(meta?.linkTo, "orderDetail");
 });
 
