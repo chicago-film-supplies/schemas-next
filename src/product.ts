@@ -322,7 +322,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     type: z.enum(["purchase", "make", "find"]),
     quantity: z.number(),
     total_cost: z.number(),
-    date: z.string(),
+    date: z.iso.datetime({ offset: true }),
     reference: z.string(),
     stores: z.array(TransactionStoreSchema),
   }).optional(),

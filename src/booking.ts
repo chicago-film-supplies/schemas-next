@@ -66,12 +66,12 @@ export interface Booking {
     returned: number;
   };
   dates: {
-    start: string;
-    start_fs: FirestoreTimestampType;
+    start: string | null;
+    start_fs: FirestoreTimestampType | null;
     end: string | null;
     end_fs: FirestoreTimestampType | null;
-    charge_start: string;
-    charge_start_fs: FirestoreTimestampType;
+    charge_start: string | null;
+    charge_start_fs: FirestoreTimestampType | null;
     charge_end: string | null;
     charge_end_fs: FirestoreTimestampType | null;
   };
@@ -141,13 +141,13 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
     returned: z.number(),
   }),
   dates: z.strictObject({
-    start: z.string(),
-    start_fs: FirestoreTimestamp,
-    end: z.string().nullable(),
+    start: z.iso.datetime({ offset: true }).nullable(),
+    start_fs: FirestoreTimestamp.nullable(),
+    end: z.iso.datetime({ offset: true }).nullable(),
     end_fs: FirestoreTimestamp.nullable(),
-    charge_start: z.string(),
-    charge_start_fs: FirestoreTimestamp,
-    charge_end: z.string().nullable(),
+    charge_start: z.iso.datetime({ offset: true }).nullable(),
+    charge_start_fs: FirestoreTimestamp.nullable(),
+    charge_end: z.iso.datetime({ offset: true }).nullable(),
     charge_end_fs: FirestoreTimestamp.nullable(),
   }),
   destinations: z.strictObject({

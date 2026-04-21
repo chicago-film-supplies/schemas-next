@@ -42,25 +42,26 @@ const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
 const INCLUSION_TYPES_NULLABLE = ["default", "mandatory", "optional"] as const;
 
 /**
- * Order dates — all six date boundaries as ISO strings.
+ * Order dates — all six date boundaries as ISO datetime strings with offset,
+ * or null when the boundary is unset.
  */
 export interface OrderDatesType {
-  delivery_start: string;
-  delivery_end: string;
-  collection_start: string;
-  collection_end: string;
-  charge_start: string;
-  charge_end: string;
+  delivery_start: string | null;
+  delivery_end: string | null;
+  collection_start: string | null;
+  collection_end: string | null;
+  charge_start: string | null;
+  charge_end: string | null;
 }
 
 /** Zod schema for order dates. */
 export const OrderDates: z.ZodType<OrderDatesType> = z.object({
-  delivery_start: z.string(),
-  delivery_end: z.string(),
-  collection_start: z.string(),
-  collection_end: z.string(),
-  charge_start: z.string(),
-  charge_end: z.string(),
+  delivery_start: z.iso.datetime({ offset: true }).nullable(),
+  delivery_end: z.iso.datetime({ offset: true }).nullable(),
+  collection_start: z.iso.datetime({ offset: true }).nullable(),
+  collection_end: z.iso.datetime({ offset: true }).nullable(),
+  charge_start: z.iso.datetime({ offset: true }).nullable(),
+  charge_end: z.iso.datetime({ offset: true }).nullable(),
 });
 
 /**
@@ -518,17 +519,17 @@ export const OrderDocItem: z.ZodType<OrderDocLineItemType | OrderDocDestinationI
 
 /** Order dates with Firestore timestamp companions. */
 export interface OrderDocDatesType {
-  delivery_start: string;
+  delivery_start: string | null;
   delivery_start_fs: FirestoreTimestampType;
-  delivery_end: string;
+  delivery_end: string | null;
   delivery_end_fs: FirestoreTimestampType;
-  collection_start: string;
+  collection_start: string | null;
   collection_start_fs: FirestoreTimestampType;
-  collection_end: string;
+  collection_end: string | null;
   collection_end_fs: FirestoreTimestampType;
-  charge_start: string;
+  charge_start: string | null;
   charge_start_fs: FirestoreTimestampType;
-  charge_end: string;
+  charge_end: string | null;
   charge_end_fs: FirestoreTimestampType;
   days_active: number | null;
   days_charged: number | null;
@@ -536,17 +537,17 @@ export interface OrderDocDatesType {
 
 /** Zod schema for order dates with Firestore timestamp companions. */
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
-  delivery_start: z.string().default(""),
+  delivery_start: z.iso.datetime({ offset: true }).nullable().default(null),
   delivery_start_fs: FirestoreTimestamp,
-  delivery_end: z.string().default(""),
+  delivery_end: z.iso.datetime({ offset: true }).nullable().default(null),
   delivery_end_fs: FirestoreTimestamp,
-  collection_start: z.string().default(""),
+  collection_start: z.iso.datetime({ offset: true }).nullable().default(null),
   collection_start_fs: FirestoreTimestamp,
-  collection_end: z.string().default(""),
+  collection_end: z.iso.datetime({ offset: true }).nullable().default(null),
   collection_end_fs: FirestoreTimestamp,
-  charge_start: z.string().default(""),
+  charge_start: z.iso.datetime({ offset: true }).nullable().default(null),
   charge_start_fs: FirestoreTimestamp,
-  charge_end: z.string().default(""),
+  charge_end: z.iso.datetime({ offset: true }).nullable().default(null),
   charge_end_fs: FirestoreTimestamp,
   days_active: z.int().nullable().default(null),
   days_charged: z.int().nullable().default(null),

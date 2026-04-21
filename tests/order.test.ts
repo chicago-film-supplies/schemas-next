@@ -9,12 +9,12 @@ const destBase = getInitialValues(DocDestination) as Record<string, unknown>;
 const priceBase = getInitialValues(OrderDocItemPrice) as Record<string, unknown>;
 
 const validDates = {
-  delivery_start: "2026-03-01",
-  delivery_end: "2026-03-01",
-  collection_start: "2026-03-10",
-  collection_end: "2026-03-10",
-  charge_start: "2026-03-01",
-  charge_end: "2026-03-10",
+  delivery_start: "2026-03-01T00:00:00Z",
+  delivery_end: "2026-03-01T00:00:00Z",
+  collection_start: "2026-03-10T00:00:00Z",
+  collection_end: "2026-03-10T00:00:00Z",
+  charge_start: "2026-03-01T00:00:00Z",
+  charge_end: "2026-03-10T00:00:00Z",
 };
 
 const validDestination = {
@@ -364,12 +364,12 @@ const validDocDestination = {
 
 const validDocDates = {
   ...datesBase,
-  delivery_start: "2026-03-01",
-  delivery_end: "2026-03-01",
-  collection_start: "2026-03-10",
-  collection_end: "2026-03-10",
-  charge_start: "2026-03-01",
-  charge_end: "2026-03-10",
+  delivery_start: "2026-03-01T00:00:00Z",
+  delivery_end: "2026-03-01T00:00:00Z",
+  collection_start: "2026-03-10T00:00:00Z",
+  collection_end: "2026-03-10T00:00:00Z",
+  charge_start: "2026-03-01T00:00:00Z",
+  charge_end: "2026-03-10T00:00:00Z",
 };
 
 const minimalDoc = {

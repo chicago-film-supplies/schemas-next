@@ -105,7 +105,7 @@ Deno.test("InvoiceSchema accepts payments", () => {
     payments: [{
       uid: "pay-1",
       xero_payment_id: "xero-pay-1",
-      date: "2026-03-15",
+      date: "2026-03-15T00:00:00Z",
       amount: 250,
       reference: "CHK-001",
       status: "active",

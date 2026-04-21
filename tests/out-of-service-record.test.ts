@@ -8,7 +8,7 @@ const validOOS = {
   quantity: 2,
   quantity_return_to_service: 1,
   quantity_write_off: 1,
-  date_start: "2026-03-01",
+  date_start: "2026-03-01T00:00:00Z",
   source: { type: "order", number: 1001, uid: "test-order-1" },
 };
 
@@ -34,7 +34,7 @@ Deno.test("OutOfServiceRecordSchema validates with stores and transactions", () 
   const doc = {
     ...validOOS,
     complete: true,
-    date_end: "2026-03-15",
+    date_end: "2026-03-15T00:00:00Z",
     stores: [{
       uid_store: "test-store-1",
       name: "Main",
@@ -46,7 +46,7 @@ Deno.test("OutOfServiceRecordSchema validates with stores and transactions", () 
       }],
     }],
     transactions: [{
-      date: "2026-03-01",
+      date: "2026-03-01T00:00:00Z",
       out_of_service_uid: "test-oos-1",
       quantity: 2,
       type: "quarantine",
