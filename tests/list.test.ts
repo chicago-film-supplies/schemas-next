@@ -42,5 +42,9 @@ Deno.test("CreateListInput rejects empty name", () => {
 });
 
 Deno.test("UpdateListInput accepts position-only payload", () => {
-  assertEquals(UpdateListInput.safeParse({ position: 1500 }).success, true);
+  assertEquals(UpdateListInput.safeParse({ position: 1500, version: 1 }).success, true);
+});
+
+Deno.test("UpdateListInput rejects missing version", () => {
+  assertEquals(UpdateListInput.safeParse({ position: 1500 }).success, false);
 });

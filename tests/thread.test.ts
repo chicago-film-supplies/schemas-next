@@ -45,9 +45,13 @@ Deno.test("ThreadSchema rejects unknown properties", () => {
 });
 
 Deno.test("UpdateThreadInput accepts null title", () => {
-  assertEquals(UpdateThreadInput.safeParse({ title: null }).success, true);
+  assertEquals(UpdateThreadInput.safeParse({ title: null, version: 1 }).success, true);
 });
 
 Deno.test("UpdateThreadInput accepts string title", () => {
-  assertEquals(UpdateThreadInput.safeParse({ title: "Renamed" }).success, true);
+  assertEquals(UpdateThreadInput.safeParse({ title: "Renamed", version: 1 }).success, true);
+});
+
+Deno.test("UpdateThreadInput rejects missing version", () => {
+  assertEquals(UpdateThreadInput.safeParse({ title: "Renamed" }).success, false);
 });

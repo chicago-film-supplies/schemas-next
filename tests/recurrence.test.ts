@@ -172,24 +172,31 @@ Deno.test("CreateRecurrenceInput rejects an empty prototype subject", () => {
 
 Deno.test("UpdateRecurrenceInput accepts status-only patch", () => {
   assertEquals(
-    UpdateRecurrenceInput.safeParse({ status: "paused" }).success,
+    UpdateRecurrenceInput.safeParse({ status: "paused", version: 1 }).success,
     true,
   );
 });
 
 Deno.test("UpdateRecurrenceInput accepts rule-only patch", () => {
-  const input = { rule: { ...validRule, interval: 2 } };
+  const input = { rule: { ...validRule, interval: 2 }, version: 1 };
   assertEquals(UpdateRecurrenceInput.safeParse(input).success, true);
 });
 
 Deno.test("UpdateRecurrenceInput accepts a partial prototype patch", () => {
-  const input = { prototype: { subject: "Renamed series" } };
+  const input = { prototype: { subject: "Renamed series" }, version: 1 };
   assertEquals(UpdateRecurrenceInput.safeParse(input).success, true);
 });
 
 Deno.test("UpdateRecurrenceInput accepts horizon_days null to clear override", () => {
   assertEquals(
-    UpdateRecurrenceInput.safeParse({ horizon_days: null }).success,
+    UpdateRecurrenceInput.safeParse({ horizon_days: null, version: 1 }).success,
     true,
+  );
+});
+
+Deno.test("UpdateRecurrenceInput rejects missing version", () => {
+  assertEquals(
+    UpdateRecurrenceInput.safeParse({ status: "paused" }).success,
+    false,
   );
 });

@@ -206,6 +206,7 @@ export interface Recurrence {
   exception_dates: string[];
   /** Card template fields that fan out on materialization. */
   prototype: RecurrencePrototypeType;
+  version: number;
   created_by: ActorRefType;
   updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
@@ -224,6 +225,7 @@ export const RecurrenceSchema: z.ZodType<Recurrence> = z.strictObject({
   horizon_days: z.int().min(1).max(3650).nullable(),
   exception_dates: z.array(z.string()).default([]),
   prototype: RecurrencePrototype,
+  version: z.int().min(0).default(0),
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
@@ -305,6 +307,7 @@ export interface UpdateRecurrenceInputType {
     uid_assignees?: string[];
     locked?: CardLockKey[];
   };
+  version: number;
 }
 
 /** Zod schema for updating a recurrence. */
@@ -327,4 +330,5 @@ export const UpdateRecurrenceInput: z.ZodType<UpdateRecurrenceInputType> = z
       uid_assignees: z.array(z.string()).optional(),
       locked: z.array(CardLockKeyEnum).optional(),
     }).optional(),
+    version: z.int().min(0),
   });

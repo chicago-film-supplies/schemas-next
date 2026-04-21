@@ -127,6 +127,7 @@ export interface Card {
   recurrence_parent_uid: string | null;
   recurrence_index: number | null;
   recurrence_overrides: string[];
+  version: number;
   created_by: ActorRefType;
   updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
@@ -153,6 +154,7 @@ export const CardSchema: z.ZodType<Card> = z.strictObject({
   recurrence_parent_uid: z.string().nullable(),
   recurrence_index: z.int().nullable(),
   recurrence_overrides: z.array(z.string()).default([]),
+  version: z.int().min(0).default(0),
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
@@ -200,7 +202,7 @@ export const CreateCardInput: z.ZodType<CreateCardInputType> = z.object({
   locked: z.array(CardLockKeyEnum).optional(),
 });
 
-/** Input for PATCH /cards/:uid — all fields optional. */
+/** Input for PATCH /cards/:uid — all fields optional except version. */
 export interface UpdateCardInputType {
   uid_list?: string;
   status?: CardStatus;
@@ -213,6 +215,7 @@ export interface UpdateCardInputType {
   sources?: DocSourceType[];
   attachments?: CardAttachmentType[];
   uid_assignees?: string[];
+  version: number;
 }
 
 /**
@@ -232,4 +235,5 @@ export const UpdateCardInput: z.ZodType<UpdateCardInputType> = z.object({
   sources: z.array(DocSource).optional(),
   attachments: z.array(CardAttachment).optional(),
   uid_assignees: z.array(z.string()).optional(),
+  version: z.int().min(0),
 });

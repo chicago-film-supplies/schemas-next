@@ -27,6 +27,7 @@ export interface List {
   icon: string | null;
   color: string | null;
   position: number;
+  version: number;
   created_by: ActorRefType;
   updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
@@ -41,6 +42,7 @@ export const ListSchema: z.ZodType<List> = z.strictObject({
   icon: z.string().max(64).nullable(),
   color: z.string().max(16).nullable(),
   position: z.number(),
+  version: z.int().min(0).default(0),
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
@@ -74,13 +76,14 @@ export const CreateListInput: z.ZodType<CreateListInputType> = z.object({
   position: z.number().optional(),
 });
 
-/** Input for PATCH /lists/:uid — all fields optional. */
+/** Input for PATCH /lists/:uid — all fields optional except version. */
 export interface UpdateListInputType {
   name?: string;
   description?: string;
   icon?: string | null;
   color?: string | null;
   position?: number;
+  version: number;
 }
 
 /** Zod schema for updating a list. */
@@ -90,4 +93,5 @@ export const UpdateListInput: z.ZodType<UpdateListInputType> = z.object({
   icon: z.string().max(64).nullable().optional(),
   color: z.string().max(16).nullable().optional(),
   position: z.number().optional(),
+  version: z.int().min(0),
 });

@@ -43,6 +43,7 @@ export interface Comment {
   body: CommentBodyJson;
   body_text: string;
   reactions: Record<string, string[]>;
+  version: number;
   created_by: ActorRefType;
   deleted_at: FirestoreTimestampType | null;
   deleted_by: ActorRefType | null;
@@ -59,6 +60,7 @@ export const CommentSchema: z.ZodType<Comment> = z.strictObject({
   body: CommentBody,
   body_text: z.string().meta({ pii: "mask" }).default(""),
   reactions: z.record(z.string(), z.array(z.string())).default({}),
+  version: z.int().min(0).default(0),
   created_by: ActorRef,
   deleted_at: FirestoreTimestamp.nullable(),
   deleted_by: ActorRef.nullable(),
@@ -94,12 +96,14 @@ export const CreateCommentInput: z.ZodType<CreateCommentInputType> = z.object({
 export interface UpdateCommentInputType {
   body: CommentBodyJson;
   body_text: string;
+  version: number;
 }
 
 /** Zod schema for updating a comment. */
 export const UpdateCommentInput: z.ZodType<UpdateCommentInputType> = z.object({
   body: CommentBody,
   body_text: z.string().min(1).max(10000).meta({ pii: "mask" }),
+  version: z.int().min(0),
 });
 
 // ── Reaction input ──────────────────────────────────────────────────

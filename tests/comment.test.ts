@@ -73,8 +73,15 @@ Deno.test("CreateCommentInput accepts valid input", () => {
 
 Deno.test("UpdateCommentInput accepts body edit", () => {
   assertEquals(
-    UpdateCommentInput.safeParse({ body: tiptapBody, body_text: "Edited" }).success,
+    UpdateCommentInput.safeParse({ body: tiptapBody, body_text: "Edited", version: 1 }).success,
     true,
+  );
+});
+
+Deno.test("UpdateCommentInput rejects missing version", () => {
+  assertEquals(
+    UpdateCommentInput.safeParse({ body: tiptapBody, body_text: "Edited" }).success,
+    false,
   );
 });
 

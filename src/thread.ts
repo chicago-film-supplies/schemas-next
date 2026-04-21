@@ -35,6 +35,7 @@ export interface Thread {
   last_message_at: FirestoreTimestampType | null;
   last_message_preview: string;
   comment_count: number;
+  version: number;
   created_by: ActorRefType;
   updated_by: ActorRefType;
   created_at?: FirestoreTimestampType;
@@ -49,6 +50,7 @@ export const ThreadSchema: z.ZodType<Thread> = z.strictObject({
   last_message_at: FirestoreTimestamp.nullable(),
   last_message_preview: z.string().max(280).meta({ pii: "mask" }).default(""),
   comment_count: z.int().min(0).default(0),
+  version: z.int().min(0).default(0),
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
@@ -67,9 +69,11 @@ export const ThreadSchema: z.ZodType<Thread> = z.strictObject({
 /** Input for PATCH /threads/:uid — rename only. */
 export interface UpdateThreadInputType {
   title: string | null;
+  version: number;
 }
 
 /** Zod schema for updating a thread. */
 export const UpdateThreadInput: z.ZodType<UpdateThreadInputType> = z.object({
   title: z.string().max(200).meta({ pii: "mask" }).nullable(),
+  version: z.int().min(0),
 });

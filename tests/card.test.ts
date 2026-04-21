@@ -77,11 +77,15 @@ Deno.test("CreateCardInput rejects empty subject", () => {
 });
 
 Deno.test("UpdateCardInput accepts position-only patch", () => {
-  assertEquals(UpdateCardInput.safeParse({ position: 2000 }).success, true);
+  assertEquals(UpdateCardInput.safeParse({ position: 2000, version: 1 }).success, true);
 });
 
 Deno.test("UpdateCardInput accepts status change", () => {
-  assertEquals(UpdateCardInput.safeParse({ status: "active" }).success, true);
+  assertEquals(UpdateCardInput.safeParse({ status: "active", version: 1 }).success, true);
+});
+
+Deno.test("UpdateCardInput rejects missing version", () => {
+  assertEquals(UpdateCardInput.safeParse({ status: "active" }).success, false);
 });
 
 Deno.test("CardSchema defaults recurrence_overrides to []", () => {
