@@ -165,6 +165,12 @@ export const CardSchema: z.ZodType<Card> = z.strictObject({
     columns: ["subject", "status", "date", "position", "created_by.name"],
     filters: { status: [] },
     sort: { column: "position", direction: "asc" },
+    groupBy: [
+      { field: null, label: "None" },
+      { field: "uid_list", label: "List", kind: "collectionFeed", collection: "lists" },
+      { field: "status", label: "Status", kind: "enum" },
+      { field: "date", label: "Date", kind: "dateBucket" },
+    ],
   },
 });
 

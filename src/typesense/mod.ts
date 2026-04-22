@@ -5,6 +5,7 @@
  * the shape of each Typesense collection for the Collections API.
  */
 export type {
+  GroupByAxis,
   TypesenseCollectionConfig,
   TypesenseDisplayDefaults,
   TypesenseField,
@@ -16,6 +17,7 @@ export type {
 } from "./types.ts";
 
 export {
+  GroupByAxisSchema,
   TypesenseFieldTypeEnum,
   TypesenseFieldSchema,
   TypesenseSchemaSchema,
@@ -159,6 +161,44 @@ export const typesenseEnabledCollections: Set<string> = new Set(
  * Disabled aliases (`enabled: false`, e.g. `bookings`) are omitted — no search
  * UI surface is expected for them until they are provisioned in Typesense.
  */
+/**
+ * Look up the default sorting field for a Typesense collection. Returns
+ * `null` when the alias is unknown or the config does not declare one.
+ */
+export function getDefaultSortingField(alias: string): string | null {
+  const config = typesenseSchemas[alias as TypesenseAlias];
+  return config?.schema.default_sorting_field ?? null;
+}
+
+/**
+ * Default sort direction for a Typesense collection's default sorting field.
+ * Numeric types (`int32`, `int64`, `float`) sort descending (recent/large
+ * first); everything else sorts ascending. Returns `null` when the collection
+ * has no default sorting field.
+ */
+export function getDefaultSortDirection(alias: string): "asc" | "desc" | null {
+  const config = typesenseSchemas[alias as TypesenseAlias];
+  const sortField = config?.schema.default_sorting_field;
+  if (!sortField) return null;
+  const field = config.schema.fields.find((f) => f.name === sortField);
+  if (!field) return null;
+  if (field.type === "int32" || field.type === "int64" || field.type === "float") {
+    return "desc";
+  }
+  return "asc";
+}
+
+/**
+ * Resolve a Firestore collection name (singular or plural) to its Typesense
+ * alias. Returns `null` when no matching Typesense collection exists.
+ */
+export function getSearchAlias(collection: string): string | null {
+  const direct = typesenseSchemas[collection as TypesenseAlias];
+  if (direct) return direct.alias;
+  const match = allSchemas.find((s) => s.firestoreCollection === collection);
+  return match?.alias ?? null;
+}
+
 export const SEARCH_PERMISSION_BY_ALIAS: Partial<Record<TypesenseAlias, Permission>> = {
   "cards": "cards.search",
   "chart-of-accounts": "chartOfAccounts.search",

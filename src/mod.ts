@@ -55,7 +55,20 @@ export {
   type FirestoreDisplayDefaults,
 } from "./display-defaults.ts";
 
+export type { GroupByAxis } from "./typesense/types.ts";
+
 export { getInitialValues } from "./initial.ts";
+
+export {
+  unwrapZod,
+  unwrapNonArray,
+  resolveZodField,
+  getNodeMeta,
+  resolveFieldMeta,
+  isDateField,
+  enumValues,
+  getServerSortableColumns,
+} from "./zod-walk.ts";
 
 export {
   SessionSchema,
