@@ -181,6 +181,10 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
     columns: ["date", "quantity", "total_cost", "source.type", "type", "reference"],
     filters: {},
     sort: { column: "date", direction: "desc" },
+    groupBy: [
+      { field: null, label: "None" },
+      { field: "type", label: "Type", kind: "enum" },
+    ],
   },
 });
 

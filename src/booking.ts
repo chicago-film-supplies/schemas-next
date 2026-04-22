@@ -174,5 +174,9 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
     columns: ["number", "status", "organization.name", "quantity", "dates.start", "dates.end"],
     filters: {},
     sort: { column: "number", direction: "desc" },
+    groupBy: [
+      { field: null, label: "None" },
+      { field: "status", label: "Status", kind: "enum" },
+    ],
   },
 });

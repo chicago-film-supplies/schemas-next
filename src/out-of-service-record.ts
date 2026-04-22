@@ -137,5 +137,9 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
     columns: ["source.type", "reason", "quantity", "date_start", "date_end"],
     filters: {},
     sort: { column: "date_start", direction: "desc" },
+    groupBy: [
+      { field: null, label: "None" },
+      { field: "reason", label: "Reason", kind: "enum" },
+    ],
   },
 });
