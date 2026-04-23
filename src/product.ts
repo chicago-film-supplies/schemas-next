@@ -2,6 +2,7 @@
  * Product document schema — Firestore collection: products
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import { type TransactionStore, TransactionStoreSchema } from "./transaction.ts";
 import {
   ActorRef,
@@ -322,7 +323,7 @@ export const CreateProductInput: z.ZodType<CreateProductInputType> = z.object({
     type: z.enum(["purchase", "make", "find"]),
     quantity: z.number(),
     total_cost: z.number(),
-    date: z.iso.datetime({ offset: true }),
+    date: chicagoInstant(),
     reference: z.string(),
     stores: z.array(TransactionStoreSchema),
   }).optional(),

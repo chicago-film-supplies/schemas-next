@@ -2,6 +2,7 @@
  * Transaction document schema — Firestore collection: transactions
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import { FirestoreTimestamp, type FirestoreTimestampType } from "./common.ts";
 
 /** All possible transaction type identifiers. */
@@ -156,7 +157,7 @@ export const TransactionSchema: z.ZodType<Transaction> = z.strictObject({
   total_cost: z.number(),
   unit_cost: z.number(),
   unit_costs: z.array(z.number()).default([]),
-  date: z.iso.datetime({ offset: true }).meta({ serverSortVia: "date_fs" }),
+  date: chicagoInstant().meta({ serverSortVia: "date_fs" }),
   date_fs: FirestoreTimestamp,
   reference: z.string(),
   source: SourceSchema,
@@ -250,7 +251,7 @@ export const CreateTransactionInput: z.ZodType<CreateTransactionInputType> = z.o
   type: z.enum(MANUAL_TRANSACTION_TYPES),
   quantity: z.number().int().positive(),
   total_cost: z.number().min(0),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoInstant(),
   reference: z.string(),
   stores: z.array(InputTransactionStoreSchema).min(1),
   serialized_details: z.object({
@@ -283,7 +284,7 @@ export const UpdateTransactionInput: z.ZodType<UpdateTransactionInputType> = z.o
   type: z.enum(MANUAL_TRANSACTION_TYPES),
   quantity: z.number().int().positive(),
   total_cost: z.number().min(0),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoInstant(),
   reference: z.string(),
   stores: z.array(InputTransactionStoreSchema).min(1),
   serialized_details: z.object({
@@ -312,7 +313,7 @@ export interface CreateStoreTransferInputType {
 export const CreateStoreTransferInput: z.ZodType<CreateStoreTransferInputType> = z.object({
   uid_product: z.string().min(1),
   quantity: z.number().int().positive(),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoInstant(),
   reference: z.string(),
   stores_from: z.array(InputTransactionStoreSchema).min(1),
   stores_to: z.array(InputTransactionStoreSchema).min(1),
@@ -345,7 +346,7 @@ export const UpdateStoreTransferInput: z.ZodType<UpdateStoreTransferInputType> =
   uid_product: z.string().min(1),
   transfer_number: z.number().int(),
   quantity: z.number().int().positive(),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoInstant(),
   reference: z.string(),
   stores_from: z.array(InputTransactionStoreSchema).min(1),
   stores_to: z.array(InputTransactionStoreSchema).min(1),

@@ -2,6 +2,7 @@
  * Booking document schema — Firestore collection: bookings
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import {
   Address,
   type AddressType,
@@ -141,13 +142,13 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
     returned: z.number(),
   }),
   dates: z.strictObject({
-    start: z.iso.datetime({ offset: true }).meta({ serverSortVia: "dates.start_fs" }).nullable(),
+    start: chicagoInstant().meta({ serverSortVia: "dates.start_fs" }).nullable(),
     start_fs: FirestoreTimestamp.nullable(),
-    end: z.iso.datetime({ offset: true }).meta({ serverSortVia: "dates.end_fs" }).nullable(),
+    end: chicagoInstant().meta({ serverSortVia: "dates.end_fs" }).nullable(),
     end_fs: FirestoreTimestamp.nullable(),
-    charge_start: z.iso.datetime({ offset: true }).nullable(),
+    charge_start: chicagoInstant().nullable(),
     charge_start_fs: FirestoreTimestamp.nullable(),
-    charge_end: z.iso.datetime({ offset: true }).nullable(),
+    charge_end: chicagoInstant().nullable(),
     charge_end_fs: FirestoreTimestamp.nullable(),
   }),
   destinations: z.strictObject({

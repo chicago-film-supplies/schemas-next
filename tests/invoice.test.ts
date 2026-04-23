@@ -15,7 +15,7 @@ const validInvoice = {
   query_by_orders: ["test-order-1"],
   number_orders: [1000],
   tax_profile: "tax_applied",
-  date: "2026-03-01",
+  date: "2026-03-01T00:00:00.000-06:00",
   organization: {
     uid: "test-org-1",
     name: "Acme Corp",
@@ -70,7 +70,7 @@ Deno.test("InvoiceSchema accepts optional fields", () => {
     reference: "PO-123",
     external_notes: "Thanks!",
     internal_notes: null,
-    due_date: "2026-04-01",
+    due_date: "2026-04-01T00:00:00.000-05:00",
   };
   assertEquals(InvoiceSchema.safeParse(doc).success, true);
 });

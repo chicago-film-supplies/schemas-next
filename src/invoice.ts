@@ -2,6 +2,7 @@
  * Invoice document schema — Firestore collection: invoices
  */
 import { z } from "zod";
+import { chicagoStartOfDay } from "./_datetime.ts";
 import {
   ActorRef,
   type ActorRefType,
@@ -66,7 +67,7 @@ export interface InvoicePayment {
 const InvoicePaymentSchema: z.ZodType<InvoicePayment> = z.strictObject({
   uid: z.string(),
   xero_payment_id: z.string(),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoStartOfDay(),
   amount: z.number(),
   reference: z.string().nullable(),
   status: z.enum(PAYMENT_STATUSES),
@@ -265,9 +266,9 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   query_by_orders: z.array(z.string()).default([]),
   number_orders: z.array(z.number()).default([]),
   tax_profile: TaxProfileEnum,
-  date: z.iso.date(),
+  date: chicagoStartOfDay(),
   date_fs: FirestoreTimestamp,
-  due_date: z.iso.date().optional(),
+  due_date: chicagoStartOfDay().optional(),
   due_date_fs: FirestoreTimestamp,
   subject: z.string().nullable().optional(),
   reference: z.string().nullable().optional(),
@@ -383,8 +384,8 @@ export const CreateInvoiceInput: z.ZodType<CreateInvoiceInputType> = z.object({
   organization: z.object({ uid: z.string() }),
   tax_profile: TaxProfileEnum,
   items: z.array(InvoiceItemInputSchema).optional(),
-  date: z.iso.date().optional(),
-  due_date: z.iso.date().optional(),
+  date: chicagoStartOfDay().optional(),
+  due_date: chicagoStartOfDay().optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   external_notes: z.string().meta({ pii: "mask" }).optional(),
@@ -408,8 +409,8 @@ export interface UpdateInvoiceInputType {
 export const UpdateInvoiceInput: z.ZodType<UpdateInvoiceInputType> = z.object({
   status: InvoiceStatus.optional(),
   items: z.array(InvoiceItemInputSchema).optional(),
-  date: z.iso.date().optional(),
-  due_date: z.iso.date().optional(),
+  date: chicagoStartOfDay().optional(),
+  due_date: chicagoStartOfDay().optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
   external_notes: z.string().meta({ pii: "mask" }).optional(),

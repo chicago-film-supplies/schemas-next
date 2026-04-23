@@ -2,6 +2,7 @@
  * Order schemas — Firestore collection: orders
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import {
   Address,
   type AddressType,
@@ -56,12 +57,12 @@ export interface OrderDatesType {
 
 /** Zod schema for order dates. */
 export const OrderDates: z.ZodType<OrderDatesType> = z.object({
-  delivery_start: z.iso.datetime({ offset: true }).nullable(),
-  delivery_end: z.iso.datetime({ offset: true }).nullable(),
-  collection_start: z.iso.datetime({ offset: true }).nullable(),
-  collection_end: z.iso.datetime({ offset: true }).nullable(),
-  charge_start: z.iso.datetime({ offset: true }).nullable(),
-  charge_end: z.iso.datetime({ offset: true }).nullable(),
+  delivery_start: chicagoInstant().nullable(),
+  delivery_end: chicagoInstant().nullable(),
+  collection_start: chicagoInstant().nullable(),
+  collection_end: chicagoInstant().nullable(),
+  charge_start: chicagoInstant().nullable(),
+  charge_end: chicagoInstant().nullable(),
 });
 
 /**
@@ -537,17 +538,17 @@ export interface OrderDocDatesType {
 
 /** Zod schema for order dates with Firestore timestamp companions. */
 export const OrderDocDates: z.ZodType<OrderDocDatesType> = z.strictObject({
-  delivery_start: z.iso.datetime({ offset: true }).nullable().default(null),
+  delivery_start: chicagoInstant().nullable().default(null),
   delivery_start_fs: FirestoreTimestamp,
-  delivery_end: z.iso.datetime({ offset: true }).nullable().default(null),
+  delivery_end: chicagoInstant().nullable().default(null),
   delivery_end_fs: FirestoreTimestamp,
-  collection_start: z.iso.datetime({ offset: true }).nullable().default(null),
+  collection_start: chicagoInstant().nullable().default(null),
   collection_start_fs: FirestoreTimestamp,
-  collection_end: z.iso.datetime({ offset: true }).nullable().default(null),
+  collection_end: chicagoInstant().nullable().default(null),
   collection_end_fs: FirestoreTimestamp,
-  charge_start: z.iso.datetime({ offset: true }).nullable().default(null),
+  charge_start: chicagoInstant().nullable().default(null),
   charge_start_fs: FirestoreTimestamp,
-  charge_end: z.iso.datetime({ offset: true }).nullable().default(null),
+  charge_end: chicagoInstant().nullable().default(null),
   charge_end_fs: FirestoreTimestamp,
   days_active: z.int().nullable().default(null),
   days_charged: z.int().nullable().default(null),

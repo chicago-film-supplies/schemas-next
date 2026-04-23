@@ -5,6 +5,7 @@
  * Tax data is denormalized onto order items at order time.
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import {
   ActorRef,
   type ActorRefType,
@@ -41,9 +42,9 @@ export const TaxSchema: z.ZodType<Tax> = z.strictObject({
   type: RateTypeEnum,
   active: z.boolean().default(true),
   crms_id: z.int().nullable().default(null),
-  valid_from: z.iso.datetime({ offset: true }),
+  valid_from: chicagoInstant(),
   valid_from_fs: FirestoreTimestamp,
-  valid_to: z.iso.datetime({ offset: true }).nullable().default(null),
+  valid_to: chicagoInstant().nullable().default(null),
   valid_to_fs: FirestoreTimestamp.nullable().default(null),
   version: z.int().min(0).default(0),
   created_by: ActorRef,
@@ -76,8 +77,8 @@ export const CreateTaxInput: z.ZodType<CreateTaxInputType> = z.object({
   rate: z.number(),
   type: RateTypeEnum,
   active: z.boolean().optional(),
-  valid_from: z.iso.datetime({ offset: true }),
-  valid_to: z.iso.datetime({ offset: true }).nullable().optional(),
+  valid_from: chicagoInstant(),
+  valid_to: chicagoInstant().nullable().optional(),
 });
 
 /** Input for updating an existing tax definition. */
@@ -99,7 +100,7 @@ export const UpdateTaxInput: z.ZodType<UpdateTaxInputType> = z.object({
   rate: z.number().optional(),
   type: RateTypeEnum.optional(),
   active: z.boolean().optional(),
-  valid_from: z.iso.datetime({ offset: true }).optional(),
-  valid_to: z.iso.datetime({ offset: true }).nullable().optional(),
+  valid_from: chicagoInstant().optional(),
+  valid_to: chicagoInstant().nullable().optional(),
   version: z.int().min(0),
 });

@@ -2,6 +2,7 @@
  * OutOfServiceRecord document schema — Firestore collection: out-of-service
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import {
   FirestoreTimestamp,
   type FirestoreTimestampType,
@@ -93,7 +94,7 @@ const OOSTransactionSchema: z.ZodType<OOSTransaction> = z.strictObject({
   crms_id: z.number().nullable().optional(),
   crms_quarantine_id: z.number().nullable().optional(),
   crms_stock_level_id: z.number().nullable().optional(),
-  date: z.iso.datetime({ offset: true }),
+  date: chicagoInstant(),
   date_fs: FirestoreTimestamp,
   out_of_service_uid: z.string(),
   quantity: z.number(),
@@ -116,9 +117,9 @@ export const OutOfServiceRecordSchema: z.ZodType<OutOfServiceRecord> = z.strictO
   quantity_return_to_service: z.number(),
   quantity_write_off: z.number(),
   complete: z.boolean().optional(),
-  date_start: z.iso.datetime({ offset: true }),
+  date_start: chicagoInstant(),
   date_start_fs: FirestoreTimestamp,
-  date_end: z.iso.datetime({ offset: true }).meta({ serverSortVia: "date_end_fs" }).optional(),
+  date_end: chicagoInstant().meta({ serverSortVia: "date_end_fs" }).optional(),
   date_end_fs: FirestoreTimestamp,
   crms_id: z.number().nullable().optional(),
   crms_stock_level_id: z.number().nullable().optional(),
