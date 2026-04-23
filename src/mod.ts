@@ -423,6 +423,7 @@ export {
 
 export {
   CreateInvoiceInput,
+  InvoiceDocDestination,
   InvoiceDocItem,
   InvoiceDocLineItemSchema,
   InvoiceDocOrderItem,
@@ -431,6 +432,7 @@ export {
   UpdateInvoiceInput,
   type CreateInvoiceInputType,
   type Invoice,
+  type InvoiceDocDestinationType,
   type InvoiceDocItemPrice,
   type InvoiceDocItemType,
   type InvoiceDocLineItem,

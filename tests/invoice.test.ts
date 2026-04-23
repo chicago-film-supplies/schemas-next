@@ -7,6 +7,12 @@ const totalsBase = invoiceBase.totals as Record<string, unknown>;
 const lineItemBase = getInitialValues(InvoiceDocLineItemSchema) as Record<string, unknown>;
 const priceBase = (lineItemBase as { price: Record<string, unknown> }).price;
 
+const validDestination = {
+  uid_order: "test-order-1",
+  delivery: { uid: null, address: null, instructions: null, contact: null },
+  collection: { uid: null, address: null, instructions: null, contact: null },
+};
+
 const validInvoice = {
   ...invoiceBase,
   uid: "test-inv-1",
@@ -23,6 +29,7 @@ const validInvoice = {
     xero_id: null,
     billing_address: null,
   },
+  destinations: [validDestination],
   items: [{
     ...lineItemBase,
     uid: "item-1",

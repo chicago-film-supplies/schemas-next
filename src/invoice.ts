@@ -29,6 +29,8 @@ import {
   DiscountInput,
   type DiscountInputType,
   type DiscountType,
+  DocDestinationEndpoint,
+  type DocDestinationType,
   OrderDocDestinationItem,
   type OrderDocDestinationItemType,
   OrderDocGroupItem,
@@ -207,6 +209,23 @@ const InvoiceDocTotalsSchema: z.ZodType<InvoiceDocTotals> = z.strictObject({
   amount_due: z.number().default(0),
 });
 
+// ── Destinations ────────────────────────────────────────────────
+
+/**
+ * Destination pair on an invoice — mirrors the order's `DocDestinationType`
+ * with a `uid_order` scope field so multi-order invoices can carry pairs
+ * from several orders and have them selectively synced per source order.
+ */
+export interface InvoiceDocDestinationType extends DocDestinationType {
+  uid_order: string;
+}
+
+export const InvoiceDocDestination: z.ZodType<InvoiceDocDestinationType> = z.strictObject({
+  uid_order: z.string(),
+  delivery: DocDestinationEndpoint,
+  collection: DocDestinationEndpoint,
+});
+
 // ── Document schema ──────────────────────────────────────────────
 
 /** An invoice document in the invoices Firestore collection. */
@@ -233,6 +252,7 @@ export interface Invoice {
     xero_id: string | null;
     billing_address: AddressType | null;
   };
+  destinations: InvoiceDocDestinationType[];
   items: InvoiceDocItemType[];
   totals: InvoiceDocTotals;
   payments: InvoicePayment[];
@@ -282,6 +302,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
     xero_id: z.string().nullable(),
     billing_address: Address,
   }),
+  destinations: z.array(InvoiceDocDestination).min(1, "At least one destination is required"),
   items: z.array(InvoiceDocItem).default([]),
   totals: InvoiceDocTotalsSchema,
   payments: z.array(InvoicePaymentSchema).default([]),
@@ -369,6 +390,7 @@ export interface CreateInvoiceInputType {
   organization: { uid: string };
   tax_profile: TaxProfileType;
   items?: InvoiceItemInputType[];
+  destinations?: InvoiceDocDestinationType[];
   date?: string;
   due_date?: string;
   subject?: string;
@@ -384,6 +406,7 @@ export const CreateInvoiceInput: z.ZodType<CreateInvoiceInputType> = z.object({
   organization: z.object({ uid: z.string() }),
   tax_profile: TaxProfileEnum,
   items: z.array(InvoiceItemInputSchema).optional(),
+  destinations: z.array(InvoiceDocDestination).optional(),
   date: chicagoStartOfDay().optional(),
   due_date: chicagoStartOfDay().optional(),
   subject: z.string().optional(),
@@ -396,6 +419,7 @@ export const CreateInvoiceInput: z.ZodType<CreateInvoiceInputType> = z.object({
 export interface UpdateInvoiceInputType {
   status?: InvoiceStatusType;
   items?: InvoiceItemInputType[];
+  destinations?: InvoiceDocDestinationType[];
   date?: string;
   due_date?: string;
   subject?: string;
@@ -409,6 +433,7 @@ export interface UpdateInvoiceInputType {
 export const UpdateInvoiceInput: z.ZodType<UpdateInvoiceInputType> = z.object({
   status: InvoiceStatus.optional(),
   items: z.array(InvoiceItemInputSchema).optional(),
+  destinations: z.array(InvoiceDocDestination).optional(),
   date: chicagoStartOfDay().optional(),
   due_date: chicagoStartOfDay().optional(),
   subject: z.string().optional(),
