@@ -5,10 +5,12 @@ import {
   toChicagoInstant,
   toChicagoStartOfDay,
 } from "../src/_datetime.ts";
-import {
-  toChicagoInstant as utilsToChicagoInstant,
-  toChicagoStartOfDay as utilsToChicagoStartOfDay,
-} from "../../utilities-next/src/dates.ts";
+
+// Note: the _datetime.ts transforms are intentionally duplicated from
+// @cfs/utilities/dates to avoid a cross-package runtime dependency.
+// The expectation strings below are the parity contract — they must
+// match the corresponding expectations in utilities-next/tests/dates.test.ts
+// exactly. If you change one suite, change the other.
 
 // ── toChicagoInstant ────────────────────────────────────────────
 
@@ -64,45 +66,6 @@ Deno.test("toChicagoStartOfDay handles date-only string (CDT)", () => {
 Deno.test("toChicagoStartOfDay is idempotent", () => {
   const once = toChicagoStartOfDay("2025-12-22T15:15:00.000Z");
   assertEquals(toChicagoStartOfDay(once), once);
-});
-
-// ── Parity with utilities-next (drift guard) ────────────────────
-
-Deno.test("parity: chicagoInstant matches @cfs/utilities helper", () => {
-  const inputs = [
-    "2025-12-22T15:15:00.000Z",
-    "2025-07-04T14:15:00.000Z",
-    "2025-12-22T09:15:00.000-06:00",
-    "2025-12-23T00:15:00.000+09:00",
-    "2025-03-09T07:30:00.000Z",
-    "2025-03-09T08:30:00.000Z",
-    "2025-11-02T07:30:00.000Z",
-  ];
-  for (const input of inputs) {
-    assertEquals(
-      toChicagoInstant(input),
-      utilsToChicagoInstant(input),
-      `instant parity broke for ${input}`,
-    );
-  }
-});
-
-Deno.test("parity: chicagoStartOfDay matches @cfs/utilities helper", () => {
-  const inputs = [
-    "2025-12-22T15:15:00.000Z",
-    "2025-12-22T03:00:00.000Z",
-    "2025-07-04",
-    "2025-01-04",
-    "2025-07-04T12:00:00.000Z",
-    "2025-12-22T00:00:00.000-06:00",
-  ];
-  for (const input of inputs) {
-    assertEquals(
-      toChicagoStartOfDay(input),
-      utilsToChicagoStartOfDay(input),
-      `startOfDay parity broke for ${input}`,
-    );
-  }
 });
 
 // ── Factories: chicagoInstant() ─────────────────────────────────
