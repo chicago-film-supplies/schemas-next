@@ -302,7 +302,7 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
     xero_id: z.string().nullable(),
     billing_address: Address,
   }),
-  destinations: z.array(InvoiceDocDestination).min(1, "At least one destination is required"),
+  destinations: z.array(InvoiceDocDestination).default([]),
   items: z.array(InvoiceDocItem).default([]),
   totals: InvoiceDocTotalsSchema,
   payments: z.array(InvoicePaymentSchema).default([]),
@@ -323,7 +323,10 @@ export const InvoiceSchema: z.ZodType<Invoice> = z.strictObject({
   created_by: ActorRef,
   updated_by: ActorRef,
   ...TimestampFields,
-}).meta({
+}).refine(
+  (inv) => inv.query_by_orders.length === 0 || inv.destinations.length >= 1,
+  { message: "destinations must be provided when the invoice is linked to at least one source order", path: ["destinations"] },
+).meta({
   title: "Invoice",
   collection: "invoices",
   displayDefaults: {

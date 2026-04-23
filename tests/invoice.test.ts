@@ -60,6 +60,20 @@ Deno.test("InvoiceSchema validates a complete document", () => {
   assertEquals(InvoiceSchema.safeParse(validInvoice).success, true);
 });
 
+Deno.test("InvoiceSchema allows empty destinations when query_by_orders is empty (standalone invoice)", () => {
+  const doc = { ...validInvoice, query_by_orders: [], number_orders: [], destinations: [] };
+  assertEquals(InvoiceSchema.safeParse(doc).success, true);
+});
+
+Deno.test("InvoiceSchema rejects empty destinations when query_by_orders is non-empty", () => {
+  const doc = { ...validInvoice, destinations: [] };
+  const result = InvoiceSchema.safeParse(doc);
+  assertEquals(result.success, false);
+  if (!result.success) {
+    assertEquals(result.error.issues[0].path.join("."), "destinations");
+  }
+});
+
 Deno.test("InvoiceSchema rejects invalid status", () => {
   const doc = { ...validInvoice, status: "pending" };
   assertEquals(InvoiceSchema.safeParse(doc).success, false);
