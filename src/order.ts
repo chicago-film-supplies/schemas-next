@@ -579,6 +579,7 @@ export interface OrderDocTotalsType {
   taxes: PriceModifierType[];
   transaction_fees: PriceModifierType[];
   total: number;
+  replacement_total: number;
 }
 
 const OrderDocTotals: z.ZodType<OrderDocTotalsType> = z.strictObject({
@@ -588,6 +589,7 @@ const OrderDocTotals: z.ZodType<OrderDocTotalsType> = z.strictObject({
   taxes: z.array(PriceModifier).default([]),
   transaction_fees: z.array(PriceModifier).default([]),
   total: z.number().default(0),
+  replacement_total: z.number().default(0),
 });
 
 /**

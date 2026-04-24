@@ -165,6 +165,7 @@ export const templateSchemaFields: Record<TemplateSourceCollectionType, SchemaFi
     { path: "totals.transaction_fees[].type", type: "percent | flat" },
     { path: "totals.transaction_fees[].amount", type: "number" },
     { path: "totals.total", type: "number" },
+    { path: "totals.replacement_total", type: "number" },
     { path: "invoices", type: "object[]" },
     { path: "invoices[].uid", type: "string" },
     { path: "invoices[].number", type: "number" },
