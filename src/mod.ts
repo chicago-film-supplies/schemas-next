@@ -430,6 +430,7 @@ export {
   InvoiceSchema,
   isInvoiceLineItem,
   UpdateInvoiceInput,
+  UpdatePaymentInput,
   type CreateInvoiceInputType,
   type Invoice,
   type InvoiceDocDestinationType,
@@ -443,6 +444,7 @@ export {
   type InvoicePayment,
   type InvoiceStatusType,
   type UpdateInvoiceInputType,
+  type UpdatePaymentInputType,
 } from "./invoice.ts";
 
 export {

@@ -445,3 +445,21 @@ export const UpdateInvoiceInput: z.ZodType<UpdateInvoiceInputType> = z.object({
   internal_notes: z.string().meta({ pii: "mask" }).optional(),
   version: z.int().min(0),
 });
+
+/** Input schema for PATCH /invoices/{uid}/payments/{payment_uid} — partial update of a single payment. */
+export interface UpdatePaymentInputType {
+  date?: string;
+  amount?: number;
+  reference?: string | null;
+  status?: typeof PAYMENT_STATUSES[number];
+  version: number;
+}
+
+/** Input schema for updating a single payment on an invoice. */
+export const UpdatePaymentInput: z.ZodType<UpdatePaymentInputType> = z.object({
+  date: chicagoStartOfDay().optional(),
+  amount: z.number().positive().optional(),
+  reference: z.string().nullable().optional(),
+  status: z.enum(PAYMENT_STATUSES).optional(),
+  version: z.int().min(0),
+});
