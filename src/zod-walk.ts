@@ -24,6 +24,8 @@ interface ZodInternalDef {
   shape?: Record<string, z.ZodType>;
   entries?: Record<string, string>;
   format?: string;
+  in?: z.ZodType;
+  out?: z.ZodType;
 }
 
 function getDef(node: z.ZodType): ZodInternalDef {
@@ -119,19 +121,54 @@ export function resolveFieldMeta(
 }
 
 /**
+ * Follow `def.in` through a pipe chain to the underlying schema. Used when a
+ * caller cares about the type discriminator (string vs number vs …) of a field
+ * that went through `.transform()` — e.g. Chicago-canonicalized datetime fields
+ * produced by `chicagoInstant()` / `chicagoStartOfDay()`, which return a
+ * `ZodPipe` with the `z.iso.datetime()` on the input side.
+ *
+ * Deliberately separate from `unwrapZod` so that pipe-level `.meta()` (used
+ * for `serverSortVia` annotations) stays discoverable via `getNodeMeta` —
+ * callers that want the type look through pipes, callers that want meta do not.
+ */
+function unwrapPipes(node: z.ZodType): z.ZodType {
+  let n = node;
+  while (true) {
+    const def = getDef(n);
+    if (def.type === "pipe" && def.in) {
+      n = def.in;
+      continue;
+    }
+    return n;
+  }
+}
+
+/**
+ * True when `node` is an ISO datetime, ISO date, or `FirestoreTimestamp` —
+ * including when those types are wrapped in a `.transform()` pipe (e.g.
+ * `chicagoInstant()`, `chicagoStartOfDay()`). Takes an already-unwrapped node
+ * (see {@link unwrapZod} / {@link unwrapNonArray}); callers that have only a
+ * schema + path should use {@link isDateField} instead.
+ */
+export function isDateLikeNode(node: z.ZodType): boolean {
+  if (node === FirestoreTimestamp) return true;
+  const inner = unwrapPipes(node);
+  if (inner === FirestoreTimestamp) return true;
+  const def = getDef(inner);
+  return def.type === "string" &&
+    (def.format === "datetime" || def.format === "date");
+}
+
+/**
  * True when the schema's leaf at `fieldPath` is an ISO datetime, ISO date, or
- * the `FirestoreTimestamp` custom type. Unwraps Optional/Default/Nullable, so
- * modifiers don't mask the underlying type.
+ * the `FirestoreTimestamp` custom type. Unwraps Optional/Default/Nullable and
+ * sees through `.transform()` pipes, so neither modifiers nor Chicago
+ * datetime factories (`chicagoInstant`, `chicagoStartOfDay`) mask the
+ * underlying type.
  */
 export function isDateField(schema: z.ZodType, fieldPath: string): boolean {
   const node = resolveZodField(schema, fieldPath);
-  if (!node) return false;
-  if (node === FirestoreTimestamp) return true;
-  const def = getDef(node);
-  if (def.type === "string" && (def.format === "datetime" || def.format === "date")) {
-    return true;
-  }
-  return false;
+  return node ? isDateLikeNode(node) : false;
 }
 
 /**

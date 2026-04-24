@@ -66,6 +66,7 @@ export {
   getNodeMeta,
   resolveFieldMeta,
   isDateField,
+  isDateLikeNode,
   enumValues,
   getServerSortableColumns,
 } from "./zod-walk.ts";
