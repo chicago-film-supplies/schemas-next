@@ -27,7 +27,20 @@ export {
   createOrderTransaction,
   updateOrderRules,
   updateOrderTransaction,
+  updateBookingRules,
+  updateBookingTransaction,
+  bulkCheckoutOrderTransaction,
+  bulkReturnOrderTransaction,
 } from "./orders.ts";
+
+// ── Out-of-service rules ─────────────────────────────────────────────
+
+export {
+  createOutOfServiceRules,
+  createOutOfServiceTransaction,
+  updateOutOfServiceRules,
+  updateOutOfServiceTransaction,
+} from "./out-of-service.ts";
 
 // ── Transaction rules ────────────────────────────────────────────────
 
@@ -121,6 +134,7 @@ export {
   threadProductRules,
   threadTransactionRules,
   threadRoleRules,
+  threadOutOfServiceRules,
   createRoleTransaction,
   createCommentRules,
   createCommentTransaction,
@@ -164,7 +178,22 @@ export {
 
 import type { CollectionRule, TransactionDefinition } from "./types.ts";
 
-import { createOrderRules, createOrderTransaction, updateOrderRules, updateOrderTransaction } from "./orders.ts";
+import {
+  createOrderRules,
+  createOrderTransaction,
+  updateOrderRules,
+  updateOrderTransaction,
+  updateBookingRules,
+  updateBookingTransaction,
+  bulkCheckoutOrderTransaction,
+  bulkReturnOrderTransaction,
+} from "./orders.ts";
+import {
+  createOutOfServiceRules,
+  createOutOfServiceTransaction,
+  updateOutOfServiceRules,
+  updateOutOfServiceTransaction,
+} from "./out-of-service.ts";
 import { createTransactionRules, createTransactionTransaction, updateTransactionRules, updateTransactionTransaction } from "./transactions.ts";
 import { createProductRules, createProductTransaction, updateProductRules, updateProductOrderRules, updateProductTransaction } from "./products.ts";
 import { createOrganizationRules, createOrganizationTransaction, updateOrganizationRules, updateOrganizationTransaction } from "./organizations.ts";
@@ -201,6 +230,11 @@ import {
 export const transactions: TransactionDefinition[] = [
   createOrderTransaction,
   updateOrderTransaction,
+  updateBookingTransaction,
+  bulkCheckoutOrderTransaction,
+  bulkReturnOrderTransaction,
+  createOutOfServiceTransaction,
+  updateOutOfServiceTransaction,
   createTransactionTransaction,
   updateTransactionTransaction,
   createProductTransaction,
@@ -235,6 +269,9 @@ export const transactions: TransactionDefinition[] = [
 export const rules: CollectionRule[] = [
   ...createOrderRules,
   ...updateOrderRules,
+  ...updateBookingRules,
+  ...createOutOfServiceRules,
+  ...updateOutOfServiceRules,
   ...createTransactionRules,
   ...updateTransactionRules,
   ...createProductRules,

@@ -52,6 +52,7 @@ export const createOrderRules: CollectionRule[] = [
       { source: ["destinations"], target: ["query_by_contacts"], transform: "flatten all contact uids from delivery/collection endpoints" },
       { source: [], target: ["number"], transform: "atomic increment of counters/orders.count" },
       { source: ["dates"], target: ["dates"], transform: "Timestamp.fromDate() — each ISO string gets a Firestore timestamp companion (*_fs)" },
+      { source: [], target: ["bookings_breakdown"], transform: "sum of breakdowns across all freshly-built bookings — initial roll-up, maintained incrementally by update-booking thereafter. Sum of all values === sum of booking.quantity (invariant)." },
     ],
   },
   {
@@ -362,5 +363,118 @@ export const updateOrderTransaction: TransactionDefinition = {
     "update-order:order-to-order-warehouse",
     "update-order:items-to-invoices",
     "update-order:status-to-invoices",
+  ],
+};
+
+// ── update-booking ────────────────────────────────────────────────
+//
+// Single-booking PUT used by the warehouse to check items in/out and to
+// record returned/lost/damaged quantities. Co-located here (not in its own
+// file) because it lives entirely under the `order` aggregate root.
+
+export const updateBookingRules: CollectionRule[] = [
+  {
+    id: "update-booking:booking-to-self",
+    source: "bookings",
+    target: "bookings",
+    mode: "co-write",
+    invariant: "Status and breakdown rewritten with optimistic version bump. When status flips to 'complete', the API enforces breakdown.returned + breakdown.lost + breakdown.damaged === booking.quantity.",
+    transaction: "update-booking",
+    fields: [
+      { source: [], target: ["status"], transform: "from input.status (defaults to current)" },
+      { source: [], target: ["breakdown"], transform: "merge of input.breakdown over current; deltas must be ≥ 0 for lost/damaged" },
+      { source: [], target: ["version"], transform: "version + 1 (optimistic concurrency)" },
+    ],
+  },
+  {
+    id: "update-booking:booking-to-stock-summaries",
+    source: "bookings",
+    target: "stock-summaries",
+    mode: "co-write",
+    invariant: "Every booking breakdown change recomputes stock-summaries.bookings_breakdown and quantity_booked for the product (recalculateAllStockSummaries, source: 'booking').",
+    transaction: "update-booking",
+    fields: [
+      { source: ["breakdown"], target: ["bookings_breakdown"] },
+      { source: ["breakdown"], target: ["quantity_booked"], transform: "reserved + prepped + out across all bookings" },
+      { source: [], target: ["quantity_available"], transform: "quantity_held - quantity_booked - quantity_out_of_service" },
+    ],
+  },
+  {
+    id: "update-booking:booking-to-out-of-service",
+    source: "bookings",
+    target: "out-of-service",
+    mode: "co-write",
+    invariant: "Non-zero increase in breakdown.lost or breakdown.damaged writes one OOS record per (booking, reason). If a non-complete OOS already exists for that pair (located via where('query_by_sources', 'array-contains', 'bookings:' + booking.uid) filtered by reason), its quantity is grown by the delta and a row appended to transactions[]. Otherwise a new OOS doc is cowritten with sources=[bookings, orders] and its default thread.",
+    transaction: "update-booking",
+    fields: [
+      { source: [], target: ["sources"], transform: "[{collection:'bookings', uid: booking.uid, label: 'Booking #' + booking.number}, {collection:'orders', uid: booking.uid_order, label: 'Order #' + order.number}]" },
+      { source: [], target: ["query_by_sources"], transform: "['bookings:' + booking.uid, 'orders:' + booking.uid_order]" },
+      { source: ["uid_product"], target: ["uid_product"] },
+      { source: [], target: ["reason"], transform: "'lost' or 'damaged' depending on which delta fired" },
+      { source: [], target: ["quantity"], transform: "delta (or current quantity + delta when growing an existing record)" },
+      { source: ["stores"], target: ["stores"], transform: "copied from booking.stores" },
+      { source: [], target: ["dates", "start"], transform: "now (chicagoInstant)" },
+    ],
+  },
+  {
+    id: "update-booking:booking-to-order",
+    source: "bookings",
+    target: "orders",
+    mode: "co-write",
+    invariant: "Every booking update applies a delta to order.bookings_breakdown ('+= next.breakdown[k] - prev.breakdown[k]' for each key). When bookings_breakdown.quoted + reserved + prepped + out === 0 after the delta (i.e. every quantity has reached a terminal state), order.status is set to 'complete' in the same transaction. Single order read + write per booking PUT — no sibling-bookings query.",
+    transaction: "update-booking",
+    fields: [
+      { source: ["breakdown"], target: ["bookings_breakdown"], transform: "delta-applied roll-up across all bookings on this order" },
+      { source: [], target: ["status"], transform: "set to 'complete' iff bookings_breakdown.quoted + reserved + prepped + out === 0" },
+    ],
+  },
+];
+
+export const updateBookingTransaction: TransactionDefinition = {
+  id: "update-booking",
+  description: "Update a single booking's status or breakdown. Recalculates stock summaries; cowrites/grows OOS records for new lost/damaged deltas (which themselves recalculate the OOS-side of stock summaries and cowrite a default thread); applies a delta to order.bookings_breakdown and auto-completes the parent order when the roll-up shows every quantity has closed.",
+  steps: [
+    "update-booking:booking-to-self",
+    "update-booking:booking-to-stock-summaries",
+    "update-booking:booking-to-out-of-service",
+    "update-booking:booking-to-order",
+    // OOS cowrites pull these in when a new OOS record is created:
+    "create-out-of-service-record:sources-to-record",
+    "create-out-of-service-record:record-to-stock-summaries",
+    "cowrite-thread:out-of-service-to-thread",
+    "cowrite-thread:thread-to-out-of-service",
+  ],
+};
+
+// ── bulk-checkout-order / bulk-return-order ───────────────────────
+//
+// Convenience wrappers over N update-booking calls inside one Firestore
+// transaction. POST /orders/{uid}/checkout flips every reserved/prepped
+// booking to active and moves quantities into breakdown.out. POST
+// /orders/{uid}/return applies caller-supplied returned/lost/damaged
+// deltas per booking.
+
+export const bulkCheckoutOrderTransaction: TransactionDefinition = {
+  id: "bulk-checkout-order",
+  description: "Flip every booking on an order from reserved/prepped to active and move quantities into breakdown.out in one Firestore transaction. Reuses update-booking rules per row.",
+  steps: [
+    "update-booking:booking-to-self",
+    "update-booking:booking-to-stock-summaries",
+    "update-booking:booking-to-order",
+  ],
+};
+
+export const bulkReturnOrderTransaction: TransactionDefinition = {
+  id: "bulk-return-order",
+  description: "Apply per-booking returned/lost/damaged deltas across the order in one Firestore transaction. Reuses update-booking rules per row, including OOS cowrite for any lost/damaged deltas; final state may auto-complete the order.",
+  steps: [
+    "update-booking:booking-to-self",
+    "update-booking:booking-to-stock-summaries",
+    "update-booking:booking-to-out-of-service",
+    "update-booking:booking-to-order",
+    "create-out-of-service-record:sources-to-record",
+    "create-out-of-service-record:record-to-stock-summaries",
+    "cowrite-thread:out-of-service-to-thread",
+    "cowrite-thread:thread-to-out-of-service",
   ],
 };

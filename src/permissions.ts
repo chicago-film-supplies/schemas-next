@@ -14,6 +14,8 @@ export const PERMISSIONS = [
   "orders.update",
   "orders.delete",
   "orders.search",
+  "orders.checkout",
+  "orders.return",
 
   "products.create",
   "products.read",
@@ -114,6 +116,7 @@ export const PERMISSIONS = [
   "recurrences.delete",
 
   "bookings.read",
+  "bookings.update",
   "chartOfAccounts.read",
   "chartOfAccounts.search",
   "dateHelpers.read",
@@ -122,7 +125,9 @@ export const PERMISSIONS = [
   "ledgers.read",
   "orderWarehouses.read",
   "orderWarehouses.search",
+  "outOfServiceRecords.create",
   "outOfServiceRecords.read",
+  "outOfServiceRecords.update",
   "stockSummaries.read",
   "typesenseSync.read",
 

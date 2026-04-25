@@ -90,6 +90,11 @@ export const threadTransactionRules: CollectionRule[] = cowriteRulesFor({
   transaction: "create-transaction",
 });
 
+export const threadOutOfServiceRules: CollectionRule[] = cowriteRulesFor({
+  collection: "out-of-service",
+  transaction: "create-out-of-service-record",
+});
+
 // ── Role transaction (new — role creation is promoted to a transaction) ─
 
 export const threadRoleRules: CollectionRule[] = cowriteRulesFor({
@@ -122,6 +127,7 @@ export const threadCowriteRules: CollectionRule[] = [
   ...threadProductRules,
   ...threadTransactionRules,
   ...threadRoleRules,
+  ...threadOutOfServiceRules,
 ];
 
 // ── create-comment transaction ──────────────────────────────────────

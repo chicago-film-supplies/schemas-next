@@ -115,6 +115,35 @@ const BookingStoreSchema: z.ZodType<BookingStore> = z.strictObject({
   locations: z.array(BookingStoreLocationSchema).default([]),
 });
 
+// ── Update input ──────────────────────────────────────────────
+
+/**
+ * Input for updating a single booking via `PUT /bookings/{uid}`.
+ *
+ * Status and breakdown are independently optional — most warehouse PUTs only
+ * change the breakdown. Version is required for optimistic concurrency.
+ */
+export interface UpdateBookingInputType {
+  status?: BookingStatusType;
+  breakdown?: Partial<Booking["breakdown"]>;
+  version: number;
+}
+
+/** Zod schema for UpdateBookingInput. */
+export const UpdateBookingInput: z.ZodType<UpdateBookingInputType> = z.object({
+  status: BookingStatus.optional(),
+  breakdown: z.object({
+    damaged: z.number().min(0).optional(),
+    lost: z.number().min(0).optional(),
+    out: z.number().min(0).optional(),
+    prepped: z.number().min(0).optional(),
+    quoted: z.number().min(0).optional(),
+    reserved: z.number().min(0).optional(),
+    returned: z.number().min(0).optional(),
+  }).optional(),
+  version: z.int().min(0),
+});
+
 /** Zod schema for Booking. */
 export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   uid: z.string(),

@@ -62,6 +62,14 @@ import {
   deleteCardScopeThisTransaction,
   deleteCardScopeFollowingTransaction,
   deleteCardScopeAllTransaction,
+  updateBookingRules,
+  updateBookingTransaction,
+  bulkCheckoutOrderTransaction,
+  bulkReturnOrderTransaction,
+  createOutOfServiceRules,
+  createOutOfServiceTransaction,
+  updateOutOfServiceRules,
+  updateOutOfServiceTransaction,
 } from "../src/propagation/mod.ts";
 import { schemas } from "../src/mod.ts";
 
@@ -104,6 +112,9 @@ Deno.test("rules array contains all individual rule sets", () => {
     ...createCommentRules,
     ...cardRules,
     ...recurrenceRules,
+    ...updateBookingRules,
+    ...createOutOfServiceRules,
+    ...updateOutOfServiceRules,
   ];
   assertEquals(rules.length, allRuleSets.length);
   for (const rule of allRuleSets) {
@@ -158,6 +169,11 @@ Deno.test("transactions array contains all individual transactions", () => {
     deleteCardScopeThisTransaction,
     deleteCardScopeFollowingTransaction,
     deleteCardScopeAllTransaction,
+    updateBookingTransaction,
+    bulkCheckoutOrderTransaction,
+    bulkReturnOrderTransaction,
+    createOutOfServiceTransaction,
+    updateOutOfServiceTransaction,
   ];
   assertEquals(transactions.length, allTransactions.length);
   for (const txn of allTransactions) {

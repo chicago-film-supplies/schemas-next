@@ -420,6 +420,8 @@ export {
   type BookingDestinationRef,
   type BookingStore,
   type BookingStoreLocation,
+  UpdateBookingInput,
+  type UpdateBookingInputType,
 } from "./booking.ts";
 
 export {
@@ -496,7 +498,11 @@ export {
   type OOSStore,
   type OOSStoreLocation,
   type OOSTransaction,
-  type OOSSource,
+  type OOSDates,
+  CreateOutOfServiceRecordInput,
+  type CreateOutOfServiceRecordInputType,
+  UpdateOutOfServiceRecordInput,
+  type UpdateOutOfServiceRecordInputType,
 } from "./out-of-service-record.ts";
 
 export {

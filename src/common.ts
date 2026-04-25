@@ -151,12 +151,14 @@ export interface AddressType {
 export interface DocSourceType {
   collection: string;
   uid: string;
+  label?: string | null;
 }
 
 /** Zod schema for a polymorphic doc reference. */
 export const DocSource: z.ZodType<DocSourceType> = z.strictObject({
   collection: z.string().min(1),
   uid: z.string().min(1),
+  label: z.string().max(200).nullable().optional(),
 });
 
 /**

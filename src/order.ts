@@ -616,6 +616,26 @@ export interface Order {
   query_by_invoices: string[];
   query_by_items: string[];
   query_by_contacts: string[];
+  /**
+   * Roll-up of breakdown across all bookings on this order. Mirrors the keys
+   * of `stock-summaries.bookings_breakdown` and `booking.breakdown` but
+   * aggregated along the order axis. Maintained incrementally by booking
+   * writes (createOrder seeds it; updateBooking applies a delta).
+   *
+   * Invariant: sum of all values === sum of `booking.quantity` across the
+   * order's bookings. The order is considered complete when
+   * `quoted + reserved + prepped + out === 0` (every quantity has reached
+   * a terminal state: returned, lost, or damaged).
+   */
+  bookings_breakdown: {
+    quoted: number;
+    reserved: number;
+    prepped: number;
+    out: number;
+    returned: number;
+    lost: number;
+    damaged: number;
+  };
   crms_id?: number | null;
   crms_status?: string;
   subject?: string;
@@ -643,6 +663,15 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   query_by_invoices: z.array(z.string()).default([]),
   query_by_items: z.array(z.string()).default([]),
   query_by_contacts: z.array(z.string()).default([]),
+  bookings_breakdown: z.strictObject({
+    quoted: z.number().default(0),
+    reserved: z.number().default(0),
+    prepped: z.number().default(0),
+    out: z.number().default(0),
+    returned: z.number().default(0),
+    lost: z.number().default(0),
+    damaged: z.number().default(0),
+  }).default({ quoted: 0, reserved: 0, prepped: 0, out: 0, returned: 0, lost: 0, damaged: 0 }),
   crms_id: z.number().nullable().optional(),
   crms_status: z.string().optional(),
   subject: z.string().default(""),
