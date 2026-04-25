@@ -30,12 +30,12 @@ export const createRecurrenceRules: CollectionRule[] = [
     target: "cards",
     mode: "fan-out",
     invariant:
-      "Creating a recurrence synchronously materializes the first horizon of instance cards (bounded by `horizon_days`, default 60) so the Dashboard surfaces upcoming instances immediately. Each card copies the prototype's fields + the rule-expanded `date` + the resolved `recurrence_parent_uid` + `recurrence_index`.",
+      "Creating a recurrence synchronously materializes the first horizon of instance cards (bounded by `horizon_days`, default 60) so the Dashboard surfaces upcoming instances immediately. Each card copies the prototype's fields + the rule-expanded `dates.start` (RRULE day at 9am Chicago) + the resolved `recurrence_parent_uid` + `recurrence_index`.",
     transaction: "create-recurrence",
     fields: [
       { source: ["uid"], target: ["recurrence_parent_uid"] },
       { source: [], target: ["recurrence_index"], transform: "0-based index within the rule's expanded sequence" },
-      { source: [], target: ["date"], transform: "RRULE-expanded YYYY-MM-DD for this occurrence" },
+      { source: [], target: ["dates", "start"], transform: "RRULE-expanded calendar day, materialized at 09:00 America/Chicago" },
       { source: ["uid_list"], target: ["uid_list"] },
       { source: ["prototype", "subject"], target: ["subject"] },
       { source: ["prototype", "body"], target: ["body"] },
@@ -73,7 +73,7 @@ export const materializeHorizonRules: CollectionRule[] = [
     fields: [
       { source: ["uid"], target: ["recurrence_parent_uid"] },
       { source: [], target: ["recurrence_index"], transform: "continues the index sequence past the previous horizon" },
-      { source: [], target: ["date"], transform: "RRULE-expanded YYYY-MM-DD within the new horizon slice" },
+      { source: [], target: ["dates", "start"], transform: "RRULE-expanded calendar day within the new horizon slice, materialized at 09:00 America/Chicago" },
       { source: ["prototype"], target: [], transform: "prototype fields fanned identically to create-recurrence:fan-out-cards" },
     ],
   },
@@ -108,11 +108,11 @@ export const updateRecurrenceRules: CollectionRule[] = [
     target: "cards",
     mode: "fan-out",
     invariant:
-      "When a recurrence's `rule` or `active_from` / `active_until` changes, future instance cards (date >= today) are deleted and re-materialized against the new rule. Past instances are preserved — history is not rewritten. Overridden cards are skipped to respect user edits.",
+      "When a recurrence's `rule` or `active_from` / `active_until` changes, future instance cards (Chicago calendar day of dates.start >= today) are deleted and re-materialized against the new rule. Past instances are preserved — history is not rewritten. Overridden cards are skipped to respect user edits.",
     transaction: "update-recurrence",
     trigger: "onUpdate:recurrences",
     fields: [
-      { source: ["rule"], target: [], transform: "delete cards where date >= today AND recurrence_overrides is empty, then RRULE-expand the new rule across [today, horizon_through]" },
+      { source: ["rule"], target: [], transform: "delete cards where Chicago calendar day of dates.start >= today AND recurrence_overrides is empty, then RRULE-expand the new rule across [today, horizon_through]" },
     ],
   },
 ];
@@ -161,10 +161,10 @@ export const updateCardScopeFollowingRules: CollectionRule[] = [
     target: "cards",
     mode: "fan-out",
     invariant:
-      "`PATCH /cards/{uid}?recurrence_scope=following` applies the edit to the target card plus every sibling card in the same series (recurrence_parent_uid matches) with a date >= the target card's date. Siblings' own `recurrence_overrides` still block per-field updates.",
+      "`PATCH /cards/{uid}?recurrence_scope=following` applies the edit to the target card plus every sibling card in the same series (recurrence_parent_uid matches) with `dates.start >= target.dates.start` (instant-level comparison). Siblings' own `recurrence_overrides` still block per-field updates.",
     transaction: "update-card-scope-following",
     fields: [
-      { source: [], target: [], transform: "for each patched field: update siblings where recurrence_parent_uid == source.recurrence_parent_uid AND date >= source.date AND field ∉ sibling.recurrence_overrides" },
+      { source: [], target: [], transform: "for each patched field: update siblings where recurrence_parent_uid == source.recurrence_parent_uid AND dates.start >= source.dates.start AND field ∉ sibling.recurrence_overrides" },
     ],
   },
 ];
@@ -224,10 +224,10 @@ export const deleteCardScopeThisRules: CollectionRule[] = [
     target: "recurrences",
     mode: "derive",
     invariant:
-      "`DELETE /cards/{uid}?recurrence_scope=this` deletes the single card and appends its `date` to the parent recurrence's `exception_dates[]` so the nightly materializer never resurrects that occurrence.",
+      "`DELETE /cards/{uid}?recurrence_scope=this` deletes the single card and appends the Chicago calendar day of its `dates.start` to the parent recurrence's `exception_dates[]` (YYYY-MM-DD strings) so the nightly materializer never resurrects that occurrence.",
     transaction: "delete-card-scope-this",
     fields: [
-      { source: ["date"], target: ["exception_dates"], transform: "append card.date to recurrences/{card.recurrence_parent_uid}.exception_dates" },
+      { source: ["dates", "start"], target: ["exception_dates"], transform: "append Chicago-tz YYYY-MM-DD of card.dates.start to recurrences/{card.recurrence_parent_uid}.exception_dates" },
     ],
   },
 ];
@@ -248,10 +248,10 @@ export const deleteCardScopeFollowingRules: CollectionRule[] = [
     target: "cards",
     mode: "fan-out",
     invariant:
-      "`DELETE /cards/{uid}?recurrence_scope=following` deletes the target card plus every sibling with date >= target.date. Each card's own thread + comments cascade fires per-card.",
+      "`DELETE /cards/{uid}?recurrence_scope=following` deletes the target card plus every sibling with `dates.start >= target.dates.start` (instant-level comparison). Each card's own thread + comments cascade fires per-card.",
     transaction: "delete-card-scope-following",
     fields: [
-      { source: ["uid"], target: [], transform: "delete cards where recurrence_parent_uid == source.recurrence_parent_uid AND date >= source.date" },
+      { source: ["uid"], target: [], transform: "delete cards where recurrence_parent_uid == source.recurrence_parent_uid AND dates.start >= source.dates.start" },
     ],
   },
   {
@@ -260,10 +260,10 @@ export const deleteCardScopeFollowingRules: CollectionRule[] = [
     target: "recurrences",
     mode: "derive",
     invariant:
-      "After deleting the tail of a series, the parent recurrence's `active_until` is truncated to the day before the deleted card's date so the nightly materializer cannot re-extend the series past that point.",
+      "After deleting the tail of a series, the parent recurrence's `active_until` is truncated to the Chicago calendar day before the deleted card's dates.start so the nightly materializer cannot re-extend the series past that point.",
     transaction: "delete-card-scope-following",
     fields: [
-      { source: ["date"], target: ["active_until"], transform: "set recurrences/{source.recurrence_parent_uid}.active_until = source.date - 1 day" },
+      { source: ["dates", "start"], target: ["active_until"], transform: "set recurrences/{source.recurrence_parent_uid}.active_until = (Chicago-tz YYYY-MM-DD of source.dates.start) - 1 day" },
     ],
   },
 ];

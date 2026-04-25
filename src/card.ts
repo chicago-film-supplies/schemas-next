@@ -25,6 +25,7 @@
  *   when the parent recurrence's prototype updates fan out to siblings.
  */
 import { z } from "zod";
+import { chicagoInstant } from "./_datetime.ts";
 import {
   ActorRef,
   type ActorRefType,
@@ -64,7 +65,7 @@ const CARD_LOCK_KEYS = [
   "subject",
   "body",
   "body_text",
-  "date",
+  "dates",
   "destination",
   "sources",
   "attachments",
@@ -107,6 +108,18 @@ export const CardAttachment: z.ZodType<CardAttachmentType> = z.strictObject({
 
 // ── Firestore document ──────────────────────────────────────────────
 
+/**
+ * Card datetime range. `start` is the canonical occurrence instant — Chicago
+ * offset form, idempotent through `chicagoInstant()`. `end` carries the
+ * occurrence's wall-clock close (deliveries with start + end times); `null`
+ * means single-instant or all-day. `start` is nullable so cards without a
+ * date (generic to-dos, shopping items) stay valid.
+ */
+export interface CardDatesType {
+  start: string | null;
+  end: string | null;
+}
+
 /** Card Firestore document shape. */
 export interface Card {
   uid: string;
@@ -117,7 +130,8 @@ export interface Card {
   subject: string;
   body: CommentBodyJson | null;
   body_text: string;
-  date: string | null;
+  dates: CardDatesType;
+  all_day: boolean;
   date_fs: FirestoreTimestampType | null;
   destination: DocDestinationEndpointType | null;
   sources: DocSourceType[];
@@ -134,6 +148,12 @@ export interface Card {
   updated_at?: FirestoreTimestampType;
 }
 
+/** Zod schema for the card dates sub-object. */
+export const CardDates: z.ZodType<CardDatesType> = z.strictObject({
+  start: chicagoInstant().nullable().default(null),
+  end: chicagoInstant().nullable().default(null),
+});
+
 /** Zod schema for a card Firestore document. */
 export const CardSchema: z.ZodType<Card> = z.strictObject({
   uid: z.string(),
@@ -144,7 +164,8 @@ export const CardSchema: z.ZodType<Card> = z.strictObject({
   subject: z.string().max(200).meta({ pii: "mask" }).default(""),
   body: CommentBody.nullable(),
   body_text: z.string().max(20000).meta({ pii: "mask" }).default(""),
-  date: z.iso.date().nullable(),
+  dates: CardDates,
+  all_day: z.boolean().default(false),
   date_fs: FirestoreTimestamp.nullable(),
   destination: DocDestinationEndpoint.nullable(),
   sources: z.array(DocSource).default([]),
@@ -162,14 +183,14 @@ export const CardSchema: z.ZodType<Card> = z.strictObject({
   title: "Card",
   collection: "cards",
   displayDefaults: {
-    columns: ["subject", "status", "date", "position", "created_by.name"],
+    columns: ["subject", "status", "dates.start", "created_by.name"],
     filters: { status: [] },
     sort: { column: "position", direction: "asc" },
     groupBy: [
       { field: null, label: "None" },
       { field: "uid_list", label: "List", kind: "collectionFeed", collection: "lists" },
       { field: "status", label: "Status", kind: "enum" },
-      { field: "date", label: "Date", kind: "dateBucket" },
+      { field: "dates.start", label: "Date", kind: "dateBucket" },
     ],
   },
 });
@@ -184,7 +205,8 @@ export interface CreateCardInputType {
   position?: number;
   body?: CommentBodyJson | null;
   body_text?: string;
-  date?: string | null;
+  dates?: CardDatesType;
+  all_day?: boolean;
   destination?: DocDestinationEndpointType | null;
   sources?: DocSourceType[];
   attachments?: CardAttachmentType[];
@@ -200,7 +222,8 @@ export const CreateCardInput: z.ZodType<CreateCardInputType> = z.object({
   position: z.number().optional(),
   body: CommentBody.nullable().optional(),
   body_text: z.string().max(20000).meta({ pii: "mask" }).optional(),
-  date: z.iso.date().nullable().optional(),
+  dates: CardDates.optional(),
+  all_day: z.boolean().optional(),
   destination: DocDestinationEndpoint.nullable().optional(),
   sources: z.array(DocSource).optional(),
   attachments: z.array(CardAttachment).optional(),
@@ -216,7 +239,8 @@ export interface UpdateCardInputType {
   subject?: string;
   body?: CommentBodyJson | null;
   body_text?: string;
-  date?: string | null;
+  dates?: CardDatesType;
+  all_day?: boolean;
   destination?: DocDestinationEndpointType | null;
   sources?: DocSourceType[];
   attachments?: CardAttachmentType[];
@@ -236,7 +260,8 @@ export const UpdateCardInput: z.ZodType<UpdateCardInputType> = z.object({
   subject: z.string().min(1).max(200).meta({ pii: "mask" }).optional(),
   body: CommentBody.nullable().optional(),
   body_text: z.string().max(20000).meta({ pii: "mask" }).optional(),
-  date: z.iso.date().nullable().optional(),
+  dates: CardDates.optional(),
+  all_day: z.boolean().optional(),
   destination: DocDestinationEndpoint.nullable().optional(),
   sources: z.array(DocSource).optional(),
   attachments: z.array(CardAttachment).optional(),
