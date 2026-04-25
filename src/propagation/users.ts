@@ -58,6 +58,7 @@ export const updateUserRules: CollectionRule[] = [
       { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["updated_by", "name"], transform: "same formula as created_by.name" },
       { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["deleted_by", "name"], transform: "same formula as created_by.name; only where deleted_by is non-null" },
       { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["pdf_versions", "created_by", "name"], transform: "invoices-only — rewrite the name on matching pdf_versions[].created_by entries" },
+      { source: ["first_name", "middle_name", "last_name", "pronunciation"], target: ["reactions", "name"], transform: "comments-only — rewrite the name on every reactions[emoji][uid] entry where uid matches the renamed user" },
     ],
   },
 ];

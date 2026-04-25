@@ -42,7 +42,7 @@ export interface Comment {
   sources: DocSourceType[];
   body: CommentBodyJson;
   body_text: string;
-  reactions: Record<string, string[]>;
+  reactions: Record<string, Record<string, ActorRefType>>;
   version: number;
   created_by: ActorRefType;
   deleted_at: FirestoreTimestampType | null;
@@ -59,7 +59,7 @@ export const CommentSchema: z.ZodType<Comment> = z.strictObject({
   sources: z.array(DocSource).min(1),
   body: CommentBody,
   body_text: z.string().meta({ pii: "mask" }).default(""),
-  reactions: z.record(z.string(), z.array(z.string())).default({}),
+  reactions: z.record(z.string(), z.record(z.string(), ActorRef)).default({}),
   version: z.int().min(0).default(0),
   created_by: ActorRef,
   deleted_at: FirestoreTimestamp.nullable(),

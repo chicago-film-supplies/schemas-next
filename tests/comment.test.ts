@@ -31,8 +31,21 @@ Deno.test("CommentSchema validates a complete comment", () => {
 });
 
 Deno.test("CommentSchema accepts reactions map", () => {
-  const doc = { ...validComment, reactions: { "👍": ["user-1", "user-2"] } };
+  const doc = {
+    ...validComment,
+    reactions: {
+      "👍": {
+        "user-1": { uid: "user-1", name: "Alex" },
+        "user-2": { uid: "user-2", name: "Bob" },
+      },
+    },
+  };
   assertEquals(CommentSchema.safeParse(doc).success, true);
+});
+
+Deno.test("CommentSchema rejects legacy uid-array reactions", () => {
+  const doc = { ...validComment, reactions: { "👍": ["user-1", "user-2"] } };
+  assertEquals(CommentSchema.safeParse(doc).success, false);
 });
 
 Deno.test("CommentSchema rejects empty sources array", () => {
