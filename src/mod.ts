@@ -234,6 +234,7 @@ export {
 export {
   LogRecordSchema,
   PropagationLogRecordSchema,
+  TransactionLogRecordSchema,
   ClientLogEntrySchema,
   ClientLogBatchSchema,
   type LogRecord,
@@ -242,6 +243,8 @@ export {
   type PropagationLogRecord,
   type PropagationModeType,
   type PropagationStatusType,
+  type TransactionLogRecord,
+  type TransactionStatusType,
   type ClientLogEntry,
   type ClientLogBatch,
   type ClientAppType,
@@ -428,7 +431,9 @@ export {
 
 export {
   BookingSchema,
+  BookingBreakdownSchema,
   type Booking,
+  type BookingBreakdown,
   type BookingDestinationRef,
   type BookingStore,
   type BookingStoreLocation,
@@ -520,6 +525,7 @@ export {
 export {
   StockSummarySchema,
   type StockSummary,
+  type StockSummaryBookingEntry,
 } from "./stock-summary.ts";
 
 export {

@@ -24,6 +24,28 @@ export interface BookingDestinationRef {
   address: AddressType | null;
 }
 
+/** Per-status quantity breakdown for a booking — also embedded in stock-summary entries. */
+export interface BookingBreakdown {
+  damaged: number;
+  lost: number;
+  out: number;
+  prepped: number;
+  quoted: number;
+  reserved: number;
+  returned: number;
+}
+
+/** Zod schema for BookingBreakdown. */
+export const BookingBreakdownSchema: z.ZodType<BookingBreakdown> = z.strictObject({
+  damaged: z.number(),
+  lost: z.number(),
+  out: z.number(),
+  prepped: z.number(),
+  quoted: z.number(),
+  reserved: z.number(),
+  returned: z.number(),
+});
+
 /** A specific location within a store allocated for a booking. */
 export interface BookingStoreLocation {
   uid_location: string;
@@ -57,15 +79,7 @@ export interface Booking {
   total_price: number;
   crms_id?: number | null;
   crms_product_id?: number | null;
-  breakdown: {
-    damaged: number;
-    lost: number;
-    out: number;
-    prepped: number;
-    quoted: number;
-    reserved: number;
-    returned: number;
-  };
+  breakdown: BookingBreakdown;
   dates: {
     start: string | null;
     start_fs: FirestoreTimestampType | null;
@@ -164,15 +178,7 @@ export const BookingSchema: z.ZodType<Booking> = z.strictObject({
   // crms_id and crms_product_id are written back post-transaction by CRMS sync
   crms_id: z.number().nullable().optional(),
   crms_product_id: z.number().nullable().optional(),
-  breakdown: z.strictObject({
-    damaged: z.number(),
-    lost: z.number(),
-    out: z.number(),
-    prepped: z.number(),
-    quoted: z.number(),
-    reserved: z.number(),
-    returned: z.number(),
-  }),
+  breakdown: BookingBreakdownSchema,
   dates: z.strictObject({
     start: chicagoInstant().meta({ serverSortVia: "dates.start_fs" }).nullable(),
     start_fs: FirestoreTimestamp.nullable(),
