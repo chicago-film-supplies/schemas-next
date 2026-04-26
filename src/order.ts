@@ -30,11 +30,53 @@ import {
   TimestampFields,
 } from "./common.ts";
 
-const ORDER_STATUSES = [
+export const ORDER_STATUSES = [
   "draft", "quoted", "reserved", "active", "complete", "canceled",
 ] as const;
-type OrderStatusType = typeof ORDER_STATUSES[number];
+export type OrderStatusType = typeof ORDER_STATUSES[number];
 const OrderStatus: z.ZodType<OrderStatusType> = z.enum(ORDER_STATUSES);
+
+/**
+ * Statuses an operator may set directly via UpdateOrderInput.status.
+ * `active` and `complete` are computed by the booking workflow and are
+ * never accepted from a manual write.
+ */
+export const ORDER_USER_STATUSES = ["draft", "quoted", "reserved", "canceled"] as const;
+export type OrderUserStatusType = typeof ORDER_USER_STATUSES[number];
+
+/**
+ * Statuses derived from booking state — set only by the API's booking write
+ * path (reserved → active when a booking moves quantity into out;
+ * active → complete when every quantity has reached a terminal state).
+ */
+export const ORDER_COMPUTED_STATUSES = ["active", "complete"] as const;
+export type OrderComputedStatusType = typeof ORDER_COMPUTED_STATUSES[number];
+
+/**
+ * The statuses an operator can move to from the given current status.
+ * Returns an empty list for computed statuses (`active`, `complete`) and
+ * filters the current status out of the user-settable set.
+ */
+export function getOrderStatusTransitions(current: OrderStatusType): OrderUserStatusType[] {
+  if ((ORDER_COMPUTED_STATUSES as readonly string[]).includes(current)) return [];
+  return ORDER_USER_STATUSES.filter((s) => s !== current);
+}
+
+/**
+ * Server-side gate for an order status write. `source: "manual"` rejects
+ * writes that move into a computed status or out of a computed status into
+ * anything other than the same value (no-op). `source: "propagation"`
+ * trusts the booking write path that sets `active` or `complete`.
+ */
+export function isValidOrderStatusTransition(
+  prev: OrderStatusType,
+  next: OrderStatusType,
+  source: "manual" | "propagation",
+): boolean {
+  if (prev === next) return true;
+  if (source === "propagation") return true;
+  return (getOrderStatusTransitions(prev) as readonly string[]).includes(next);
+}
 
 // Item type constants imported from common.ts:
 // DocItemTypeType / DocItemTypeEnum — all types including structural dividers (input schemas)

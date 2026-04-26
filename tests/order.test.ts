@@ -789,3 +789,55 @@ Deno.test("OrderSchema accepts valid inclusion_type values", () => {
     assertEquals(OrderSchema.safeParse(doc).success, true, `inclusion_type "${val}" should be valid`);
   }
 });
+
+// ── Status transition helpers ────────────────────────────────────
+
+import {
+  getOrderStatusTransitions,
+  isValidOrderStatusTransition,
+  ORDER_USER_STATUSES,
+  ORDER_COMPUTED_STATUSES,
+} from "../src/order.ts";
+
+Deno.test("getOrderStatusTransitions returns the other user statuses for a user status", () => {
+  assertEquals(getOrderStatusTransitions("draft"), ["quoted", "reserved", "canceled"]);
+  assertEquals(getOrderStatusTransitions("quoted"), ["draft", "reserved", "canceled"]);
+  assertEquals(getOrderStatusTransitions("reserved"), ["draft", "quoted", "canceled"]);
+  assertEquals(getOrderStatusTransitions("canceled"), ["draft", "quoted", "reserved"]);
+});
+
+Deno.test("getOrderStatusTransitions returns [] for computed statuses", () => {
+  for (const s of ORDER_COMPUTED_STATUSES) {
+    assertEquals(getOrderStatusTransitions(s), [], `expected no manual transitions out of "${s}"`);
+  }
+});
+
+Deno.test("isValidOrderStatusTransition accepts no-op writes", () => {
+  for (const s of [...ORDER_USER_STATUSES, ...ORDER_COMPUTED_STATUSES]) {
+    assertEquals(isValidOrderStatusTransition(s, s, "manual"), true, `same-status no-op for "${s}"`);
+  }
+});
+
+Deno.test("isValidOrderStatusTransition rejects manual writes into computed statuses", () => {
+  assertEquals(isValidOrderStatusTransition("reserved", "active", "manual"), false);
+  assertEquals(isValidOrderStatusTransition("draft", "active", "manual"), false);
+  assertEquals(isValidOrderStatusTransition("quoted", "complete", "manual"), false);
+});
+
+Deno.test("isValidOrderStatusTransition rejects manual writes out of computed statuses", () => {
+  assertEquals(isValidOrderStatusTransition("active", "reserved", "manual"), false);
+  assertEquals(isValidOrderStatusTransition("complete", "draft", "manual"), false);
+  assertEquals(isValidOrderStatusTransition("complete", "canceled", "manual"), false);
+});
+
+Deno.test("isValidOrderStatusTransition allows propagation writes into computed statuses", () => {
+  assertEquals(isValidOrderStatusTransition("reserved", "active", "propagation"), true);
+  assertEquals(isValidOrderStatusTransition("active", "complete", "propagation"), true);
+  assertEquals(isValidOrderStatusTransition("reserved", "complete", "propagation"), true);
+});
+
+Deno.test("isValidOrderStatusTransition allows manual transitions between user statuses", () => {
+  assertEquals(isValidOrderStatusTransition("draft", "quoted", "manual"), true);
+  assertEquals(isValidOrderStatusTransition("quoted", "reserved", "manual"), true);
+  assertEquals(isValidOrderStatusTransition("reserved", "canceled", "manual"), true);
+});

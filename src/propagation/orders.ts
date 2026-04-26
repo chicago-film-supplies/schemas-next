@@ -425,11 +425,11 @@ export const updateBookingRules: CollectionRule[] = [
     source: "bookings",
     target: "orders",
     mode: "co-write",
-    invariant: "Every booking update applies a delta to order.bookings_breakdown ('+= next.breakdown[k] - prev.breakdown[k]' for each key). When bookings_breakdown.quoted + reserved + prepped + out === 0 after the delta (i.e. every quantity has reached a terminal state), order.status is set to 'complete' in the same transaction. Single order read + write per booking PUT — no sibling-bookings query.",
+    invariant: "Every booking update applies a delta to order.bookings_breakdown ('+= next.breakdown[k] - prev.breakdown[k]' for each key). Same transaction may also flip order.status: (a) reserved → active when the post-delta bookings_breakdown.out > 0 and order.status === 'reserved' (one-way; out returning to 0 does NOT revert to reserved), (b) active/reserved → complete when bookings_breakdown.quoted + reserved + prepped + out === 0 (every quantity has reached a terminal state). Single order read + write per booking PUT — no sibling-bookings query.",
     transaction: "update-booking",
     fields: [
       { source: ["breakdown"], target: ["bookings_breakdown"], transform: "delta-applied roll-up across all bookings on this order" },
-      { source: [], target: ["status"], transform: "set to 'complete' iff bookings_breakdown.quoted + reserved + prepped + out === 0" },
+      { source: [], target: ["status"], transform: "complete iff bookings_breakdown.{quoted,reserved,prepped,out} === 0; else active iff bookings_breakdown.out > 0 and prev status === 'reserved'" },
     ],
   },
 ];

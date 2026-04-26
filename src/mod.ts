@@ -142,6 +142,14 @@ export {
   isLineItem,
   type ConsolidatedItemType,
   type GroupPathType,
+  ORDER_STATUSES,
+  type OrderStatusType,
+  ORDER_USER_STATUSES,
+  type OrderUserStatusType,
+  ORDER_COMPUTED_STATUSES,
+  type OrderComputedStatusType,
+  getOrderStatusTransitions,
+  isValidOrderStatusTransition,
 } from "./order.ts";
 
 export {
