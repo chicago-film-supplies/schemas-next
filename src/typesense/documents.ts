@@ -276,8 +276,8 @@ export interface OrderDocument {
   crms_id_str?: string;
   status: string;
   tax_profile: string;
-  customer_collecting?: boolean;
-  customer_returning?: boolean;
+  deliveries?: boolean;
+  pickups?: boolean;
   subject?: string;
   reference?: string;
   crms_status?: string;
@@ -386,8 +386,8 @@ export interface OrderWarehouseDocument {
   number: number;
   number_str?: string;
   status: string;
-  customer_collecting?: boolean;
-  customer_returning?: boolean;
+  deliveries?: boolean;
+  pickups?: boolean;
   subject?: string;
   reference?: string;
   organization: {

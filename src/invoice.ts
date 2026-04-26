@@ -224,6 +224,8 @@ export const InvoiceDocDestination: z.ZodType<InvoiceDocDestinationType> = z.str
   uid_order: z.string(),
   delivery: DocDestinationEndpoint,
   collection: DocDestinationEndpoint,
+  customer_collecting: z.boolean().default(false),
+  customer_returning: z.boolean().default(false),
 });
 
 // ── Document schema ──────────────────────────────────────────────

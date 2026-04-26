@@ -133,8 +133,6 @@ export interface OrderWarehouse {
   items: OrderWarehouseItemType[];
   subject: string;
   reference: string | null;
-  customer_collecting: boolean;
-  customer_returning: boolean;
   query_by_items: string[];
   query_by_contacts: string[];
   created_at?: FirestoreTimestampType;
@@ -151,8 +149,6 @@ export const OrderWarehouseSchema: z.ZodType<OrderWarehouse> = z.strictObject({
   items: z.array(OrderWarehouseItem).default([]),
   subject: z.string().default(""),
   reference: z.string().max(255).nullable().default(null),
-  customer_collecting: z.boolean().default(false),
-  customer_returning: z.boolean().default(false),
   query_by_items: z.array(z.string()).default([]),
   query_by_contacts: z.array(z.string()).default([]),
   ...TimestampFields,

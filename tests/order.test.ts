@@ -172,6 +172,33 @@ Deno.test("CreateOrderInput rejects destination contact missing uid", () => {
   assertEquals(CreateOrderInput.safeParse(input).success, false);
 });
 
+Deno.test("CreateOrderInput accepts per-pair customer_collecting/returning", () => {
+  const input = {
+    uid: "test-order-1",
+    organization: { uid: "test-org-1" },
+    status: "draft",
+    dates: validDates,
+    tax_profile: "tax_applied",
+    destinations: [
+      { ...validDestination, customer_collecting: true, customer_returning: false },
+      { ...validDestination, customer_collecting: false, customer_returning: true },
+    ],
+  };
+  assertEquals(CreateOrderInput.safeParse(input).success, true);
+});
+
+Deno.test("DocDestination defaults customer_collecting/returning to false", () => {
+  const result = DocDestination.safeParse({
+    delivery: { uid: null, address: null, instructions: null, contact: null },
+    collection: { uid: null, address: null, instructions: null, contact: null },
+  });
+  assertEquals(result.success, true);
+  if (result.success) {
+    assertEquals(result.data.customer_collecting, false);
+    assertEquals(result.data.customer_returning, false);
+  }
+});
+
 Deno.test("CreateOrderInput rejects invalid item inclusion_type", () => {
   const input = {
     uid: "test-order-1",
@@ -445,8 +472,6 @@ Deno.test("OrderSchema validates a complete document", () => {
     crms_status: "active",
     subject: "Film shoot",
     reference: "PO-123",
-    customer_collecting: true,
-    customer_returning: false,
   };
   assertEquals(OrderSchema.safeParse(doc).success, true);
 });

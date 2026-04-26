@@ -183,30 +183,43 @@ export const DocDestinationEndpoint: z.ZodType<DocDestinationEndpointType> = z.s
 
 /**
  * A destination pair — delivery and collection endpoints.
+ *
+ * `customer_collecting` is true when the customer picks up the items at our
+ * warehouse for the delivery side of this pair. `customer_returning` is true
+ * when the customer drops the items off at our warehouse for the collection
+ * side. Both default to false (we deliver / we collect).
  */
 export interface DestinationType {
   delivery: DestinationEndpointType;
   collection: DestinationEndpointType;
+  customer_collecting?: boolean;
+  customer_returning?: boolean;
 }
 
 /** Zod schema for a destination pair. */
 export const Destination: z.ZodType<DestinationType> = z.object({
   delivery: DestinationEndpoint,
   collection: DestinationEndpoint,
+  customer_collecting: z.boolean().optional(),
+  customer_returning: z.boolean().optional(),
 });
 
 /**
- * Document-level destination pair.
+ * Document-level destination pair. See `DestinationType` for flag semantics.
  */
 export interface DocDestinationType {
   delivery: DocDestinationEndpointType;
   collection: DocDestinationEndpointType;
+  customer_collecting: boolean;
+  customer_returning: boolean;
 }
 
 /** Zod schema for a document-level destination pair. */
 export const DocDestination: z.ZodType<DocDestinationType> = z.strictObject({
   delivery: DocDestinationEndpoint,
   collection: DocDestinationEndpoint,
+  customer_collecting: z.boolean().default(false),
+  customer_returning: z.boolean().default(false),
 });
 
 // ── Shared modifier types ─────────────────────────────────────────
@@ -359,8 +372,6 @@ export interface CreateOrderInputType {
   items?: OrderItemType[];
   subject?: string;
   reference?: string | null;
-  customer_collecting?: boolean;
-  customer_returning?: boolean;
 }
 
 /** Input schema for creating an order. */
@@ -379,8 +390,6 @@ export const CreateOrderInput: z.ZodType<CreateOrderInputType> = z.object({
     .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  customer_collecting: z.boolean().optional(),
-  customer_returning: z.boolean().optional(),
 });
 
 /**
@@ -396,8 +405,6 @@ export interface UpdateOrderInputType {
   items?: OrderItemType[];
   subject?: string;
   reference?: string | null;
-  customer_collecting?: boolean;
-  customer_returning?: boolean;
   version: number;
 }
 
@@ -417,8 +424,6 @@ export const UpdateOrderInput: z.ZodType<UpdateOrderInputType> = z.object({
     .optional(),
   subject: z.string().optional(),
   reference: z.string().nullable().optional(),
-  customer_collecting: z.boolean().optional(),
-  customer_returning: z.boolean().optional(),
   version: z.int().min(0),
 });
 
@@ -689,8 +694,6 @@ export interface Order {
   crms_status?: string;
   subject?: string;
   reference?: string | null;
-  customer_collecting?: boolean;
-  customer_returning?: boolean;
   defaultThreadId?: string;
   version: number;
   created_at?: FirestoreTimestampType;
@@ -725,8 +728,6 @@ export const OrderSchema: z.ZodType<Order> = z.strictObject({
   crms_status: z.string().optional(),
   subject: z.string().default(""),
   reference: z.string().max(255).nullable().default(null),
-  customer_collecting: z.boolean().default(false),
-  customer_returning: z.boolean().default(false),
   defaultThreadId: z.string().optional(),
   version: z.int().min(0).default(0),
   ...TimestampFields,

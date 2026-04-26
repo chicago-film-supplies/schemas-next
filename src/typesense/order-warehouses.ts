@@ -12,19 +12,19 @@ import { typesenseAddressFields } from "./types.ts";
  */
 export const orderWarehouses: TypesenseCollectionConfig = {
   alias: "order-warehouses",
-  version: 2,
+  version: 3,
   firestoreCollection: "order-warehouses",
-  collectionName: "order-warehouses_v2",
+  collectionName: "order-warehouses_v3",
   schema: {
-    name: "order-warehouses_v2",
+    name: "order-warehouses_v3",
     enable_nested_fields: true,
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "number", type: "int64", sort: true, index: true, facet: false },
       { name: "number_str", type: "string", index: true, sort: false, facet: false, optional: true },
       { name: "status", type: "string", facet: true },
-      { name: "customer_collecting", type: "bool", facet: true, optional: true },
-      { name: "customer_returning", type: "bool", facet: true, optional: true },
+      { name: "deliveries", type: "bool", facet: true, optional: true },
+      { name: "pickups", type: "bool", facet: true, optional: true },
       { name: "subject", type: "string", sort: true, stem: true, optional: true },
       { name: "reference", type: "string", stem: true, sort: true, optional: true },
       { name: "organization", type: "object" },
