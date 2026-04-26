@@ -188,6 +188,8 @@ export {
   ActorRef,
   NamePartsFields,
   NamePartsFieldsPartial,
+  NameField,
+  deriveName,
   ProductTypeEnum,
   StockMethodEnum,
   TaxProfileEnum,

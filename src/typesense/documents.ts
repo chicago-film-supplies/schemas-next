@@ -140,6 +140,7 @@ export interface CommentDocument {
 export interface ContactDocument {
   id: string;
   uid: string;
+  name: string;
   first_name: string;
   middle_name?: string;
   last_name?: string;
@@ -176,6 +177,7 @@ export interface DestinationDocument {
   }>;
   contacts?: Array<{
     uid?: string;
+    name?: string;
     first_name?: string;
     middle_name?: string;
     last_name?: string;
@@ -309,6 +311,7 @@ export interface OrderDocument {
       instructions?: string;
       contact?: {
         uid?: string;
+        name?: string;
         first_name?: string;
         middle_name?: string;
         last_name?: string;
@@ -321,6 +324,7 @@ export interface OrderDocument {
       instructions?: string;
       contact?: {
         uid?: string;
+        name?: string;
         first_name?: string;
         middle_name?: string;
         last_name?: string;
@@ -405,6 +409,7 @@ export interface OrderWarehouseDocument {
       instructions?: string;
       contact?: {
         uid?: string;
+        name?: string;
         first_name?: string;
         middle_name?: string;
         last_name?: string;
@@ -417,6 +422,7 @@ export interface OrderWarehouseDocument {
       instructions?: string;
       contact?: {
         uid?: string;
+        name?: string;
         first_name?: string;
         middle_name?: string;
         last_name?: string;
@@ -717,6 +723,7 @@ export interface UserDocument {
   id: string;
   uid: string;
   email: string;
+  name: string;
   first_name: string;
   middle_name?: string;
   last_name?: string;

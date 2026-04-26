@@ -6,6 +6,7 @@ import {
   Address,
   type AddressType,
   type FirestoreTimestampType,
+  NameField,
   type NameParts,
   NamePartsFields,
   TimestampFields,
@@ -18,16 +19,19 @@ import {
  *
  * Mirrors the split-name shape used in `organizations.contacts[]` so that the
  * Typesense `destinations_v5` collection can index the same `first_name /
- * middle_name / last_name / pronunciation` fields without an adapter.
+ * middle_name / last_name / pronunciation` fields without an adapter. `name`
+ * is the server-derived display string (see `deriveName` in common.ts).
  */
 export interface DestinationContactRefType extends NameParts {
   uid: string;
+  name: string;
 }
 
 /** Zod schema for a contact reference embedded in a destination. */
 export const DestinationContactRef: z.ZodType<DestinationContactRefType> = z.strictObject({
   uid: z.string(),
   ...NamePartsFields,
+  name: NameField,
 });
 
 /** Full Firestore document for a destination (a physical address used in orders). */

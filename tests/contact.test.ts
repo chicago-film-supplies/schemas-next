@@ -12,6 +12,7 @@ Deno.test("ContactSchema validates a complete contact document", () => {
     uid: "test-abc-123",
     first_name: "John",
     last_name: "Doe",
+    name: "John Doe",
     emails: ["john@example.com"],
     phones: ["1234567890"],
     organizations: [{ uid: "test-org-1", name: "Acme" }],
@@ -26,6 +27,7 @@ Deno.test("ContactSchema accepts contact without last_name", () => {
   const doc = {
     uid: "test-abc-123",
     first_name: "John",
+    name: "John",
     emails: [],
     phones: [],
     organizations: [],
@@ -74,6 +76,7 @@ Deno.test("ContactSchema allows optional crms_id", () => {
   const doc = {
     uid: "test-abc-123",
     first_name: "John",
+    name: "John",
     crms_id: 42,
     emails: [],
     phones: [],
@@ -119,6 +122,7 @@ Deno.test("ContactSchema accepts middle_name and pronunciation", () => {
     middle_name: "Quincy",
     last_name: "Doe",
     pronunciation: "JON QUIN-see DOH",
+    name: "John Quincy Doe (JON QUIN-see DOH)",
     emails: [],
     phones: [],
     organizations: [],

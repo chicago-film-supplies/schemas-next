@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   Email,
   type FirestoreTimestampType,
+  NameField,
   type NameParts,
   NamePartsFields,
   NamePartsFieldsPartial,
@@ -61,6 +62,7 @@ const TypesenseDisplayPrefsSchema: z.ZodType<TypesenseDisplayPrefs> = z.strictOb
 export interface User extends NameParts {
   uid: string;
   email: string;
+  name: string;
   password_hash: string;
   email_verified: boolean;
   uid_contact?: string | null;
@@ -79,6 +81,7 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   uid: z.string(),
   email: Email,
   ...NamePartsFields,
+  name: NameField,
   password_hash: z.string().min(1).meta({ pii: "redact" }),
   email_verified: z.boolean().default(false),
   uid_contact: z.string().nullable().optional(),
@@ -93,9 +96,9 @@ export const UserSchema: z.ZodType<User> = z.strictObject({
   title: "User",
   collection: "users",
   displayDefaults: {
-    columns: ["email", "first_name", "last_name", "roles"],
+    columns: ["email", "name", "roles"],
     filters: {},
-    sort: { column: "email", direction: "asc" },
+    sort: { column: "name", direction: "asc" },
   },
 });
 

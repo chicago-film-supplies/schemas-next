@@ -27,6 +27,7 @@ import {
   type InvoiceStatusType,
   InvoiceStatusEnum,
   type TaxProfileType,
+  NameField,
   TimestampFields,
 } from "./common.ts";
 
@@ -109,10 +110,13 @@ export const OrderDates: z.ZodType<OrderDatesType> = z.object({
 
 /**
  * Contact reference embedded in a destination endpoint.
- * When present (not null), uid and first_name are required.
+ * When present (not null), uid and first_name are required. `name` is the
+ * server-derived display string (see `deriveName` in common.ts) — populated
+ * by api-cloudrun on every write so consumers don't re-derive client-side.
  */
 export interface DestinationContactType extends NameParts {
   uid: string;
+  name: string;
   phones?: string[];
 }
 
@@ -120,6 +124,7 @@ export interface DestinationContactType extends NameParts {
 export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
   uid: z.string(),
   ...NamePartsFields,
+  name: NameField,
   phones: z.array(Phone).optional(),
 });
 
@@ -128,6 +133,7 @@ export const DestinationContact: z.ZodType<DestinationContactType> = z.object({
  */
 export interface DocDestinationContactType extends NameParts {
   uid: string;
+  name: string;
   phones?: string[];
 }
 
@@ -135,6 +141,7 @@ export interface DocDestinationContactType extends NameParts {
 export const DocDestinationContact: z.ZodType<DocDestinationContactType> = z.strictObject({
   uid: z.string(),
   ...NamePartsFields,
+  name: NameField,
   phones: z.array(Phone).default([]),
 });
 

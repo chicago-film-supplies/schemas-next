@@ -3,15 +3,16 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 /** Typesense collection config for contacts. */
 export const contacts: TypesenseCollectionConfig = {
   alias: "contacts",
-  version: 7,
+  version: 8,
   firestoreCollection: "contacts",
-  collectionName: "contacts_v7",
+  collectionName: "contacts_v8",
   schema: {
-    name: "contacts_v7",
+    name: "contacts_v8",
     enable_nested_fields: true,
     token_separators: ["(", ")", "-", "+", " "],
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
+      { name: "name", type: "string", sort: true, stem: true, facet: false },
       { name: "first_name", type: "string", sort: true, stem: true, facet: false },
       { name: "middle_name", type: "string", stem: true, facet: false, optional: true },
       { name: "last_name", type: "string", sort: true, stem: true, facet: false, optional: true },
@@ -32,13 +33,13 @@ export const contacts: TypesenseCollectionConfig = {
       { name: "created_at", type: "int64", sort: true, index: true, facet: false, optional: true },
       { name: "updated_at", type: "int64", sort: true, index: true, facet: false },
     ],
-    default_sorting_field: "first_name",
+    default_sorting_field: "name",
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["first_name", "last_name", "emails", "phones", "organizations.name"],
+    columns: ["name", "emails", "phones", "organizations.name"],
     filters: {},
-    sort: { column: "first_name", direction: "asc" },
+    sort: { column: "name", direction: "asc" },
     group: null,
     facet: [],
   },

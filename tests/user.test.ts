@@ -5,6 +5,7 @@ const base = {
   uid: "test-user-1",
   email: "test@example.com",
   first_name: "Alex",
+  name: "Alex",
   password_hash: "$argon2id$v=19$m=19456,t=2,p=1$abc$def",
   email_verified: false,
   prefs_firestore: {},

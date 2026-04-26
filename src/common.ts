@@ -58,6 +58,10 @@ export const Phone: z.ZodType<string> = z
 /**
  * Split name fields shared across Contact, User, Invite, and any schema
  * embedding a contact reference. `first_name` is required; the rest are optional.
+ *
+ * Stored documents also carry a denormalized `name: string` (use `NameField`
+ * + `deriveName()` below). Inputs do not — clients send parts; the server
+ * derives `name` at write time. See `deriveName` for the canonical join rule.
  */
 export interface NameParts {
   first_name: string;
@@ -108,6 +112,31 @@ export const NamePartsFieldsPartial: {
   last_name: z.string().min(1).max(50).meta({ pii: "mask" }).optional(),
   pronunciation: z.string().min(1).max(100).meta({ pii: "mask" }).optional(),
 };
+
+/**
+ * Canonical join rule for deriving a single display string from name parts.
+ * Joins `[first_name, middle_name, last_name]` with single spaces (missing
+ * parts are dropped, never produce empty padding) and appends ` (pronunciation)`
+ * when set. This is the single source of truth — every `name` field on a
+ * stored document and `ActorRef.name` is computed by passing through here.
+ */
+export function deriveName(parts: PartialNameParts): string {
+  const base = [parts.first_name, parts.middle_name, parts.last_name].filter(Boolean).join(" ");
+  return parts.pronunciation ? `${base} (${parts.pronunciation})` : base;
+}
+
+/**
+ * Zod field for the denormalized `name` on stored documents (Contact, User,
+ * Invite, embedded contact refs in destinations, ActorRef-shaped objects).
+ *
+ * The 255 max is the exact upper bound of `deriveName(parts)` given the
+ * existing per-part maxes:
+ *   50 (first) + 1 (sp) + 50 (middle) + 1 (sp) + 50 (last) + 1 (sp)
+ *   + 1 ("(") + 100 (pronunciation) + 1 (")") = 255
+ * If any part's `.max(...)` changes, this ceiling must move with it or
+ * worst-case writes will fail validation.
+ */
+export const NameField: z.ZodType<string> = z.string().min(1).max(255).meta({ pii: "mask" });
 
 /**
  * Coordinates object (latitude/longitude).
@@ -178,11 +207,11 @@ export const UidNameRef: z.ZodType<UidNameRefType> = z.strictObject({
 /**
  * Actor reference — embedded `{uid, name}` for `created_by` / `updated_by` /
  * `deleted_by` fields across document schemas. The `name` is denormalized at
- * write time by the server: `[first_name, middle_name, last_name].filter(Boolean).join(" ")`,
- * with pronunciation (if present) appended in parentheses. Non-human actors
- * (e.g. integrations, scheduled jobs) use a synthetic uid such as `"manager-bot"`
- * with a matching display name. Name changes on the source user fan out via
- * the `update-user:name-to-actor-refs` propagation rule.
+ * write time by the server via `deriveName(parts)` (with `uid` as a fallback
+ * when all parts are empty — see `buildActorRef` in api-cloudrun). Non-human
+ * actors (e.g. integrations, scheduled jobs) use a synthetic uid such as
+ * `"manager-bot"` with a matching display name. Name changes on the source
+ * user fan out via the `update-user:name-to-actor-refs` propagation rule.
  */
 export interface ActorRefType {
   uid: string;
@@ -192,7 +221,7 @@ export interface ActorRefType {
 /** Zod schema for an actor reference. */
 export const ActorRef: z.ZodType<ActorRefType> = z.strictObject({
   uid: z.string().min(1),
-  name: z.string().min(1).max(250).meta({ pii: "mask" }),
+  name: NameField,
 });
 
 // ── Shared enums ────────────────────────────────────────────────────

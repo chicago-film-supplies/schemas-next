@@ -3,16 +3,17 @@ import type { TypesenseCollectionConfig } from "./types.ts";
 /** Typesense collection config for users. */
 export const users: TypesenseCollectionConfig = {
   alias: "users",
-  version: 2,
+  version: 3,
   firestoreCollection: "users",
-  collectionName: "users_v2",
+  collectionName: "users_v3",
   schema: {
-    name: "users_v2",
+    name: "users_v3",
     enable_nested_fields: false,
     token_separators: ["-", "+", " ", "@", "."],
     fields: [
       { name: "uid", type: "string", sort: true, facet: false },
       { name: "email", type: "string", sort: true, index: true, facet: false },
+      { name: "name", type: "string", sort: true, stem: true, facet: false },
       { name: "first_name", type: "string", sort: true, stem: true, facet: false },
       { name: "middle_name", type: "string", stem: true, facet: false, optional: true },
       { name: "last_name", type: "string", sort: true, stem: true, facet: false, optional: true },
@@ -27,7 +28,7 @@ export const users: TypesenseCollectionConfig = {
   },
   synonyms: [],
   displayDefaults: {
-    columns: ["email", "first_name", "last_name", "roles"],
+    columns: ["email", "name", "roles"],
     filters: {},
     sort: { column: "email", direction: "asc" },
     group: null,

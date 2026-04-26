@@ -10,6 +10,7 @@ import {
   Email,
   FirestoreTimestamp,
   type FirestoreTimestampType,
+  NameField,
   type NameParts,
   NamePartsFields,
   Phone,
@@ -20,9 +21,11 @@ import {
 
 /**
  * Contact reference embedded in an organization document.
+ * `name` is the server-derived display string (see `deriveName` in common.ts).
  */
 export interface OrganizationContactType extends NameParts {
   uid: string;
+  name: string;
   roles: string[];
 }
 
@@ -30,6 +33,7 @@ export interface OrganizationContactType extends NameParts {
 export const OrganizationContact: z.ZodType<OrganizationContactType> = z.strictObject({
   uid: z.string(),
   ...NamePartsFields,
+  name: NameField,
   roles: z.array(z.string()).default([]),
 });
 

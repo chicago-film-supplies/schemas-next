@@ -10,6 +10,7 @@ import {
   Email,
   FirestoreTimestamp,
   type FirestoreTimestampType,
+  NameField,
   type NameParts,
   NamePartsFields,
   NamePartsFieldsPartial,
@@ -21,6 +22,7 @@ import {
 export interface Invite extends NameParts {
   uid: string;
   email: string;
+  name: string;
   roles: string[];
   invited_by: string;
   used: boolean;
@@ -34,6 +36,7 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   uid: z.string().min(1),
   email: Email,
   ...NamePartsFields,
+  name: NameField,
   roles: z.array(z.string()).default([]),
   invited_by: z.string().min(1),
   used: z.boolean().default(false),
@@ -43,7 +46,7 @@ export const InviteSchema: z.ZodType<Invite> = z.strictObject({
   title: "Invite",
   collection: "invites",
   displayDefaults: {
-    columns: ["email", "first_name", "last_name", "roles", "used"],
+    columns: ["email", "name", "roles", "used"],
     filters: {},
     sort: { column: "updated_at", direction: "desc" },
   },

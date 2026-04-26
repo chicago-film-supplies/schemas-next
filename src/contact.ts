@@ -7,6 +7,7 @@ import {
   type ActorRefType,
   Email,
   type FirestoreTimestampType,
+  NameField,
   type NameParts,
   NamePartsFields,
   NamePartsFieldsPartial,
@@ -34,6 +35,7 @@ export const ContactOrganization: z.ZodType<ContactOrganizationType> = z.strictO
  */
 export interface Contact extends NameParts {
   uid: string;
+  name: string;
   crms_id?: number;
   emails: string[];
   phones: string[];
@@ -52,6 +54,7 @@ export interface Contact extends NameParts {
 export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   uid: z.string(),
   ...NamePartsFields,
+  name: NameField,
   crms_id: z.number().optional(),
   emails: z.array(Email).default([]),
   phones: z.array(Phone).default([]),
@@ -67,9 +70,9 @@ export const ContactSchema: z.ZodType<Contact> = z.strictObject({
   title: "Contact",
   collection: "contacts",
   displayDefaults: {
-    columns: ["first_name", "last_name", "emails", "phones", "organizations.name"],
+    columns: ["name", "emails", "phones", "organizations.name"],
     filters: {},
-    sort: { column: "first_name", direction: "asc" },
+    sort: { column: "name", direction: "asc" },
   },
 });
 
