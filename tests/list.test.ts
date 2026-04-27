@@ -48,3 +48,29 @@ Deno.test("UpdateListInput accepts position-only payload", () => {
 Deno.test("UpdateListInput rejects missing version", () => {
   assertEquals(UpdateListInput.safeParse({ position: 1500 }).success, false);
 });
+
+Deno.test("ListSchema defaults locked to []", () => {
+  const parsed = ListSchema.safeParse(validList);
+  assertEquals(parsed.success, true);
+  if (parsed.success) assertEquals(parsed.data.locked, []);
+});
+
+Deno.test("ListSchema accepts known lock keys", () => {
+  const doc = { ...validList, locked: ["list", "create_card", "delete_card"] };
+  assertEquals(ListSchema.safeParse(doc).success, true);
+});
+
+Deno.test("ListSchema rejects unknown lock keys", () => {
+  const doc = { ...validList, locked: ["bogus"] };
+  assertEquals(ListSchema.safeParse(doc).success, false);
+});
+
+Deno.test("CreateListInput accepts locked", () => {
+  const result = CreateListInput.safeParse({ name: "Field service", locked: ["create_card"] });
+  assertEquals(result.success, true);
+});
+
+Deno.test("UpdateListInput accepts locked patch", () => {
+  const result = UpdateListInput.safeParse({ locked: ["create_card"], version: 2 });
+  assertEquals(result.success, true);
+});
